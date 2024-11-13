@@ -2,19 +2,14 @@
 
 **PharmaTrack** is a pharmacy stock management system with separate frontend and backend repositories. The project includes inventory management, a pharmacy billing and POS system, drug expiry and recall management, and other essential features to streamline pharmacy operations.
 
-## Repositories
 
-1. **Frontend (React with Vite)**: [PharmaTrack-Frontend](https://github.com/your-username/PharmaTrack-Frontend)
-2. **Backend (Laravel)**: [PharmaTrack-Backend](https://github.com/your-username/PharmaTrack-Backend)
 
 ## Table of Contents
 
 - [Getting Started](#getting-started)
 - [Frontend Setup (React + Vite)](#frontend-setup-react--vite)
 - [Backend Setup (Laravel)](#backend-setup-laravel)
-- [Collaborating on the Project](#collaborating-on-the-project)
-- [Directory Structure](#directory-structure)
-- [License](#license)
+
 
 ---
 
@@ -36,5 +31,6 @@ To contribute to the **PharmaTrack** project, clone both the frontend and backen
 ### 1. Clone the Frontend Repository
 
 ```bash
-git clone https://github.com/your-username/PharmaTrack-Frontend.git
-cd PharmaTrack-Frontend
+git clone 
+cd PharmaTrack
+cd FronEnd
