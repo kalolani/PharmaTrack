@@ -31,6 +31,6 @@ To contribute to the **PharmaTrack** project, clone both the frontend and backen
 ### 1. Clone the Frontend Repository
 
 ```bash
-git clone 
+git clone https://github.com/ayana1709/PharmaTrack.git
 cd PharmaTrack
 cd FronEnd
