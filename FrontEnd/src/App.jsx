@@ -1,7 +1,15 @@
+import HomePage from "./pages/HomePage";
+import { Routes, Route } from "react-router-dom";
+
 function App() {
   return (
     <div>
-      <p className="bg-red-500">kaleab gemechu</p>
+      <p className="">
+        <Routes>
+          {" "}
+          <Route path="/" element={<HomePage />} />
+        </Routes>
+      </p>
     </div>
   );
 }
