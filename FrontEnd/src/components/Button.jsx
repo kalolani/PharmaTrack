@@ -1,7 +1,10 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
 const Button = ({
+  setShowLogin,
   children,
   href = "#",
   variant = "primary",
@@ -35,9 +38,15 @@ const Button = ({
     },
     className
   );
+  const handleClick = () => {
+    if (!disabled) {
+      setShowLogin(true);
+    }
+  };
 
   return (
-    <a
+    <button
+      onClick={handleClick}
       href={href}
       className={classes}
       aria-disabled={disabled}
@@ -47,7 +56,7 @@ const Button = ({
       <span className="btn-span" data-text={children}>
         {children}
       </span>
-    </a>
+    </button>
   );
 };
 

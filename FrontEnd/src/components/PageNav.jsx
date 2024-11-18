@@ -1,6 +1,7 @@
+/* eslint-disable react/prop-types */
 import Button from "./Button";
 
-function PageNav() {
+function PageNav({ setShowLogin }) {
   return (
     <>
       <div
@@ -27,7 +28,12 @@ function PageNav() {
           </li>
         </ul>
         <div className="flex gap-12">
-          <Button variant="primary" size="lg" className="font-bold">
+          <Button
+            variant="primary"
+            size="lg"
+            className="font-bold"
+            setShowLogin={setShowLogin}
+          >
             Sign Up
           </Button>
         </div>
