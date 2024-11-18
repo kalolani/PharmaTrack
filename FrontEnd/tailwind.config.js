@@ -13,6 +13,21 @@ export default {
       fontFamily: {
         Poppins: ["Poppins", "sans-serif"],
       },
+      keyframes: {
+        circular: {
+          "0%": { transform: "rotate(0deg) translateX(100px) rotate(0deg)" },
+          "100%": {
+            transform: "rotate(-360deg) translateX(100px) rotate(360deg)",
+          },
+        },
+        fadeIn: {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+      },
+      animation: {
+        circular: "circular 10s linear infinite",
+      },
     },
     backgroundImage: {
       "home-image":
