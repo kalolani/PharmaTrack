@@ -162,12 +162,12 @@ function LoginPopup({ setShowLogin }) {
               {confirmPassWatch ? (
                 <FaRegEyeSlash
                   onClick={() => setConfirmPassWatch(!confirmPassWatch)}
-                  className="absolute top-1/2 right-[5%] hover:text-green-500 cursor-pointer"
+                  className="absolute top-1/2 right-[5%] -translate-y-1/2 hover:text-green-500 cursor-pointer"
                 />
               ) : (
                 <HiOutlineEye
                   onClick={() => setConfirmPassWatch(!confirmPassWatch)}
-                  className="absolute top-1/2 right-[5%] hover:text-green-500 cursor-pointer"
+                  className="absolute top-1/2 right-[5%] -translate-y-1/2 hover:text-green-500 cursor-pointer"
                 />
               )}
             </div>
