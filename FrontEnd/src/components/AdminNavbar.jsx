@@ -6,31 +6,86 @@ import { CiSearch } from "react-icons/ci";
 
 function AdminNavBar() {
   return (
-    <div className="flex gap-6 w-full items-center justify-center">
-      <input
-        name="search"
-        type="text"
-        placeholder="search"
-        className="w-[50%] bg-[#FDFDFD] p-2 rounded-md outline-0"
-      />
-      
+    <div className="w-full flex gap-6 w-full items-center justify-around">
+      <div className="relative w-1/2">
+        <input
+          name="search"
+          type="text"
+          placeholder="Search here"
+          className="w-full bg-[#FDFDFD] p-4 pl-6 rounded-lg outline-0 border-[1px]"
+        />
+        <CiSearch
+          color="#A4A4A4"
+          className="absolute top-1/2 right-[20px] w-[24px] h-[24px] transform -translate-y-1/2"
+        />
+      </div>
       <div className="flex gap-6 items-center justify-center">
-        <div className="bg-[#007AFF] bg-opacity-[0.15] p-[6px] rounded-full cursor-pointer">
-          <IoMdNotificationsOutline size={25} color="#007AFF" />
+        <div className="relative bg-[#007AFF] bg-opacity-[0.15] w-[48px] h-[48px] rounded-2xl cursor-pointer">
+          <IoMdNotificationsOutline
+            size={25}
+            color="#007AFF"
+            className="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2"
+          />
+          <div className="absolute -top-[7px] -right-[5px] bg-[#007AFF] bg-opacity-[0.15] w-[25px] h-[25px] text-white rounded-full border-4 border-[#F3F2F7]">
+            <div className="relative">
+              {" "}
+              <p className="absolute left-1/2 top-1/2 transform -translate-x-1/2  text-[12px] text-white">
+                21
+              </p>
+            </div>
+          </div>
         </div>
-        <div className="bg-[#2D9CDB] bg-opacity-[0.15] p-[6px] rounded-full cursor-pointer">
-          <RiMessage2Line size={25} color="#2D9CDB" />
+        <div className="relative bg-[#007AFF] bg-opacity-[0.15] w-[48px] h-[48px] rounded-2xl cursor-pointer">
+          <RiMessage2Line
+            size={25}
+            color="#2D9CDB"
+            className="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2"
+          />
+          <div className="absolute -top-[7px] -right-[5px] bg-[#007AFF] bg-opacity-[0.45] w-[25px] h-[25px] text-white rounded-full border-4 border-[#F3F2F7]">
+            <div className="relative">
+              {" "}
+              <p className="absolute left-1/2 top-1/2 transform -translate-x-1/2  text-[12px] text-white">
+                53
+              </p>
+            </div>
+          </div>
         </div>
-        <div className="bg-[#5E6C93] bg-opacity-[0.15] p-[6px] rounded-full cursor-pointer">
-          <GoGift size={25} color="#5E6C93" />
+        <div className="relative bg-[#5E6C93] bg-opacity-[0.15] w-[48px] h-[48px] rounded-2xl cursor-pointer">
+          <GoGift
+            size={25}
+            color="#5E6C93"
+            className="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2"
+          />
+          <div className="absolute -top-[7px] -right-[5px] bg-[#5E6C93] bg-opacity-[0.65] w-[25px] h-[25px] text-white rounded-full border-4 border-[#F3F2F7]">
+            <div className="relative">
+              {" "}
+              <p className="absolute left-1/2 top-1/2 transform -translate-x-1/2  text-[12px] text-white">
+                15
+              </p>
+            </div>
+          </div>
         </div>
-        <div className="bg-[#FF5B5B] bg-opacity-[0.15] p-[6px] rounded-full cursor-pointer">
-          <MdOutlineSettings size={25} color="#FF5B5B" />
+        <div className="relative bg-[#FF5B5B] bg-opacity-[0.15] w-[48px] h-[48px] rounded-2xl cursor-pointer">
+          <MdOutlineSettings
+            size={25}
+            color="#FF5B5B"
+            className="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2"
+          />
+          <div className="absolute -top-[7px] -right-[5px] bg-[#FF5B5B] bg-opacity-[0.85] w-[25px] h-[25px] text-white rounded-full border-4 border-[#F3F2F7]">
+            <div className="relative">
+              {" "}
+              <p className="absolute left-1/2 top-1/2 transform -translate-x-1/2  text-[12px] text-white">
+                15
+              </p>
+            </div>
+          </div>
         </div>
       </div>
       <div className="w-[1px] h-[50px] bg-[#D0D6DE]"></div>
-      <div className="flex items-center justify-center gap-[6px]">
-        <p className="text-[#464255] text-[15px] ">Kaleab Gemechu</p>
+      <div className="flex items-center justify-center gap-4">
+        <p className="text-[#464255] text-[15px] font-poppins">
+          Hello, <strong>Kaleab</strong>
+        </p>
         <img src="kal.png" className="w-[50px] h-[50px]" />
       </div>
     </div>
