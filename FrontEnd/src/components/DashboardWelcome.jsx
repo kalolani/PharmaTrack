@@ -10,7 +10,7 @@ function DashboardWelcome() {
           Hi, Kaleab. Welcome back to Pharma Admin
         </p>
       </div>
-      <div className="bg-white p-2 flex items-center justify-center gap-4 rounded-md">
+      <div className="bg-white p-2 flex items-center justify-center gap-4 rounded-md border-[1px] cursor-pointer">
         <div className="relative w-[48px] h-[48px] bg-[#2D9CDB] bg-opacity-[0.15] rounded-2xl">
           {" "}
           <CiCalendar
@@ -23,7 +23,7 @@ function DashboardWelcome() {
           <p className="font-medium text-[10px]">Filter Periode</p>
           <p className="font-normal text-[8px]">17 April 2020 - 21 May 2020</p>
         </div>
-        <IoIosArrowDown size={24} color="#B9BBBD" />
+        <IoIosArrowDown size={24} color="#2D9CDB" />
       </div>
     </div>
   );
