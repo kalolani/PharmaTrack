@@ -12,7 +12,7 @@ function AdminNavBar() {
           name="search"
           type="text"
           placeholder="Search here"
-          className="w-full bg-[#FDFDFD] p-4 pl-6 rounded-lg outline-0 border-[1px]"
+          className="w-full bg-[#FDFDFD] px-4 py-3 pl-6 rounded-lg outline-0 border-[1px]"
         />
         <CiSearch
           color="#A4A4A4"

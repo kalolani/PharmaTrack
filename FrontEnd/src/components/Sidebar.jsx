@@ -124,8 +124,8 @@ function Sidebar() {
             />
 
             <p
-              className={`text-[17px] text-[18px] font-bold font-Poppins ${
-                dashActive ? "text-[#00B074]" : "text-[#464255]"
+              className={`text-[17px] text-[18px] font-Poppins ${
+                dashActive ? "text-[#00B074] font-medium" : "text-[#464255]"
               }`}
             >
               Dashboard
@@ -149,8 +149,8 @@ function Sidebar() {
             />
 
             <p
-              className={`text-[17px] text-[18px] font-bold font-Poppins ${
-                saleActive ? "text-[#00B074]" : "text-[#464255]"
+              className={`text-[17px] text-[18px] font-Poppins ${
+                saleActive ? "text-[#00B074] font-medium" : "text-[#464255]"
               }`}
             >
               Sales
@@ -174,7 +174,13 @@ function Sidebar() {
                 inventaryActive ? "text-[#00B074]" : "text-[#464255]"
               }`}
             />
-            <p className="text-[17px] text-[18px] font-medium text-[#464255] font-Poppins">
+            <p
+              className={`text-[17px] text-[18px] font-Poppins ${
+                inventaryActive
+                  ? "text-[#00B074] font-medium"
+                  : "text-[#464255]"
+              }`}
+            >
               Inventery
             </p>
             {inventaryActive ? (
@@ -197,7 +203,11 @@ function Sidebar() {
               }`}
             />
 
-            <p className="text-[17px] text-[18px] font-medium text-[#464255]">
+            <p
+              className={`text-[17px] text-[18px] font-Poppins ${
+                reportActive ? "text-[#00B074] font-medium" : "text-[#464255]"
+              }`}
+            >
               Reports
             </p>
             {reportActive ? (
@@ -218,7 +228,11 @@ function Sidebar() {
               className={`${notActive ? "text-[#00B074]" : "text-[#464255]"}`}
             />
 
-            <p className="text-[17px] text-[18px] font-medium text-[#464255]">
+            <p
+              className={`text-[17px] text-[18px] font-Poppins ${
+                notActive ? "text-[#00B074] font-medium" : "text-[#464255]"
+              }`}
+            >
               Notifications
             </p>
             {notActive ? (
@@ -240,7 +254,11 @@ function Sidebar() {
               className={`${setActive ? "text-[#00B074]" : "text-[#464255]"}`}
             />
 
-            <p className="text-[17px] text-[18px] font-medium text-[#464255]">
+            <p
+              className={`text-[17px] text-[18px] font-Poppins ${
+                setActive ? "text-[#00B074] font-medium" : "text-[#464255]"
+              }`}
+            >
               Settings
             </p>
             {setActive ? (
@@ -260,7 +278,11 @@ function Sidebar() {
               size={20}
               className={`${helpActive ? "text-[#00B074]" : "text-[#464255]"}`}
             />
-            <p className="text-[17px] text-[18px] font-medium text-[#464255]">
+            <p
+              className={`text-[17px] text-[18px] font-Poppins ${
+                helpActive ? "text-[#00B074] font-medium" : "text-[#464255]"
+              }`}
+            >
               Help
             </p>
             {helpActive ? (
@@ -280,7 +302,11 @@ function Sidebar() {
               size={20}
               className={`${logActive ? "text-[#00B074]" : "text-[#464255]"}`}
             />
-            <p className="text-[17px] text-[18px] font-medium text-[#464255]">
+            <p
+              className={`text-[17px] text-[18px] font-Poppins ${
+                logActive ? "text-[#00B074] font-medium" : "text-[#464255]"
+              }`}
+            >
               Logout
             </p>
             {logActive ? (
