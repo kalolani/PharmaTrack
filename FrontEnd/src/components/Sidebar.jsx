@@ -7,7 +7,7 @@ function Sidebar({ data }) {
 
   return (
     <div className="w-[15%] min-h-screen border-t-[0] text-[max(1vw, 10px)] bg-[#FFFFFF]">
-      <div className="p-[7%] pt-[20px] flex flex-col gap-[20px] items-center">
+      <div className="p-[7%] pt-[20px] flex flex-col gap-[17px] items-center">
         <div className="flex items-center cursor-pointer p-[4px] pl-[0px]">
           <div className="">
             <img
@@ -25,6 +25,7 @@ function Sidebar({ data }) {
             icon={item.icon}
             iconc={item.iconc}
             title={item.title}
+            sub={item.sub}
           >
             {/* {item.text} */}
           </Accordion>
