@@ -86,7 +86,7 @@ function AdminNavBar() {
         <p className="text-[#464255] text-[15px] font-poppins">
           Hello, <strong>Kaleab</strong>
         </p>
-        <img src="kal.png" className="w-[50px] h-[50px]" />
+        <img src="/kal.png" className="w-[50px] h-[50px]" />
       </div>
     </div>
   );

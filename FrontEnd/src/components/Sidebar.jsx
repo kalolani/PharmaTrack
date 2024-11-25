@@ -11,7 +11,7 @@ function Sidebar({ data }) {
         <div className="flex items-center cursor-pointer p-[4px] pl-[0px]">
           <div className="">
             <img
-              src="pharma-logoo.png"
+              src="/pharma-logoo.png"
               alt="Logo"
               className="h-[60px] w-[max(10%,80px)]"
             />
@@ -26,6 +26,7 @@ function Sidebar({ data }) {
             iconc={item.iconc}
             title={item.title}
             sub={item.sub}
+            link={item.link}
           >
             {/* {item.text} */}
           </Accordion>
