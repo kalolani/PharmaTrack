@@ -41,7 +41,7 @@ function App() {
             <Route path="medicines" element={<AllMedicine />} />
             <Route path="addStock" element={<AddMedicine />} />
             <Route path="lowStock" element={<LowStock />} />
-            <Route path="expiryManagemet" element={<ExpiryManagement />} />
+            <Route path="expiryManagement" element={<ExpiryManagement />} />
             <Route path="salesReport" element={<SalesReport />} />
             <Route path="inventoryReport" element={<InventoryReport />} />
             <Route path="financialReport" element={<FinancialReport />} />

@@ -16,10 +16,11 @@ function Accordion({ id, icon, iconc, title, sub, link }) {
   };
 
   return (
-    <div className="relative w-[100%]" onClick={toggleHandler}>
+    <div className="relative w-[100%]">
       <NavLink
         key={id}
         to={link}
+        onClick={toggleHandler}
         className={`flex items-center gap-[12px] p-2 pl-6 cursor-pointer rounded-md ${
           isOpen ? "bg-[#00B074] bg-opacity-[0.15]" : ""
         }`}
@@ -44,7 +45,7 @@ function Accordion({ id, icon, iconc, title, sub, link }) {
         <motion.div
           className={`${
             sub.map((item) => item.sub.length > 0)
-              ? "pt-[10px] pl-[20px] flex flex-col gap-3"
+              ? "pt-[10px] pl-[5px] flex flex-col gap-3"
               : ""
           }`}
           initial={{ height: 0, opacity: 0 }}
