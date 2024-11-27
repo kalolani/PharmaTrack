@@ -1,5 +1,5 @@
 import AdminNavBar from "./AdminNavBar";
-import DashboardWelcome from "./DashboardWelcome";
+// import DashboardWelcome from "./DashboardWelcome";
 
 import { useState } from "react";
 // import AdminNavBar from "./AdminNavBar";
@@ -40,6 +40,105 @@ function LowStockPage() {
       price: 0.8,
       description: "Pain reliever for inflammation",
     },
+    {
+      id: 3,
+      name: "Ibuprofen",
+      type: "Tablet",
+      quantity: 8,
+      manufacturer: "MNO Pharma",
+      expiryDate: "2023-11-30",
+      batchNumber: "C789",
+      price: 0.8,
+      description: "Pain reliever for inflammation",
+    },
+    {
+      id: 2,
+      name: "Amoxicillin",
+      type: "Capsule",
+      quantity: 20,
+      manufacturer: "XYZ Pharma",
+      expiryDate: "2024-08-15",
+      batchNumber: "A456",
+      price: 1.2,
+      description: "Antibiotic for bacterial infections",
+    },
+    {
+      id: 3,
+      name: "Ibuprofen",
+      type: "Tablet",
+      quantity: 8,
+      manufacturer: "MNO Pharma",
+      expiryDate: "2023-11-30",
+      batchNumber: "C789",
+      price: 0.8,
+      description: "Pain reliever for inflammation",
+    },
+    {
+      id: 2,
+      name: "Amoxicillin",
+      type: "Capsule",
+      quantity: 20,
+      manufacturer: "XYZ Pharma",
+      expiryDate: "2024-08-15",
+      batchNumber: "A456",
+      price: 1.2,
+      description: "Antibiotic for bacterial infections",
+    },
+    {
+      id: 3,
+      name: "Ibuprofen",
+      type: "Tablet",
+      quantity: 8,
+      manufacturer: "MNO Pharma",
+      expiryDate: "2023-11-30",
+      batchNumber: "C789",
+      price: 0.8,
+      description: "Pain reliever for inflammation",
+    },
+    {
+      id: 2,
+      name: "Amoxicillin",
+      type: "Capsule",
+      quantity: 20,
+      manufacturer: "XYZ Pharma",
+      expiryDate: "2024-08-15",
+      batchNumber: "A456",
+      price: 1.2,
+      description: "Antibiotic for bacterial infections",
+    },
+    {
+      id: 3,
+      name: "Ibuprofen",
+      type: "Tablet",
+      quantity: 8,
+      manufacturer: "MNO Pharma",
+      expiryDate: "2023-11-30",
+      batchNumber: "C789",
+      price: 0.8,
+      description: "Pain reliever for inflammation",
+    },
+    {
+      id: 2,
+      name: "Amoxicillin",
+      type: "Capsule",
+      quantity: 20,
+      manufacturer: "XYZ Pharma",
+      expiryDate: "2024-08-15",
+      batchNumber: "A456",
+      price: 1.2,
+      description: "Antibiotic for bacterial infections",
+    },
+    {
+      id: 3,
+      name: "Ibuprofen",
+      type: "Tablet",
+      quantity: 8,
+      manufacturer: "MNO Pharma",
+      expiryDate: "2023-11-30",
+      batchNumber: "C789",
+      price: 0.8,
+      description: "Pain reliever for inflammation",
+    },
   ]);
 
   // Define the low stock threshold
@@ -56,7 +155,7 @@ function LowStockPage() {
       <AdminNavBar />
 
       {/* Welcome Section */}
-      <DashboardWelcome />
+      {/* <DashboardWelcome /> */}
 
       {/* Low Stock Medicines */}
       <div className="p-8">
