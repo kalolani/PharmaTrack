@@ -64,24 +64,107 @@ function AddMedicine() {
           </div>
 
           {/* Medicine Type */}
-          <div className="col-span-2 sm:col-span-1">
+          {/* Medicine Type */}
+          <div>
             <label
               htmlFor="type"
               className="block text-gray-600 font-medium mb-2"
             >
               Medicine Type
             </label>
-            <input
-              type="text"
+            <select
               id="type"
               name="type"
-              placeholder="e.g., Tablet, Syrup"
               value={formData.type}
-              onChange={handleChange}
+              onChange={(e) => {
+                const selectedType = e.target.value;
+                setFormData({
+                  ...formData,
+                  type: selectedType,
+                  priceUnit: selectedType === "Tablet" ? "" : "Per Item", // Reset or set default unit
+                  pricePerUnit: "", // Clear the price when type changes
+                });
+              }}
               className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-[#2D9CDB]"
               required
-            />
+            >
+              <option value="">Select Type</option>
+              <option value="Tablet">Tablet</option>
+              <option value="Syrup">Syrup</option>
+              <option value="Cosmetics">Cosmetics</option>
+              <option value="Other">Other</option>
+            </select>
           </div>
+
+          {/* Price and Unit Fields */}
+          {/* Price and Unit Fields */}
+          {formData.type && (
+            <div>
+              <label
+                htmlFor="pricePerUnit"
+                className="block text-gray-600 font-medium mb-2"
+              >
+                {formData.type === "Tablet"
+                  ? "Price Per Strip and Per Pack"
+                  : `Price (${
+                      formData.type === "Syrup" ? "Per Bottle" : "Per Item"
+                    })`}
+              </label>
+
+              {formData.type === "Tablet" ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Price Per Strip */}
+                  <input
+                    type="number"
+                    id="pricePerStrip"
+                    name="pricePerStrip"
+                    placeholder="Enter price per strip"
+                    value={formData.pricePerStrip || ""}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        pricePerStrip: e.target.value,
+                      })
+                    }
+                    className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-[#2D9CDB]"
+                    required
+                  />
+
+                  {/* Price Per Pack */}
+                  <input
+                    type="number"
+                    id="pricePerPack"
+                    name="pricePerPack"
+                    placeholder="Enter price per pack"
+                    value={formData.pricePerPack || ""}
+                    onChange={(e) =>
+                      setFormData({ ...formData, pricePerPack: e.target.value })
+                    }
+                    className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-[#2D9CDB]"
+                    required
+                  />
+                </div>
+              ) : (
+                // Price for other types
+                <input
+                  type="number"
+                  id="pricePerUnit"
+                  name="pricePerUnit"
+                  placeholder={`Enter price ${
+                    formData.type === "Syrup"
+                      ? "(e.g., per bottle)"
+                      : "(e.g., per item)"
+                  }`}
+                  value={formData.pricePerUnit || ""}
+                  onChange={(e) =>
+                    setFormData({ ...formData, pricePerUnit: e.target.value })
+                  }
+                  className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-[#2D9CDB]"
+                  required
+                />
+              )}
+            </div>
+          )}
 
           {/* Quantity */}
           <div>
@@ -161,7 +244,7 @@ function AddMedicine() {
           </div>
 
           {/* Price */}
-          <div>
+          {/* <div>
             <label
               htmlFor="price"
               className="block text-gray-600 font-medium mb-2"
@@ -177,7 +260,7 @@ function AddMedicine() {
               onChange={handleChange}
               className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-[#2D9CDB]"
             />
-          </div>
+          </div> */}
 
           {/* Description */}
           <div className="col-span-2">
