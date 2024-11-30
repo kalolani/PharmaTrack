@@ -6,7 +6,7 @@ function Sidebar({ data }) {
   //redux
 
   return (
-    <div className="w-[15%] min-h-screen border-t-[0] text-[max(1vw, 10px)] bg-[#FFFFFF]">
+    <div className="w-[18%] min-h-screen border-t-[0] text-[max(1vw, 10px)] bg-[#FFFFFF]">
       <div className="p-[7%] pt-[20px] flex flex-col gap-[17px] items-center">
         <div className="flex items-center cursor-pointer p-[4px] pl-[0px]">
           <div className="">
@@ -27,6 +27,9 @@ function Sidebar({ data }) {
             title={item.title}
             sub={item.sub}
             link={item.link}
+            arrowUp={item.arrowUp}
+            arrowUpGreen={item.arrowUp}
+            arrowDown={item.arrowDown}
           >
             {/* {item.text} */}
           </Accordion>

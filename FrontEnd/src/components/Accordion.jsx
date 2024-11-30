@@ -2,9 +2,19 @@
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleItem } from "../Redux/accordionSlice";
+
 import { NavLink } from "react-router-dom";
 
-function Accordion({ id, icon, iconc, title, sub, link }) {
+function Accordion({
+  id,
+  icon,
+  iconc,
+  title,
+  sub,
+  link,
+  arrowDown,
+  arrowUpGreen,
+}) {
   const dispatch = useDispatch();
   const curOpen = useSelector((state) => state.accordion.openItem); // Get the current open item number
   const isOpen = id === curOpen; // Check if this item is open
@@ -21,7 +31,7 @@ function Accordion({ id, icon, iconc, title, sub, link }) {
         key={id}
         to={link}
         onClick={toggleHandler}
-        className={`flex items-center gap-[12px] p-2 pl-6 cursor-pointer rounded-md ${
+        className={`relative flex items-center gap-[12px] p-2 pl-6 cursor-pointer rounded-md ${
           isOpen ? "bg-[#00B074] bg-opacity-[0.15]" : ""
         }`}
       >
@@ -40,6 +50,7 @@ function Accordion({ id, icon, iconc, title, sub, link }) {
         ) : (
           ""
         )}
+        {isOpen ? arrowUpGreen : arrowDown}
       </NavLink>
       {isOpen ? (
         <motion.div
