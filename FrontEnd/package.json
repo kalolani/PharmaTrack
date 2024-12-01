@@ -17,6 +17,7 @@
     "@nivo/radar": "^0.88.0",
     "@reduxjs/toolkit": "^2.3.0",
     "classnames": "^2.5.1",
+    "file-saver": "^2.0.5",
     "framer-motion": "^11.11.17",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",

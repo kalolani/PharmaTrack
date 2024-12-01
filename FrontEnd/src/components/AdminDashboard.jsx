@@ -10,6 +10,8 @@ import { AiOutlineLogout } from "react-icons/ai";
 import { HiOutlineHome } from "react-icons/hi2";
 import { Outlet } from "react-router-dom";
 // import Dashboard from "../pages/Dashboard";
+import { MdKeyboardArrowDown } from "react-icons/md";
+import { MdOutlineKeyboardArrowUp } from "react-icons/md";
 
 const data = [
   {
@@ -25,8 +27,12 @@ const data = [
     title: " Sales",
     iconc: <CiBadgeDollar size={20} color="#00B074" />,
     icon: <CiBadgeDollar size={20} />,
-
-    // sub: ["New Sale", "Sale History"],
+    arrowUp: (
+      <MdOutlineKeyboardArrowUp color="#00B074" className="absolute right-5" />
+    ),
+    arrowDown: (
+      <MdKeyboardArrowDown color="#464255" className="absolute right-5" />
+    ),
     sub: [
       { sub: "New Sale", to: "newSale" },
       { sub: "Sale History", to: "saleHistory" },
@@ -37,8 +43,12 @@ const data = [
     title: " Inventery",
     iconc: <MdOutlineInventory2 size={20} color="#00B074" />,
     icon: <MdOutlineInventory2 size={20} />,
-
-    // sub: ["All Medicines", "Add New Stock", "Low Stock", "Expiry Management"],
+    arrowUp: (
+      <MdOutlineKeyboardArrowUp color="#00B074" className="absolute right-5" />
+    ),
+    arrowDown: (
+      <MdKeyboardArrowDown color="#464255" className="absolute right-5" />
+    ),
     sub: [
       { sub: "All Medicine", to: "medicines" },
       { sub: "Add New Stock", to: "addStock" },
@@ -50,37 +60,31 @@ const data = [
     id: 4,
     title: "Reports",
     iconc: <TbFileReport size={20} color="#00B074" />,
-
     icon: <TbFileReport size={20} />,
-    // sub: [
-    //   "Sales Reports",
-    //   "Inventory Reports",
-    //   "Financial Reports",
-    //   "Custom Reports",
-    // ],
+    arrowUp: (
+      <MdOutlineKeyboardArrowUp color="#00B074" className="absolute right-5" />
+    ),
+    arrowDown: (
+      <MdKeyboardArrowDown color="#464255" className="absolute right-5" />
+    ),
     sub: [
       { sub: "Sales Reports", to: "salesReport" },
       { sub: "Inventory Reports", to: "inventoryReport" },
       { sub: "Financial Reports", to: "financialReport" },
-      { sub: "Custom Reports", to: "customReport" },
     ],
   },
-  {
-    id: 5,
-    title: "Notification",
-    iconc: <RiNotification2Line size={20} color="#00B074" />,
-    icon: <RiNotification2Line size={20} />,
-    // sub: [],
-    link: "notify",
-    sub: [{ sub: "", to: "notification" }],
-  },
+
   {
     id: 6,
     title: "Settings",
     iconc: <IoSettingsOutline size={20} color="#00B074" />,
     icon: <IoSettingsOutline size={20} />,
-
-    // sub: ["System Settings", "Notifications"],
+    arrowUp: (
+      <MdOutlineKeyboardArrowUp color="#00B074" className="absolute right-5" />
+    ),
+    arrowDown: (
+      <MdKeyboardArrowDown color="#464255" className="absolute right-5" />
+    ),
     sub: [
       { sub: "System Settings", to: "systemSetting" },
       { sub: "Notifications", to: "notify" },
@@ -91,13 +95,25 @@ const data = [
     title: "Help",
     iconc: <IoMdHelpCircleOutline size={20} color="#00B074" />,
     icon: <IoMdHelpCircleOutline size={20} />,
-
-    // sub: ["User Guide", "Contact Support", "FAQs"],
+    arrowUp: (
+      <MdOutlineKeyboardArrowUp color="#00B074" className="absolute right-5" />
+    ),
+    arrowDown: (
+      <MdKeyboardArrowDown color="#464255" className="absolute right-5" />
+    ),
     sub: [
       { sub: "User Guide", to: "userGuide" },
       { sub: "Contact Support", to: "contactSupport" },
       { sub: "FAQs", to: "faqs" },
     ],
+  },
+  {
+    id: 5,
+    title: "Notification",
+    iconc: <RiNotification2Line size={20} color="#00B074" />,
+    icon: <RiNotification2Line size={20} />,
+    link: "notify",
+    sub: [{ sub: "", to: "notification" }],
   },
   {
     id: 8,
