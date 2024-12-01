@@ -30,9 +30,7 @@ function Sidebar({ data }) {
             arrowUp={item.arrowUp}
             arrowUpGreen={item.arrowUp}
             arrowDown={item.arrowDown}
-          >
-            {/* {item.text} */}
-          </Accordion>
+          ></Accordion>
         ))}
       </div>
     </div>

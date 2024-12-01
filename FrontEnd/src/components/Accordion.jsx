@@ -39,14 +39,14 @@ function Accordion({
 
         <p
           className={`text-[17px] text-[18px] font-Poppins ${
-            isOpen ? "text-[#00B074] font-medium" : "text-[#464255]"
+            isOpen ? "text-[#00B074]" : "text-[#464255]"
           }`}
         >
           {title}
         </p>
 
         {isOpen ? (
-          <div className="absolute -left-[15px] w-[5px] h-[44px] bg-[#00B074] rounded-sm"></div>
+          <div className="absolute -left-[15px] w-[5px] h-[40px] bg-[#00B074] rounded-sm"></div>
         ) : (
           ""
         )}
@@ -55,7 +55,7 @@ function Accordion({
       {isOpen ? (
         <motion.div
           className={`${
-            sub.map((item) => item.sub.length > 0)
+            sub.some((item) => item.sub.length > 0)
               ? "pt-[10px] pl-[5px] flex flex-col gap-3"
               : ""
           }`}
@@ -66,19 +66,23 @@ function Accordion({
             opacity: { duration: 0.3, ease: "easeInOut" },
           }}
         >
-          {sub.map((item) => (
-            <NavLink
-              to={item.to}
-              className={`${
-                item.sub.length > 0
-                  ? "font-Poppins font-medium text-[#464255] text-[13px] hover:text-[#00B074] cursor-pointer border-[1px] border-[#464255] rounded-lg px-4 py-2"
-                  : ""
-              }`}
-              key={item}
-            >
-              {item.sub}
-            </NavLink>
-          ))}
+          {sub.map((item) =>
+            item.sub.length > 0 ? (
+              <NavLink
+                to={item.to}
+                className={`${
+                  item.sub.length > 0
+                    ? "font-Poppins font-medium text-[#464255] text-[13px] hover:text-[#00B074] cursor-pointer border-[1px] border-[#464255] rounded-lg px-4 py-2"
+                    : ""
+                }`}
+                key={item}
+              >
+                {item.sub.length > 1 ? item.sub : ""}
+              </NavLink>
+            ) : (
+              ""
+            )
+          )}
         </motion.div>
       ) : (
         ""
