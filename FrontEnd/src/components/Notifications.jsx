@@ -63,7 +63,7 @@ const Notifications = () => {
                 </button>
               )}
             </div>
-            <small className="text-gray-500">{notif.createdAt}</small>
+            <small className="text-gray-600">{notif.createdAt}</small>
           </li>
         ))}
       </ul>
