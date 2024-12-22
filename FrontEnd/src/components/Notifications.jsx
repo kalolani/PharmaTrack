@@ -23,6 +23,20 @@ const demoNotifications = [
     createdAt: "2024-11-29 09:00 AM",
     isRead: false,
   },
+  {
+    id: 2,
+    type: "system",
+    message: "System update scheduled for December 10, 2024.",
+    createdAt: "2024-11-30 02:15 PM",
+    isRead: true,
+  },
+  {
+    id: 3,
+    type: "alert",
+    message: "5 items expired today. Check the stock.",
+    createdAt: "2024-11-29 09:00 AM",
+    isRead: false,
+  },
 ];
 
 const Notifications = () => {

@@ -56,7 +56,7 @@ function Accordion({
         <motion.div
           className={`${
             sub.some((item) => item.sub.length > 0)
-              ? "pt-[10px] pl-[5px] flex flex-col gap-3"
+              ? "relative pt-[10px] pl-[5px] flex flex-col gap-4"
               : ""
           }`}
           initial={{ height: 0, opacity: 0 }}
@@ -68,17 +68,32 @@ function Accordion({
         >
           {sub.map((item) =>
             item.sub.length > 0 ? (
-              <NavLink
-                to={item.to}
-                className={`${
-                  item.sub.length > 0
-                    ? "font-Poppins font-medium text-[#464255] text-[13px] hover:text-[#00B074] cursor-pointer border-[1px] border-[#464255] rounded-lg px-4 py-2"
-                    : ""
-                }`}
+              <>
+                <NavLink
+                  to={item.to}
+                  className={`${
+                    item.sub.length > 0
+                      ? "relative font-Poppins font-medium text-[#5E5A6C] text-sm bg-[#66CBB1] bg-opacity-[0.4] hover:text-[#00B074] cursor-pointer px-4 py-2 ml-10 rounded-md"
+                      : ""
+                  }`}
+                  key={item}
+                >
+                  {item.sub.length > 1 ? item.sub : ""}
+                  <div className="absolute top-1/2 left-[-25px] w-[16%] h-[2px] bg-[#00B074]">
+                    {" "}
+                  </div>
+                </NavLink>
+              </>
+            ) : (
+              ""
+            )
+          )}
+          {sub.map((item) =>
+            item.sub.length > 0 ? (
+              <div
                 key={item}
-              >
-                {item.sub.length > 1 ? item.sub : ""}
-              </NavLink>
+                className="absolute top-2 left-5 w-[2px] h-[85%] bg-[#00B074]"
+              ></div>
             ) : (
               ""
             )
