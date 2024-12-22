@@ -73,8 +73,8 @@ function ChartContainer() {
           </div>
         </div>
       </div>
-      <div className="relative pt-[30px] grid grid-cols-3 gap-4">
-        <div className="relative col-span-2 bg-white rounded-xl shadow-lg">
+      <div className="relative pt-[30px] grid grid-cols-2 gap-4">
+        <div className="relative bg-white rounded-xl shadow-lg">
           <div className="absolute text-[#464255] font-bold left-[5%] top-[10%]">
             <p>Total Revenue</p>
           </div>
