@@ -1,164 +1,34 @@
-/* eslint-disable no-unused-vars */
+import axios from "axios";
 import AdminNavBar from "./AdminNavBar";
 // import DashboardWelcome from "./DashboardWelcome";
 
-import { useState } from "react";
-// import AdminNavBar from "./AdminNavBar";
-// import DashboardWelcome from "./DashboardWelcome";
+import { useEffect, useState } from "react";
 
 function LowStockPage() {
-  const [medicines, setMedicines] = useState([
-    {
-      id: 1,
-      name: "Paracetamol",
-      type: "Tablet",
-      quantity: 5,
-      manufacturer: "ABC Pharma",
-      expiryDate: "2025-12-01",
-      batchNumber: "B123",
-      price: 0.5,
-      description: "Pain reliever and fever reducer",
-    },
-    {
-      id: 2,
-      name: "Amoxicillin",
-      type: "Capsule",
-      quantity: 20,
-      manufacturer: "XYZ Pharma",
-      expiryDate: "2024-08-15",
-      batchNumber: "A456",
-      price: 1.2,
-      description: "Antibiotic for bacterial infections",
-    },
-    {
-      id: 3,
-      name: "Ibuprofen",
-      type: "Tablet",
-      quantity: 8,
-      manufacturer: "MNO Pharma",
-      expiryDate: "2023-11-30",
-      batchNumber: "C789",
-      price: 0.8,
-      description: "Pain reliever for inflammation",
-    },
-    {
-      id: 3,
-      name: "Ibuprofen",
-      type: "Tablet",
-      quantity: 8,
-      manufacturer: "MNO Pharma",
-      expiryDate: "2023-11-30",
-      batchNumber: "C789",
-      price: 0.8,
-      description: "Pain reliever for inflammation",
-    },
-    {
-      id: 2,
-      name: "Amoxicillin",
-      type: "Capsule",
-      quantity: 20,
-      manufacturer: "XYZ Pharma",
-      expiryDate: "2024-08-15",
-      batchNumber: "A456",
-      price: 1.2,
-      description: "Antibiotic for bacterial infections",
-    },
-    {
-      id: 3,
-      name: "Ibuprofen",
-      type: "Tablet",
-      quantity: 8,
-      manufacturer: "MNO Pharma",
-      expiryDate: "2023-11-30",
-      batchNumber: "C789",
-      price: 0.8,
-      description: "Pain reliever for inflammation",
-    },
-    {
-      id: 2,
-      name: "Amoxicillin",
-      type: "Capsule",
-      quantity: 20,
-      manufacturer: "XYZ Pharma",
-      expiryDate: "2024-08-15",
-      batchNumber: "A456",
-      price: 1.2,
-      description: "Antibiotic for bacterial infections",
-    },
-    {
-      id: 3,
-      name: "Ibuprofen",
-      type: "Tablet",
-      quantity: 8,
-      manufacturer: "MNO Pharma",
-      expiryDate: "2023-11-30",
-      batchNumber: "C789",
-      price: 0.8,
-      description: "Pain reliever for inflammation",
-    },
-    {
-      id: 2,
-      name: "Amoxicillin",
-      type: "Capsule",
-      quantity: 20,
-      manufacturer: "XYZ Pharma",
-      expiryDate: "2024-08-15",
-      batchNumber: "A456",
-      price: 1.2,
-      description: "Antibiotic for bacterial infections",
-    },
-    {
-      id: 3,
-      name: "Ibuprofen",
-      type: "Tablet",
-      quantity: 8,
-      manufacturer: "MNO Pharma",
-      expiryDate: "2023-11-30",
-      batchNumber: "C789",
-      price: 0.8,
-      description: "Pain reliever for inflammation",
-    },
-    {
-      id: 2,
-      name: "Amoxicillin",
-      type: "Capsule",
-      quantity: 20,
-      manufacturer: "XYZ Pharma",
-      expiryDate: "2024-08-15",
-      batchNumber: "A456",
-      price: 1.2,
-      description: "Antibiotic for bacterial infections",
-    },
-    {
-      id: 3,
-      name: "Ibuprofen",
-      type: "Tablet",
-      quantity: 8,
-      manufacturer: "MNO Pharma",
-      expiryDate: "2023-11-30",
-      batchNumber: "C789",
-      price: 0.8,
-      description: "Pain reliever for inflammation",
-    },
-  ]);
+  const [lowStockMedicines, setLowStockMedicines] = useState([]);
+  console.log(lowStockMedicines);
 
-  // Define the low stock threshold
-  const LOW_STOCK_THRESHOLD = 10;
+  useEffect(() => {
+    // Fetch low stock medicines from the backend when the component mounts
+    const fetchLowStockMedicines = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/api/inventory/low-stock"
+        );
+        setLowStockMedicines(response.data);
+      } catch (error) {
+        console.error("Error fetching low stock medicines:", error);
+        alert("Failed to fetch low stock medicines");
+      }
+    };
 
-  // Filter medicines based on the threshold
-  const lowStockMedicines = medicines.filter(
-    (medicine) => medicine.quantity < LOW_STOCK_THRESHOLD
-  );
+    fetchLowStockMedicines();
+  }, []);
 
   return (
     <div className="pt-[20px] pb-[50px] px-[20px] w-[85%] h-[100%] z-[10] text-[rgb(249 250 251)] font-Poppins bg-[#F3F2F7] min-h-screen">
-      {/* Navbar */}
       <AdminNavBar />
 
-      {/* Welcome Section */}
-      {/* <DashboardWelcome /> */}
-
-      {/* Low Stock Medicines */}
       <div className="p-8">
         <h2 className="text-3xl font-bold text-center text-[#464255] mb-6">
           Low Stock Medicines

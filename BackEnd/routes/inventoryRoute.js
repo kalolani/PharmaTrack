@@ -3,6 +3,7 @@ import {
   addMedicine,
   deleteMedicine,
   getAllMedicines,
+  lowStock,
 } from "../controllers/inventoryController.js";
 const inventoryRouter = express.Router();
 
@@ -10,5 +11,6 @@ const inventoryRouter = express.Router();
 inventoryRouter.post("/add-medicine", addMedicine);
 inventoryRouter.get("/list-medicine", getAllMedicines);
 inventoryRouter.delete("/delete-medicine/:id", deleteMedicine);
+inventoryRouter.get("/low-stock", lowStock);
 
 export default inventoryRouter;

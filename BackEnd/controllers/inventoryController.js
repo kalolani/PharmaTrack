@@ -103,4 +103,20 @@ const deleteMedicine = async (req, res) => {
   }
 };
 
-export { addMedicine, getAllMedicines, deleteMedicine };
+const lowStock = async (req, res) => {
+  try {
+    const lowStockMedicines = await prisma.medicine.findMany({
+      where: {
+        quantity: {
+          lt: 5, // Fetch medicines with quantity less than 5
+        },
+      },
+    });
+
+    res.status(200).json(lowStockMedicines);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+export { addMedicine, getAllMedicines, deleteMedicine, lowStock };
