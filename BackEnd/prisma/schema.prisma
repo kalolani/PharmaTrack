@@ -29,8 +29,8 @@ model Medicine {
   manufacturer String
   expiryDate   DateTime
   batchNumber  String
-  pricePerStrip Float
-  pricePerPack Float
+  pricePerStrip Float?
+  pricePerPack Float?
   pricePerUnit Float? 
   description  String
   createdAt    DateTime @default(now())

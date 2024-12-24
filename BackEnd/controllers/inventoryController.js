@@ -25,13 +25,28 @@ const addMedicine = async (req, res) => {
       !quantity ||
       !manufacturer ||
       !expiryDate ||
-      !batchNumber ||
-      !pricePerStrip ||
-      !pricePerStrip
+      !batchNumber
     ) {
       return res
         .status(400)
         .json({ message: "All fields except description are required" });
+    }
+
+    // Conditional validation based on the type
+    if (type.toLowerCase() === "tablet") {
+      if (!pricePerStrip || !pricePerPack) {
+        return res.status(400).json({
+          message: "For tablets, pricePerStrip and pricePerPack are required.",
+        });
+      }
+    } else if (type.toLowerCase() === "cosmetics") {
+      if (!pricePerUnit) {
+        return res.status(400).json({
+          message: "For cosmetics, pricePerUnit is required.",
+        });
+      }
+    } else {
+      return res.status(400).json({ message: "Invalid medicine type." });
     }
 
     // Save to database
@@ -43,8 +58,8 @@ const addMedicine = async (req, res) => {
         manufacturer,
         expiryDate: new Date(expiryDate),
         batchNumber,
-        pricePerStrip: parseFloat(pricePerStrip),
-        pricePerPack: parseFloat(pricePerPack),
+        pricePerStrip: pricePerStrip ? parseFloat(pricePerStrip) : null,
+        pricePerPack: pricePerPack ? parseFloat(pricePerPack) : null,
         pricePerUnit: pricePerUnit ? parseFloat(pricePerUnit) : null,
         description,
       },
