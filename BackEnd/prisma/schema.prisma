@@ -21,3 +21,19 @@ model User {
   updatedAt DateTime @updatedAt
 }
 
+model Medicine {
+  id           Int      @id @default(autoincrement())
+  name         String
+  type         String
+  quantity     Int
+  manufacturer String
+  expiryDate   DateTime
+  batchNumber  String
+  pricePerStrip Float
+  pricePerPack Float
+  pricePerUnit Float? 
+  description  String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+

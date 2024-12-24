@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import dotenv from "dotenv";
 import userRouter from "./routes/userRoutes.js";
 import cors from "cors";
+import inventoryRouter from "./routes/inventoryRoute.js";
 // Load environment variables from .env
 dotenv.config();
 // Allow requests from your front-end origin
@@ -29,6 +30,7 @@ app.use(express.json());
 
 //API endpoints
 app.use("/api/user", userRouter);
+app.use("/api/inventory", inventoryRouter);
 
 const PORT = 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

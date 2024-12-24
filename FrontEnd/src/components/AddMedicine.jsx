@@ -1,6 +1,6 @@
 import { useState } from "react";
 import AdminNavBar from "./AdminNavBar";
-// import DashboardWelcome from "./DashboardWelcome";
+import axios from "axios";
 
 function AddMedicine() {
   const [formData, setFormData] = useState({
@@ -10,7 +10,9 @@ function AddMedicine() {
     manufacturer: "",
     expiryDate: "",
     batchNumber: "",
-    price: "",
+    pricePerStrip: "",
+    pricePerPack: "",
+    pricePerUnit: "",
     description: "",
   });
 
@@ -19,21 +21,39 @@ function AddMedicine() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Medicine Data:", formData);
-    // Add your Axios or fetch POST request here
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/inventory/add-medicine",
+        formData
+      );
+      console.log("Medicine added successfully:", response.data);
+      alert("Medicine added successfully!");
+      setFormData({
+        name: "",
+        type: "",
+        quantity: "",
+        manufacturer: "",
+        expiryDate: "",
+        batchNumber: "",
+        pricePerStrip: "",
+        pricePerPack: "",
+        priceUnit: "",
+        description: "",
+      });
+    } catch (error) {
+      console.error(
+        "Error adding medicine:",
+        error.response?.data || error.message
+      );
+      alert("Failed to add medicine. Please try again.");
+    }
   };
-
   return (
     <div className="pt-[20px] pb-[50px] px-[20px] w-[85%] h-[100%] z-[10] text-[rgb(249 250 251)] font-Poppins bg-[#F3F2F7] min-h-screen">
-      {/* Navbar */}
       <AdminNavBar />
 
-      {/* Welcome Section */}
-      {/* <DashboardWelcome /> */}
-
-      {/* Add Medicine Form */}
       <div className="relative max-w-4xl mx-auto mt-10 bg-white shadow-md rounded-lg p-8">
         <h2 className="font-Poppins text-xl font-semibold text-gray-800 mb-8">
           Add New Medicine
@@ -63,8 +83,6 @@ function AddMedicine() {
             />
           </div>
 
-          {/* Medicine Type */}
-          {/* Medicine Type */}
           <div>
             <label
               htmlFor="type"
@@ -242,25 +260,6 @@ function AddMedicine() {
               className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-[#2D9CDB]"
             />
           </div>
-
-          {/* Price */}
-          {/* <div>
-            <label
-              htmlFor="price"
-              className="block text-gray-600 font-medium mb-2"
-            >
-              Price per Unit
-            </label>
-            <input
-              type="number"
-              id="price"
-              name="price"
-              placeholder="Enter price"
-              value={formData.price}
-              onChange={handleChange}
-              className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-[#2D9CDB]"
-            />
-          </div> */}
 
           {/* Description */}
           <div className="col-span-2">
