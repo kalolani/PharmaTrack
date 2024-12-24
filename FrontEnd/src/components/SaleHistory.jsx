@@ -1,85 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import AdminNavBar from "./AdminNavBar";
 import DashboardWelcome from "./DashboardWelcome";
 
 function SoldMedicines() {
-  // Demo data for sold medicines
-  const demoSoldMedicines = [
-    {
-      id: 1,
-      name: "Paracetamol",
-      unitType: "Strip",
-      quantity: 2,
-      totalPrice: 200,
-      saleDate: "2024-11-20",
-      salesperson: "John Doe",
-    },
-    {
-      id: 2,
-      name: "Cough Syrup",
-      unitType: "Bottle",
-      quantity: 1,
-      totalPrice: 120,
-      saleDate: "2024-11-21",
-      salesperson: "Jane Smith",
-    },
-    {
-      id: 3,
-      name: "Ibuprofen",
-      unitType: "Pack",
-      quantity: 3,
-      totalPrice: 450,
-      saleDate: "2024-11-19",
-      salesperson: "John Doe",
-    },
-    {
-      id: 2,
-      name: "Cough Syrup",
-      unitType: "Bottle",
-      quantity: 1,
-      totalPrice: 120,
-      saleDate: "2024-11-21",
-      salesperson: "Jane Smith",
-    },
-    {
-      id: 3,
-      name: "Ibuprofen",
-      unitType: "Pack",
-      quantity: 3,
-      totalPrice: 450,
-      saleDate: "2024-11-19",
-      salesperson: "John Doe",
-    },
-    {
-      id: 2,
-      name: "Cough Syrup",
-      unitType: "Bottle",
-      quantity: 1,
-      totalPrice: 120,
-      saleDate: "2024-11-21",
-      salesperson: "Jane Smith",
-    },
-    {
-      id: 3,
-      name: "Ibuprofen",
-      unitType: "Pack",
-      quantity: 3,
-      totalPrice: 450,
-      saleDate: "2024-11-19",
-      salesperson: "John Doe",
-    },
-  ];
-
-  // State for search and filters
+  const [salesHistory, setSalesHistory] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredMedicines, setFilteredMedicines] = useState(demoSoldMedicines);
+  const [filteredMedicines, setFilteredMedicines] = useState([]);
+
+  // Fetch sales history from the backend
+  useEffect(() => {
+    const fetchSalesHistory = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/api/sales/sales-history"
+        ); // Update the endpoint if necessary
+        console.log(response.data);
+        setSalesHistory(response.data);
+        setFilteredMedicines(response.data); // Initialize filtered medicines with fetched data
+      } catch (error) {
+        console.error("Error fetching sales history:", error);
+      }
+    };
+
+    fetchSalesHistory();
+  }, []);
 
   // Handle search
   const handleSearch = (e) => {
     const query = e.target.value.toLowerCase();
     setSearchQuery(query);
-    const filtered = demoSoldMedicines.filter((medicine) =>
-      medicine.name.toLowerCase().includes(query)
+    const filtered = salesHistory.filter((medicine) =>
+      medicine.medicineName.toLowerCase().includes(query)
     );
     setFilteredMedicines(filtered);
   };
@@ -125,12 +77,16 @@ function SoldMedicines() {
             {filteredMedicines.length > 0 ? (
               filteredMedicines.map((medicine) => (
                 <tr key={medicine.id} className="border-b hover:bg-gray-100">
-                  <td className="p-4 font-Poppins">{medicine.name}</td>
+                  <td className="p-4 font-Poppins">{medicine.medicineName}</td>
                   <td className="p-4 font-Poppins">{medicine.unitType}</td>
                   <td className="p-4 font-Poppins">{medicine.quantity}</td>
                   <td className="p-4 font-Poppins">${medicine.totalPrice}</td>
-                  <td className="p-4 font-Poppins">{medicine.saleDate}</td>
-                  <td className="p-4 font-Poppins">{medicine.salesperson}</td>
+                  <td className="p-4 font-Poppins">
+                    {new Date(medicine.createdAt).toLocaleDateString()}
+                  </td>
+                  <td className="p-4 font-Poppins">
+                    {medicine.salesperson || "N/A"}
+                  </td>
                 </tr>
               ))
             ) : (

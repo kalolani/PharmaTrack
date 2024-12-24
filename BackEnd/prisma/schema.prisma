@@ -35,5 +35,19 @@ model Medicine {
   description  String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+   sales       Sale[]   // Define the opposite relation field
+}
+
+
+model Sale {
+  id          Int      @id @default(autoincrement())
+  medicineName String  @default("Unknown") // Set default value here
+  medicineId  Int
+  quantity    Int
+  unitType    String
+  totalPrice  Float
+  createdAt   DateTime @default(now())
+
+  medicine    Medicine @relation(fields: [medicineId], references: [id])
 }
 

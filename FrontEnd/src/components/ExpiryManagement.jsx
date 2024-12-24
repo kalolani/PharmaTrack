@@ -20,6 +20,14 @@ function ExpiryManagement() {
     fetchExpiredMedicines();
   }, []);
 
+  const formatDate = (date) => {
+    return new Date(date).toLocaleDateString("en-GB", {
+      year: "2-digit",
+      month: "2-digit",
+      day: "2-digit",
+    });
+  };
+
   return (
     <div className="pt-[20px] pb-[50px] px-[20px] w-[85%] h-[100%] z-[10] text-[rgb(249 250 251)] font-Poppins bg-[#F3F2F7] min-h-screen">
       {/* Navbar */}
@@ -48,7 +56,7 @@ function ExpiryManagement() {
                 {medicine.name}
               </h3>
               <p className="text-sm text-gray-600">
-                Expiry Date: {medicine.expiryDate}
+                Expiry Date: {formatDate(medicine.expiryDate)}
               </p>
               <p className="text-sm text-gray-600">Type: {medicine.type}</p>
               <p className="text-sm text-gray-600">

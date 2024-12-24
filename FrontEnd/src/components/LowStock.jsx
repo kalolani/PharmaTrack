@@ -25,6 +25,14 @@ function LowStockPage() {
     fetchLowStockMedicines();
   }, []);
 
+  const formatDate = (date) => {
+    return new Date(date).toLocaleDateString("en-GB", {
+      year: "2-digit",
+      month: "2-digit",
+      day: "2-digit",
+    });
+  };
+
   return (
     <div className="pt-[20px] pb-[50px] px-[20px] w-[85%] h-[100%] z-[10] text-[rgb(249 250 251)] font-Poppins bg-[#F3F2F7] min-h-screen">
       <AdminNavBar />
@@ -65,7 +73,7 @@ function LowStockPage() {
                       {medicine.manufacturer}
                     </td>
                     <td className="py-3 px-4 font-Poppins">
-                      {medicine.expiryDate}
+                      {formatDate(medicine.expiryDate)}
                     </td>
                     <td className="py-3 px-4 font-Poppins">
                       <button

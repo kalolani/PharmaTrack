@@ -1,37 +1,38 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AdminNavBar from "./AdminNavBar";
-// import DashboardWelcome from "./DashboardWelcome";
+import axios from "axios";
 
 function RecordSale() {
-  // Demo medicines and cosmetics (mock data)
-  const demoItems = [
-    { id: 1, name: "Paracetamol", pricePerStrip: 5, pricePerPack: 50 },
-    { id: 2, name: "Ibuprofen", pricePerStrip: 7, pricePerPack: 70 },
-    { id: 3, name: "Cough Syrup", pricePerBottle: 25, pricePerMl: 0.5 },
-    { id: 4, name: "Lip Balm", pricePerItem: 15 },
-    { id: 5, name: "Face Cream", pricePerBottle: 40 },
-  ];
-
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredItems, setFilteredItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [unitType, setUnitType] = useState("");
   const [quantity, setQuantity] = useState("");
   const [totalPrice, setTotalPrice] = useState("");
-
-  const handleSearchChange = (e) => {
-    const value = e.target.value;
-    setSearchTerm(value);
-
-    if (value.trim() === "") {
-      setFilteredItems([]);
-    } else {
-      const filtered = demoItems.filter((item) =>
-        item.name.toLowerCase().includes(value.toLowerCase())
+  console.log(selectedItem);
+  // Fetch medicines based on the search term
+  const fetchMedicines = async (term) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/api/inventory/list-medicine?q=${term}`
       );
-      setFilteredItems(filtered);
+      console.log(response);
+      setFilteredItems(response.data || []); // Fallback to empty array if no data
+    } catch (error) {
+      console.error("Error fetching medicines:", error);
+      alert("Failed to fetch medicines. Please try again.");
     }
   };
+
+  useEffect(() => {
+    if (searchTerm.trim() === "") {
+      setFilteredItems([]);
+    } else {
+      fetchMedicines(searchTerm);
+    }
+  }, [searchTerm]);
+
+  const handleSearchChange = (e) => setSearchTerm(e.target.value);
 
   const handleItemClick = (item) => {
     setSelectedItem(item);
@@ -49,38 +50,63 @@ function RecordSale() {
   };
 
   const handleQuantityChange = (e) => {
-    const quantityValue = e.target.value;
-    setQuantity(quantityValue);
+    const value = parseFloat(e.target.value);
+    if (isNaN(value) || value < 0) {
+      alert("Quantity must be a positive number.");
+      return;
+    }
+    setQuantity(value);
 
     if (selectedItem && unitType) {
       let price = 0;
+      const unitPrices = {
+        strip: selectedItem.pricePerStrip,
+        pack: selectedItem.pricePerPack,
+        bottle: selectedItem.pricePerBottle,
+        ml: selectedItem.pricePerMl,
+        item: selectedItem.pricePerItem,
+      };
+      price = unitPrices[unitType] * value || 0;
+      setTotalPrice(price.toFixed(2)); // Display price to 2 decimal places
+    }
+  };
 
-      // Calculate price based on unit type
-      if (unitType === "strip")
-        price = selectedItem.pricePerStrip * quantityValue;
-      if (unitType === "pack")
-        price = selectedItem.pricePerPack * quantityValue;
-      if (unitType === "bottle")
-        price = selectedItem.pricePerBottle * quantityValue;
-      if (unitType === "ml") price = selectedItem.pricePerMl * quantityValue;
-      if (unitType === "item")
-        price = selectedItem.pricePerItem * quantityValue;
+  const handleSaleSubmit = async () => {
+    if (!selectedItem || !unitType || !quantity || !totalPrice) {
+      alert("Please fill in all required fields.");
+      return;
+    }
 
-      setTotalPrice(price || "");
+    try {
+      await axios.post("http://localhost:3000/api/sales/record-sale", {
+        medicineId: selectedItem.id,
+        medicineName: selectedItem.name,
+        quantity,
+        unitType,
+        totalPrice: parseFloat(totalPrice),
+      });
+      alert("Sale recorded successfully!");
+      setSelectedItem(null);
+      setUnitType("");
+      setQuantity("");
+      setTotalPrice("");
+      setSearchTerm("");
+    } catch (error) {
+      console.error("Error recording sale:", error);
+      alert("Failed to record sale. Please try again.");
     }
   };
 
   return (
     <div className="pt-6 pb-8 px-4 w-[85%] h-full bg-[#F3F2F7] min-h-screen">
       <AdminNavBar />
-      {/* <DashboardWelcome /> */}
       <h1 className="text-3xl font-bold text-[#464255] mb-6 pt-10 text-center font-Poppins">
         Record New Sale
       </h1>
       <div className="bg-white p-6 shadow-md rounded-lg max-w-xl mx-auto">
         <h2 className="text-xl font-semibold mb-4 font-Poppins">Add Sale</h2>
         <div className="space-y-4">
-          {/* Search Input for Items */}
+          {/* Search Input */}
           <div className="relative">
             <input
               type="text"
@@ -149,7 +175,7 @@ function RecordSale() {
 
           {/* Submit Button */}
           <button
-            onClick={() => alert("Sale Recorded Successfully!")}
+            onClick={handleSaleSubmit}
             className="w-full bg-[#2D9CDB] text-white py-2 rounded hover:bg-blue-600 font-Poppins"
           >
             Record Sale
