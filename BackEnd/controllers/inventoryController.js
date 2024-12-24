@@ -74,4 +74,15 @@ const addMedicine = async (req, res) => {
   }
 };
 
-export { addMedicine };
+// List all medicines
+const getAllMedicines = async (req, res) => {
+  try {
+    const medicines = await prisma.medicine.findMany(); // Fetch all records from the medicine table
+    res.status(200).json(medicines);
+  } catch (error) {
+    console.error("Error fetching medicines:", error);
+    res.status(500).json({ message: "Failed to fetch medicines" });
+  }
+};
+
+export { addMedicine, getAllMedicines };

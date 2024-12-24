@@ -1,95 +1,41 @@
-import { useState } from "react";
 import AdminNavBar from "./AdminNavBar";
 import DashboardWelcome from "./DashboardWelcome";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 function AllMedicine() {
-  const [medicines, setMedicines] = useState([
-    {
-      id: 1,
-      name: "Paracetamol",
-      type: "Tablet",
-      quantity: 500,
-      manufacturer: "ABC Pharma",
-      expiryDate: "2025-12-01",
-      batchNumber: "B123",
-      price: 0.5,
-      description: "Pain reliever and fever reducer",
-    },
-    {
-      id: 2,
-      name: "Amoxicillin",
-      type: "Capsule",
-      quantity: 200,
-      manufacturer: "XYZ Pharma",
-      expiryDate: "2024-08-15",
-      batchNumber: "A456",
-      price: 1.2,
-      description: "Antibiotic for bacterial infections",
-    },
-    {
-      id: 1,
-      name: "Paracetamol",
-      type: "Tablet",
-      quantity: 500,
-      manufacturer: "ABC Pharma",
-      expiryDate: "2025-12-01",
-      batchNumber: "B123",
-      price: 0.5,
-      description: "Pain reliever and fever reducer",
-    },
-    {
-      id: 2,
-      name: "Amoxicillin",
-      type: "Capsule",
-      quantity: 200,
-      manufacturer: "XYZ Pharma",
-      expiryDate: "2024-08-15",
-      batchNumber: "A456",
-      price: 1.2,
-      description: "Antibiotic for bacterial infections",
-    },
-    {
-      id: 1,
-      name: "Paracetamol",
-      type: "Tablet",
-      quantity: 500,
-      manufacturer: "ABC Pharma",
-      expiryDate: "2025-12-01",
-      batchNumber: "B123",
-      price: 0.5,
-      description: "Pain reliever and fever reducer",
-    },
-    {
-      id: 2,
-      name: "Amoxicillin",
-      type: "Capsule",
-      quantity: 200,
-      manufacturer: "XYZ Pharma",
-      expiryDate: "2024-08-15",
-      batchNumber: "A456",
-      price: 1.2,
-      description: "Antibiotic for bacterial infections",
-    },
-    {
-      id: 1,
-      name: "Paracetamol",
-      type: "Tablet",
-      quantity: 500,
-      manufacturer: "ABC Pharma",
-      expiryDate: "2025-12-01",
-      batchNumber: "B123",
-      price: 0.5,
-      description: "Pain reliever and fever reducer",
-    },
-  ]);
+  const [medicines, setMedicines] = useState([]);
+  console.log(medicines);
+  useEffect(() => {
+    const fetchMedicines = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/api/inventory/list-medicine"
+        );
+        setMedicines(response.data);
+      } catch (error) {
+        console.error("Error fetching medicines:", error);
+      }
+    };
+
+    fetchMedicines();
+  }, []);
 
   const handleDelete = (id) => {
     const updatedMedicines = medicines.filter((medicine) => medicine.id !== id);
     setMedicines(updatedMedicines);
   };
 
+  const formatDate = (date) => {
+    return new Date(date).toLocaleDateString("en-GB", {
+      year: "2-digit",
+      month: "2-digit",
+      day: "2-digit",
+    });
+  };
+
   return (
-    <div className="pt-[20px] pb-[50px] px-[20px] w-[85%] h-[100%] z-[10] text-[rgb(249 250 251)] font-Poppins bg-[#F3F2F7] min-h-screen">
+    <div className="p-6 w-full min-h-screen bg-gray-100 text-gray-900">
       {/* Navbar */}
       <AdminNavBar />
 
@@ -97,38 +43,55 @@ function AllMedicine() {
       <DashboardWelcome />
 
       {/* Medicines Table */}
-      <div className="p-8">
-        <h2 className="text-3xl font-Poppins font-semibold text-center mb-6">
+      <div className="mt-8">
+        <h2 className="text-2xl font-semibold text-center mb-4">
           Medicine Inventory
         </h2>
         <div className="overflow-x-auto">
-          <table className="min-w-full bg-[rgb(249_250_251)] rounded-lg shadow-md">
+          <table className="min-w-full bg-white rounded-lg shadow-md">
             <thead>
-              <tr className="bg-[#2D9CDB] text-[rgb(249_250_251)] uppercase text-sm font-Poppins">
+              <tr className="bg-blue-500 text-white uppercase text-sm">
                 <th className="py-3 px-4 text-left">Name</th>
                 <th className="py-3 px-4 text-left">Type</th>
                 <th className="py-3 px-4 text-left">Quantity</th>
                 <th className="py-3 px-4 text-left">Manufacturer</th>
                 <th className="py-3 px-4 text-left">Expiry Date</th>
                 <th className="py-3 px-4 text-left">Batch Number</th>
-                <th className="py-3 px-4 text-left">Price</th>
+                {medicines.some((medicine) => medicine.type === "Tablet") && (
+                  <>
+                    <th className="py-3 px-4 text-left">PricePerStrip</th>
+                    <th className="py-3 px-4 text-left">PricePerPack</th>
+                  </>
+                )}
+                {medicines.some(
+                  (medicine) =>
+                    medicine.type === "syrup" || medicine.type === "cosmetics"
+                ) && <th className="py-3 px-4 text-left">PricePerUnit</th>}
                 <th className="py-3 px-4 text-left">Actions</th>
               </tr>
             </thead>
             <tbody>
               {medicines.length > 0 ? (
                 medicines.map((medicine) => (
-                  <tr
-                    key={medicine.id}
-                    className="border-b hover:bg-gray-100 text-[#464255] font-Poppins"
-                  >
+                  <tr key={medicine.id} className="border-b hover:bg-gray-100">
                     <td className="py-3 px-4">{medicine.name}</td>
                     <td className="py-3 px-4">{medicine.type}</td>
                     <td className="py-3 px-4">{medicine.quantity}</td>
                     <td className="py-3 px-4">{medicine.manufacturer}</td>
-                    <td className="py-3 px-4">{medicine.expiryDate}</td>
+                    <td className="py-3 px-4">
+                      {formatDate(medicine.expiryDate)}
+                    </td>
                     <td className="py-3 px-4">{medicine.batchNumber}</td>
-                    <td className="py-3 px-4">${medicine.price.toFixed(2)}</td>
+                    {medicine.type === "Tablet" && (
+                      <>
+                        <td className="py-3 px-4">${medicine.pricePerStrip}</td>
+                        <td className="py-3 px-4">${medicine.pricePerPack}</td>
+                      </>
+                    )}
+                    {(medicine.type === "syrup" ||
+                      medicine.type === "cosmetics") && (
+                      <td className="py-3 px-4">${medicine.pricePerUnit}</td>
+                    )}
                     <td className="py-3 px-4">
                       <button
                         onClick={() => handleDelete(medicine.id)}
@@ -141,10 +104,7 @@ function AllMedicine() {
                 ))
               ) : (
                 <tr>
-                  <td
-                    colSpan="8"
-                    className="text-center py-6 text-gray-500 font-medium"
-                  >
+                  <td colSpan="8" className="text-center py-6 text-gray-500">
                     No medicines added yet.
                   </td>
                 </tr>
