@@ -118,5 +118,27 @@ const lowStock = async (req, res) => {
     res.status(500).json({ message: "Server error", error });
   }
 };
+const expiredMedicines = async (req, res) => {
+  try {
+    const today = new Date();
+    const expiredMedicines = await prisma.medicine.findMany({
+      where: {
+        expiryDate: {
+          lt: today,
+        },
+      },
+    });
+    res.json(expiredMedicines);
+  } catch (error) {
+    console.error("Error fetching expired medicines:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 
-export { addMedicine, getAllMedicines, deleteMedicine, lowStock };
+export {
+  addMedicine,
+  getAllMedicines,
+  deleteMedicine,
+  lowStock,
+  expiredMedicines,
+};
