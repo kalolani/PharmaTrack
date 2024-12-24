@@ -21,9 +21,23 @@ function AllMedicine() {
     fetchMedicines();
   }, []);
 
-  const handleDelete = (id) => {
-    const updatedMedicines = medicines.filter((medicine) => medicine.id !== id);
-    setMedicines(updatedMedicines);
+  const deleteMedicine = async (id) => {
+    try {
+      // Send DELETE request to the backend
+      await axios.delete(
+        `http://localhost:3000/api/inventory/delete-medicine/${id}`
+      );
+
+      // Remove the deleted medicine from the state
+      setMedicines((prevMedicines) =>
+        prevMedicines.filter((medicine) => medicine.id !== id)
+      );
+
+      alert("Medicine deleted successfully");
+    } catch (error) {
+      console.error("Error deleting medicine:", error);
+      alert("Failed to delete medicine");
+    }
   };
 
   const formatDate = (date) => {
@@ -94,7 +108,7 @@ function AllMedicine() {
                     )}
                     <td className="py-3 px-4">
                       <button
-                        onClick={() => handleDelete(medicine.id)}
+                        onClick={() => deleteMedicine(medicine.id)}
                         className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
                       >
                         Delete

@@ -85,4 +85,22 @@ const getAllMedicines = async (req, res) => {
   }
 };
 
-export { addMedicine, getAllMedicines };
+//delete medicine
+const deleteMedicine = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedMedicine = await prisma.medicine.delete({
+      where: { id: parseInt(id) },
+    });
+
+    if (!deletedMedicine) {
+      return res.status(404).json({ message: "Medicine not found" });
+    }
+
+    res.status(200).json({ message: "Medicine deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+export { addMedicine, getAllMedicines, deleteMedicine };
