@@ -25,19 +25,19 @@ const CustomLineChart = () => {
           data={data}
           margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
         >
-          <CartesianGrid strokeDasharray="3 3" stroke="#00B074" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#007AFF" />
 
           <XAxis
             dataKey="month"
             label={{ value: "Months", position: "insideBottom", offset: -10 }}
-            tick={{ fill: "#007AFF", fontSize: 12 }} // Tick color and size
-            stroke="#00B074"
+            tick={{ fill: "#007AFF", fontSize: 10 }} // Tick color and size
+            stroke="#007AFF"
           />
 
           <YAxis
             label={{ value: "Values", angle: -90, position: "insideLeft" }}
-            tick={{ fill: "#007AFF", fontSize: 12 }} // Tick color and size
-            stroke="#00B074"
+            tick={{ fill: "#007AFF", fontSize: 10 }} // Tick color and size
+            stroke="#007AFF"
           />
 
           <Tooltip />
@@ -48,7 +48,7 @@ const CustomLineChart = () => {
             type="monotone"
             dataKey="Sales"
             stroke="#007AFF"
-            strokeWidth={2}
+            strokeWidth={1}
           />
         </LineChart>
       </ResponsiveContainer>
