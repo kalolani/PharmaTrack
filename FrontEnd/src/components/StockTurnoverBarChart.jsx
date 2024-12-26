@@ -11,13 +11,13 @@ import {
 
 const StockTurnoverBarChart = ({ data }) => {
   return (
-    <div className="chart-container bg-white py-2 rounded-md">
-      <h2 className="text-center text-green-500 text-xl font-bold">
+    <div className="chart-container py-2 rounded-md ">
+      <h2 className="text-center text-green-500 text-md font-bold">
         Stock Turnover Rate
       </h2>
       <BarChart
         width={450}
-        height={250}
+        height={300}
         data={data}
         margin={{
           top: 30,
@@ -31,7 +31,7 @@ const StockTurnoverBarChart = ({ data }) => {
         <YAxis />
         <Tooltip />
         <Legend />
-        <Bar dataKey="turnoverRate" fill="#82ca9d" />
+        <Bar dataKey="turnoverRate" fill="#82ca9d" barSize={30} />
       </BarChart>
     </div>
   );

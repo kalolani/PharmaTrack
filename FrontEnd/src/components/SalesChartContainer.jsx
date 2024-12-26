@@ -22,12 +22,12 @@ function SalesChartContainer() {
   const lowSellers = sortedProducts.slice(-3); // Bottom 3 sellers
 
   return (
-    <div className="relative grid-cols-2 mt-10 py-2 px-4 rounded-md">
-      <div className="absolute left-2 flex">
+    <div className="grid grid-cols-2 items-center gap-32 mt-10 px-2 rounded-md m-auto">
+      <div className="relative flex w-[30%] rounded-md">
         <PieChartComponent data={topSellers} title="Top Sellers" />
         <PieChartComponent data={lowSellers} title="Low Sellers" />
       </div>
-      <div className="absolute right-2">
+      <div className="relative ml-6 mr-4 w-full bg-white rounded-md">
         <StockTurnoverBarChart data={turnoverData} />
       </div>
     </div>
