@@ -8,24 +8,27 @@ const addMedicine = async (req, res) => {
     const {
       name,
       type,
-      quantity,
+      packQuantity,
       manufacturer,
       expiryDate,
       batchNumber,
       pricePerStrip,
+      stripsPerPack,
       pricePerPack,
       pricePerUnit,
       description,
+      cost,
     } = req.body;
 
     // Validate input data
     if (
       !name ||
       !type ||
-      !quantity ||
+      !packQuantity ||
       !manufacturer ||
       !expiryDate ||
-      !batchNumber
+      !batchNumber ||
+      !cost
     ) {
       return res
         .status(400)
@@ -34,7 +37,7 @@ const addMedicine = async (req, res) => {
 
     // Conditional validation based on the type
     if (type.toLowerCase() === "tablet") {
-      if (!pricePerStrip || !pricePerPack) {
+      if (!pricePerStrip || !packQuantity) {
         return res.status(400).json({
           message: "For tablets, pricePerStrip and pricePerPack are required.",
         });
@@ -54,7 +57,7 @@ const addMedicine = async (req, res) => {
       data: {
         name,
         type,
-        quantity: parseInt(quantity),
+        packQuantity: parseInt(packQuantity),
         manufacturer,
         expiryDate: new Date(expiryDate),
         batchNumber,
@@ -62,6 +65,7 @@ const addMedicine = async (req, res) => {
         pricePerPack: pricePerPack ? parseFloat(pricePerPack) : null,
         pricePerUnit: pricePerUnit ? parseFloat(pricePerUnit) : null,
         description,
+        cost: parseFloat(cost),
       },
     });
 

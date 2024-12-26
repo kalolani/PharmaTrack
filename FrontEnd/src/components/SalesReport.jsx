@@ -1,6 +1,7 @@
 import AdminNavBar from "./AdminNavBar";
 import DashboardStatics from "./DashboardStatics";
 import DashboardWelcome from "./DashboardWelcome";
+import MedicineSalesTable from "./medicineSalesTable";
 import SalesChartContainer from "./SalesChartContainer";
 // import PageNav from "./PageNav";
 function SalesReport() {
@@ -10,6 +11,9 @@ function SalesReport() {
       <DashboardWelcome />
       <DashboardStatics />
       <SalesChartContainer />
+      <div className="mt-8">
+        <MedicineSalesTable />
+      </div>
     </div>
   );
 }

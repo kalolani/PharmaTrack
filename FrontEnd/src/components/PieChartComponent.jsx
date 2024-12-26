@@ -5,9 +5,9 @@ const colors = ["#82ca9d", "#ff8042", "#8dd1e1"];
 
 const PieChartComponent = ({ data, title }) => {
   return (
-    <div className="bg-white py-2 px-[2px]">
+    <div className="bg-white py-2 px-[2px] rounded-md text-center">
       <h3>{title}</h3>
-      <PieChart width={300} height={300}>
+      <PieChart width={300} height={200}>
         <Pie
           data={data}
           dataKey="sales"
@@ -24,7 +24,7 @@ const PieChartComponent = ({ data, title }) => {
           ))}
         </Pie>
         <Tooltip />
-        <Legend layout="vertical" verticalAlign="start" align="left" />
+        <Legend layout="vertical" verticalAlign="start" align="right" />
       </PieChart>
     </div>
   );

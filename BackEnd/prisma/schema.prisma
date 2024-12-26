@@ -25,17 +25,19 @@ model Medicine {
   id           Int      @id @default(autoincrement())
   name         String
   type         String
-  quantity     Int
+  packQuantity     Int  @default(0)
   manufacturer String
   expiryDate   DateTime
   batchNumber  String
-  pricePerStrip Float?
+  pricePerStrip Float
   pricePerPack Float?
-  pricePerUnit Float? 
+  stripsPerPack Int    @default(0)
+  pricePerUnit   Float?  // Add this field if necessary
+  cost         Float  @default(0)   // New field to store the cost of the medicine
   description  String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-   sales       Sale[]   // Define the opposite relation field
+  sales        Sale[]   // Define the opposite relation field
 }
 
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AdminNavBar from "./AdminNavBar";
 import axios from "axios";
 
@@ -6,16 +6,30 @@ function AddMedicine() {
   const [formData, setFormData] = useState({
     name: "",
     type: "",
-    quantity: "",
+    packQuantity: "",
     manufacturer: "",
     expiryDate: "",
     batchNumber: "",
     pricePerStrip: "",
-    pricePerPack: "",
+    stripsPerPack: "",
     pricePerUnit: "",
+    cost: "", // New field for purchasing cost
     description: "",
   });
 
+  console.log(formData);
+
+  useEffect(() => {
+    const calculateCost = () => {
+      const { pricePerStrip, stripsPerPack, packQuantity } = formData;
+      if (pricePerStrip && stripsPerPack && packQuantity) {
+        const cost = pricePerStrip * stripsPerPack * packQuantity;
+        setFormData((prevData) => ({ ...prevData, cost }));
+      }
+    };
+
+    calculateCost();
+  }, [formData.pricePerStrip, formData.stripsPerPack, formData.packQuantity]);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -40,6 +54,7 @@ function AddMedicine() {
         pricePerStrip: "",
         pricePerPack: "",
         priceUnit: "",
+        cost: "",
         description: "",
       });
     } catch (error) {
@@ -123,14 +138,14 @@ function AddMedicine() {
                 className="block text-gray-600 font-medium mb-2"
               >
                 {formData.type === "Tablet"
-                  ? "Price Per Strip and Per Pack"
+                  ? "Price Per Strip"
                   : `Price (${
                       formData.type === "Syrup" ? "Per Bottle" : "Per Item"
                     })`}
               </label>
 
               {formData.type === "Tablet" ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-1 gap-4">
                   {/* Price Per Strip */}
                   <input
                     type="number"
@@ -149,18 +164,6 @@ function AddMedicine() {
                   />
 
                   {/* Price Per Pack */}
-                  <input
-                    type="number"
-                    id="pricePerPack"
-                    name="pricePerPack"
-                    placeholder="Enter price per pack"
-                    value={formData.pricePerPack || ""}
-                    onChange={(e) =>
-                      setFormData({ ...formData, pricePerPack: e.target.value })
-                    }
-                    className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-[#2D9CDB]"
-                    required
-                  />
                 </div>
               ) : (
                 // Price for other types
@@ -184,23 +187,57 @@ function AddMedicine() {
             </div>
           )}
 
-          {/* Quantity */}
           <div>
             <label
-              htmlFor="quantity"
+              htmlFor="stripsPerPack"
               className="block text-gray-600 font-medium mb-2"
             >
-              Quantity
+              Strips Per Pack
             </label>
             <input
               type="number"
-              id="quantity"
-              name="quantity"
+              id="stripsPerPack"
+              name="stripsPerPack"
+              value={formData.stripsPerPack}
+              onChange={handleChange}
+              className="w-full border border-gray-300 p-3 rounded"
+            />
+          </div>
+
+          {/* Quantity */}
+          <div>
+            <label
+              htmlFor="packQuantity"
+              className="block text-gray-600 font-medium mb-2"
+            >
+              Pack Quantity
+            </label>
+            <input
+              type="number"
+              id="packQuantity"
+              name="packQuantity"
               placeholder="Enter quantity"
-              value={formData.quantity}
+              value={formData.packQuantity}
               onChange={handleChange}
               className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-[#2D9CDB]"
               required
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="cost"
+              className="block text-gray-600 font-medium mb-2"
+            >
+              Calculated Cost
+            </label>
+            <input
+              type="text"
+              id="cost"
+              name="cost"
+              placeholder="Calculated cost will appear here"
+              value={formData.cost}
+              readOnly
+              className="w-full border border-gray-300 p-3 rounded bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -260,6 +297,22 @@ function AddMedicine() {
               className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-[#2D9CDB]"
             />
           </div>
+          {/* <div>
+            <label
+              htmlFor="stripsPerPack"
+              className="block text-gray-600 font-medium mb-2"
+            >
+              Strips Per Pack
+            </label>
+            <input
+              type="number"
+              id="stripsPerPack"
+              name="stripsPerPack"
+              value={formData.stripsPerPack}
+              onChange={handleChange}
+              className="w-full border border-gray-300 p-3 rounded"
+            />
+          </div> */}
 
           {/* Description */}
           <div className="col-span-2">

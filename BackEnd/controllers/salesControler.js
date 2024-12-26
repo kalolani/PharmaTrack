@@ -47,4 +47,50 @@ const salesHistory = async (req, res) => {
   }
 };
 
-export { recordSale, salesHistory };
+//sales repotr
+const salesReport = async (req, res) => {
+  try {
+    // Fetch all medicines
+    const medicines = await prisma.medicine.findMany({
+      include: {
+        sales: true, // Include related sales
+      },
+    });
+
+    // Compute additional fields for each medicine
+    const salesReport = medicines.map((medicine) => {
+      // Calculate total revenue and units sold
+      const totalRevenue = medicine.sales.reduce(
+        (sum, sale) => sum + sale.totalPrice,
+        0
+      );
+      const unitsSold = medicine.sales.reduce(
+        (sum, sale) => sum + sale.quantity,
+        0
+      );
+
+      // Calculate profit margin
+      const profitMargin =
+        totalRevenue > 0
+          ? ((totalRevenue - medicine.cost) / totalRevenue) * 100
+          : 0;
+
+      return {
+        id: medicine.id,
+        name: medicine.name,
+        type: medicine.type,
+        unitsSold,
+        cost: medicine.cost,
+        totalRevenue,
+        profitMargin: profitMargin.toFixed(2), // Keep two decimal places
+      };
+    });
+
+    res.json(salesReport);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch sales report" });
+  }
+};
+
+export { recordSale, salesHistory, salesReport };

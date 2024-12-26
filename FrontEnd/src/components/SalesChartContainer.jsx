@@ -3,9 +3,10 @@ import StockTurnoverBarChart from "./StockTurnoverBarChart";
 
 function SalesChartContainer() {
   const turnoverData = [
-    { product: "Paracetamol", turnoverRate: 10 },
-    { product: "Vitamin C", turnoverRate: 2 },
-    { product: "Antibiotic XYZ", turnoverRate: 0.5 },
+    { category: "Antibiotics", turnover: 15 },
+    { category: "Painkillers", turnover: 10 },
+    { category: "Supplements", turnover: 8 },
+    { category: "Cough Syrups", turnover: 12 },
   ];
 
   const products = [
@@ -22,12 +23,12 @@ function SalesChartContainer() {
   const lowSellers = sortedProducts.slice(-3); // Bottom 3 sellers
 
   return (
-    <div className="grid grid-cols-2 items-center gap-32 mt-10 px-2 rounded-md m-auto">
-      <div className="relative flex w-[30%] rounded-md">
+    <div className="grid grid-cols-2 items-center gap-32 mt-4 rounded-md w-full m-auto">
+      <div className="relative flex rounded-md ">
         <PieChartComponent data={topSellers} title="Top Sellers" />
         <PieChartComponent data={lowSellers} title="Low Sellers" />
       </div>
-      <div className="relative ml-6 mr-4 w-full bg-white rounded-md">
+      <div className="relative ml-6 mr-4 w-[95%] bg-white rounded-md">
         <StockTurnoverBarChart data={turnoverData} />
       </div>
     </div>
