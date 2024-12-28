@@ -67,10 +67,12 @@ model Sale {
   medicineId    Int
   quantity      Int
   unitType      String
-  sellingPrice  Float    @default(0)
+  sellingPrice  Float    @default(0)   // Price per unit (e.g., strip, pack, bottle, unit)
+  totalPrice    Float    @default(0)   // The total price for the sale, calculated based on quantity
   createdAt     DateTime @default(now())
 
   // Define the relation here, make sure the relation name matches the one in Medicine model
   medicine      Medicine @relation("MedicineSales", fields: [medicineId], references: [id])
 }
+
 

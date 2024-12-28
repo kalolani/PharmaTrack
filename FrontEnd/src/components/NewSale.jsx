@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import AdminNavBar from "./AdminNavBar";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 function RecordSale() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -8,8 +9,10 @@ function RecordSale() {
   const [selectedItem, setSelectedItem] = useState(null);
   const [unitType, setUnitType] = useState("");
   const [quantity, setQuantity] = useState("");
-  const [sellingPrice, setsellingPrice] = useState("");
+  const [totalPrice, setTotalPrice] = useState("");
   const [notFound, setNotFound] = useState(false);
+  console.log(totalPrice);
+  console.log(filteredItems);
 
   const fetchMedicines = async (term) => {
     try {
@@ -43,12 +46,13 @@ function RecordSale() {
     setNotFound(false);
     setUnitType("");
     setQuantity("");
-    setsellingPrice("");
+    setTotalPrice("");
   };
 
   const handleUnitTypeChange = (e) => {
     setUnitType(e.target.value);
     setQuantity("");
+    setTotalPrice("");
   };
 
   const handleQuantityChange = (e) => {
@@ -58,12 +62,21 @@ function RecordSale() {
       return;
     }
     setQuantity(value);
+
+    // Automatically calculate total price based on unit type
+    if (unitType && selectedItem) {
+      let price = 0;
+      if (unitType === "strip") price = selectedItem.sellingPriceStrip;
+      else if (unitType === "pack") price = selectedItem.sellingPricePack;
+      else if (unitType === "bottle") price = selectedItem.sellingPriceBottle;
+      else if (unitType === "unit") price = selectedItem.sellingPriceCosmetics;
+
+      setTotalPrice(price * value);
+    }
   };
 
-  const handlePriceChange = (e) => setsellingPrice(e.target.value);
-
   const handleSaleSubmit = async () => {
-    if (!selectedItem || !unitType || !quantity || !sellingPrice) {
+    if (!selectedItem || !unitType || !quantity || !totalPrice) {
       alert("Please fill in all required fields.");
       return;
     }
@@ -72,24 +85,33 @@ function RecordSale() {
       const saleData = {
         medicineId: selectedItem.id,
         medicineName: selectedItem.name,
-        quantity:
-          unitType === "strip"
-            ? { stripQuantity: quantity }
-            : { packQuantity: quantity },
+        quantity,
         unitType,
-        sellingPrice: parseFloat(sellingPrice),
+        totalPrice,
       };
 
-      await axios.post("http://localhost:3000/api/sales/record-sale", saleData);
-      alert("Sale recorded successfully!");
+      console.log(saleData);
+
+      const response = await axios.post(
+        "http://localhost:3000/api/sales/record-sale",
+        saleData
+      );
+      if (response.status === 201) {
+        toast.success("Sale recorded successfully!");
+      }
       setSearchTerm("");
       setSelectedItem(null);
       setUnitType("");
       setQuantity("");
-      setsellingPrice("");
+      setTotalPrice("");
     } catch (error) {
-      console.error("Error recording sale:", error);
-      alert("Failed to record sale. Please try again.");
+      if (error.response && error.response.status === 400) {
+        // Check if the error message is about insufficient stock
+        const errorMessage = error.response.data.message;
+        toast.error(errorMessage);
+      } else {
+        toast.error("An unexpected error occurred. Please try again.");
+      }
     }
   };
 
@@ -137,11 +159,17 @@ function RecordSale() {
               className="w-full border p-2 rounded focus:outline-2 outline-[#2D9CDB]"
             >
               <option value="">Select Unit</option>
-              {selectedItem.pricePerStrip && (
-                <option value="strip">Per Strip</option>
+              {selectedItem.type === "tablet" && (
+                <>
+                  <option value="strip">Strip</option>
+                  <option value="pack">Pack</option>
+                </>
               )}
-              {selectedItem.pricePerPack && (
-                <option value="pack">Per Pack</option>
+              {selectedItem.type === "syrup" && (
+                <option value="bottle">Bottle</option>
+              )}
+              {["cosmetics", "other"].includes(selectedItem.type) && (
+                <option value="unit">Unit</option>
               )}
             </select>
           )}
@@ -156,13 +184,13 @@ function RecordSale() {
             disabled={!unitType}
           />
 
-          {/* Total Price Input */}
+          {/* Total Price Display */}
           <input
             type="text"
             placeholder="Total Price"
-            value={sellingPrice}
-            onChange={handlePriceChange}
-            className="w-full border p-2 rounded focus:outline-2 outline-[#2D9CDB]"
+            value={totalPrice}
+            readOnly
+            className="w-full border p-2 rounded bg-gray-100"
           />
 
           {/* Submit Button */}

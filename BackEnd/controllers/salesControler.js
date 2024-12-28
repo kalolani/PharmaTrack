@@ -3,35 +3,78 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const prisma = new PrismaClient();
 
 //add new sale
+
 const recordSale = async (req, res) => {
   const { medicineId, medicineName, quantity, unitType, totalPrice } = req.body;
-  if (!medicineId || !quantity || !unitType || !totalPrice) {
+
+  // Validate input data
+  if (!medicineId || !medicineName || !quantity || !unitType || !totalPrice) {
     return res.status(400).json({ message: "All fields are required" });
   }
+
   try {
-    // Record the sale in the database
+    // Fetch the current medicine data from the database
+    const medicine = await prisma.medicine.findUnique({
+      where: { id: medicineId },
+    });
+
+    // Check if the medicine exists
+    if (!medicine) {
+      return res.status(404).json({ message: "Medicine not found" });
+    }
+
+    // Determine the available quantity for the specified unitType
+    let availableQuantity;
+    switch (unitType) {
+      case "strip":
+        availableQuantity = medicine.stripQuantity || 0;
+        break;
+      case "pack":
+        availableQuantity = medicine.packQuantity || 0;
+        break;
+      case "unit":
+        availableQuantity = medicine.unitQuantity || 0;
+        break;
+      case "bottle":
+        availableQuantity = medicine.bottleQuantity || 0;
+        break;
+      default:
+        return res.status(400).json({ message: "Invalid unit type" });
+    }
+
+    // Check if the available quantity is sufficient
+    if (quantity > availableQuantity) {
+      return res.status(400).json({
+        message: `Not enough quantity available. Only ${availableQuantity} ${unitType}(s) left in stock.`,
+      });
+    }
+
+    // Register the sale in the database
     const sale = await prisma.sale.create({
       data: {
         medicineName,
-        medicineId,
+        medicine: { connect: { id: medicineId } },
         quantity,
         unitType,
+        sellingPrice: totalPrice / quantity, // Calculate unit price
         totalPrice,
       },
     });
 
-    // Optionally, update the medicine quantity in stock
+    // Update the available quantity in the medicine database
+    const decrementField = `${unitType}Quantity`;
     await prisma.medicine.update({
       where: { id: medicineId },
       data: {
-        quantity: {
-          decrement: quantity, // Decrease the stock by the quantity sold
+        [decrementField]: {
+          decrement: quantity,
         },
       },
     });
 
-    res.status(201).json(sale);
+    res.status(201).json({ message: "Sale recorded successfully", sale });
   } catch (error) {
+    console.error("Error recording sale:", error);
     res.status(500).json({ message: "Server error", error });
   }
 };

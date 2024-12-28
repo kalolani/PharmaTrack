@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import userRouter from "./routes/userRoutes.js";
 import cors from "cors";
 import inventoryRouter from "./routes/inventoryRoute.js";
-import { recordSale } from "./controllers/salesControler.js";
+
 import salesRouter from "./routes/salesRoute.js";
 // Load environment variables from .env
 dotenv.config();
