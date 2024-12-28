@@ -150,11 +150,35 @@ const deleteMedicine = async (req, res) => {
 
 const lowStock = async (req, res) => {
   try {
+    // Fetch medicines with conditional low stock criteria based on type
     const lowStockMedicines = await prisma.medicine.findMany({
       where: {
-        quantity: {
-          lt: 5, // Fetch medicines with quantity less than 5
-        },
+        OR: [
+          {
+            type: "tablet",
+            packQuantity: {
+              lt: 5, // Low stock threshold for tablets
+            },
+          },
+          {
+            type: "syrup",
+            bottleQuantity: {
+              lt: 5, // Low stock threshold for syrups
+            },
+          },
+          {
+            type: "cosmetics",
+            unitQuantity: {
+              lt: 5, // Low stock threshold for cosmetics
+            },
+          },
+          {
+            type: "other",
+            unitQuantity: {
+              lt: 5, // Low stock threshold for other types
+            },
+          },
+        ],
       },
     });
 
@@ -163,6 +187,7 @@ const lowStock = async (req, res) => {
     res.status(500).json({ message: "Server error", error });
   }
 };
+
 const expiredMedicines = async (req, res) => {
   try {
     const today = new Date();
