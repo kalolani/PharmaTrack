@@ -22,22 +22,36 @@ model User {
 }
 
 model Medicine {
-  id                  Int       @id @default(autoincrement())
-  name                String
-  type                MedicineType
-  costPerStrip        Float?    // Applicable only for tablets
-  costPerPack         Float?    // Applicable only for tablets
-  cost                Float?    // Applicable for other medicine types
-  percentageStrip     Float?    // Markup percentage for strip selling price
-  percentagePack      Float?    // Markup percentage for pack selling price
-  sellingPriceStrip   Float?    // Selling price per strip (calculated)
-  sellingPricePack    Float?    // Selling price per pack (calculated)
-  sellingPrice        Float?    // Selling price for other medicine types (calculated)
-  expiryDate          DateTime
-  batchNumber         String
-  manufacturer        String
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
+  id                    Int      @id @default(autoincrement())
+  name                  String
+  type                  String   // Can be "tablet", etc.
+  costPerStrip          Float?
+  costPerPack           Float?
+  expiryDate            DateTime
+  batchNumber           String
+  manufacturer          String
+  percentageStrip       Float?
+  percentagePack        Float?
+  percentageBottle      Float?
+  percentageCosmetics   Float?
+  percentageUnit        Float?
+  sellingPriceBottle    Float?
+  sellingPriceCosmetics Float?
+  sellingPriceStrip     Float?
+  sellingPricePack      Float?
+  packQuantity          Int?
+  stripQuantity         Int?
+  stripPerPack          Int?
+  unitQuantity          Int?
+  bottleQuantity        Int?
+  bottleCost            Float?
+  cosmeticsCost         Float?
+
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  // Define the relation here, making sure the name matches the relation name in Sale model
+  sales       Sale[]   @relation("MedicineSales") 
 }
 
 enum MedicineType {
@@ -47,18 +61,16 @@ enum MedicineType {
   others
 }
 
-
-
-
 model Sale {
-  id          Int      @id @default(autoincrement())
-  medicineName String  @default("Unknown") // Set default value here
-  medicineId  Int
-  quantity    Int
-  unitType    String
-  sellingPrice  Float   @default(0)
-  createdAt   DateTime @default(now())
+  id            Int      @id @default(autoincrement())
+  medicineName  String   @default("Unknown") // Set default value here
+  medicineId    Int
+  quantity      Int
+  unitType      String
+  sellingPrice  Float    @default(0)
+  createdAt     DateTime @default(now())
 
-  medicine    Medicine @relation(fields: [medicineId], references: [id])
+  // Define the relation here, make sure the relation name matches the one in Medicine model
+  medicine      Medicine @relation("MedicineSales", fields: [medicineId], references: [id])
 }
 

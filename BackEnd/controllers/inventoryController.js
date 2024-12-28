@@ -2,79 +2,77 @@ import { PrismaClient } from "@prisma/client";
 const JWT_SECRET = process.env.JWT_SECRET;
 const prisma = new PrismaClient();
 
-// POST route to add a new medicine
+// Controller function to register medicine details
 const addMedicine = async (req, res) => {
-  const {
-    name,
-    type,
-    packQuantity,
-    manufacturer,
-    expiryDate,
-    batchNumber,
-    pricePerStrip,
-    stripsPerPack,
-    pricePerUnit,
-    cost,
-    description,
-  } = req.body;
-
   try {
-    // Check if the medicine already exists in the database by name
-    const existingMedicine = await prisma.medicine.findUnique({
-      where: { name },
-    });
+    const {
+      name,
+      type,
+      costPerStrip,
+      costPerPack,
+      expiryDate,
+      batchNumber,
+      manufacturer,
+      percentageStrip,
+      percentagePack,
+      percentageBottle,
+      percentageCosmetics,
+      percentageUnit,
+      sellingPriceBottle,
+      sellingPriceCosmetics,
+      sellingPriceStrip,
+      sellingPricePack,
+      packQuantity,
+      stripQuantity,
+      stripPerPack,
+      unitQuantity,
+      bottleQuantity,
+      bottleCost,
+      cosmeticsCost,
+    } = req.body;
 
-    // If medicine exists, update the stock
-    if (existingMedicine) {
-      const updatedMedicine = await prisma.medicine.update({
-        where: { id: existingMedicine.id },
-        data: {
-          packQuantity: existingMedicine.packQuantity + packQuantity, // Update stock quantity
-          updatedAt: new Date(), // Update the timestamp for the last modification
-        },
-      });
-
-      return res.status(200).json({
-        message: "Medicine stock updated successfully",
-        data: updatedMedicine,
-      });
+    // Validate the input data (example: ensure all required fields are provided)
+    if (!name || !type || !expiryDate || !batchNumber || !manufacturer) {
+      return res
+        .status(400)
+        .json({ message: "Some required fields are missing" });
     }
 
-    // If medicine doesn't exist, create a new medicine entry
-    let pricePerPackCalculated = pricePerStrip * stripsPerPack; // Calculate price per pack
-    let costCalculated = pricePerStrip * stripsPerPack * packQuantity;
-
-    if (pricePerUnit) {
-      costCalculated = pricePerUnit * packQuantity; // Recalculate cost if price per unit is provided
-    }
-
+    // Create a new medicine detail record
     const newMedicine = await prisma.medicine.create({
       data: {
         name,
         type,
-        packQuantity,
-        manufacturer,
-        expiryDate: new Date(expiryDate), // Ensure expiry date is a Date object
+        costPerStrip: parseFloat(costPerStrip),
+        costPerPack: parseFloat(costPerPack),
+        expiryDate: new Date(expiryDate),
         batchNumber,
-        pricePerStrip: parseFloat(pricePerStrip),
-        stripsPerPack: parseInt(stripsPerPack),
-        pricePerPack: pricePerPackCalculated,
-        pricePerUnit: pricePerUnit ? parseFloat(pricePerUnit) : null,
-        cost: costCalculated,
-        description,
+        manufacturer,
+        percentageStrip: parseFloat(percentageStrip),
+        percentagePack: parseFloat(percentagePack),
+        percentageBottle: parseFloat(percentageBottle),
+        percentageCosmetics: parseFloat(percentageCosmetics),
+        percentageUnit: parseFloat(percentageUnit),
+        sellingPriceBottle: parseFloat(sellingPriceBottle),
+        sellingPriceCosmetics: parseFloat(sellingPriceCosmetics),
+        sellingPriceStrip: parseFloat(sellingPriceStrip),
+        sellingPricePack: parseFloat(sellingPricePack),
+        packQuantity: parseInt(packQuantity),
+        stripQuantity: parseInt(stripQuantity),
+        stripPerPack: parseInt(stripPerPack),
+        unitQuantity: parseInt(unitQuantity),
+        bottleQuantity: parseInt(bottleQuantity),
+        bottleCost: parseFloat(bottleCost),
+        cosmeticsCost: parseFloat(cosmeticsCost),
       },
     });
 
-    return res.status(201).json({
-      message: "Medicine added successfully",
-      data: newMedicine,
-    });
+    return res.status(201).json(newMedicine);
   } catch (error) {
-    console.error("Error adding or updating medicine:", error);
-    return res.status(500).json({
-      message: "Error processing the medicine",
-      error: error.message,
-    });
+    console.error("Error registering medicine detail:", error);
+    return res
+      .status(500)
+      .json({ message: "Server error, please try again later" });
   }
 };
 
