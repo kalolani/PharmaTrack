@@ -22,25 +22,31 @@ model User {
 }
 
 model Medicine {
-  id             Int      @id @default(autoincrement())
-  name           String
-  type           MedicineType
-  cost           Float
-  expiryDate     DateTime
-  batchNumber    String
-  manufacturer   String
-  percentage     Float
-  sellingPrice   Float
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id                  Int       @id @default(autoincrement())
+  name                String
+  type                MedicineType
+  costPerStrip        Float?    // Applicable only for tablets
+  costPerPack         Float?    // Applicable only for tablets
+  cost                Float?    // Applicable for other medicine types
+  percentageStrip     Float?    // Markup percentage for strip selling price
+  percentagePack      Float?    // Markup percentage for pack selling price
+  sellingPriceStrip   Float?    // Selling price per strip (calculated)
+  sellingPricePack    Float?    // Selling price per pack (calculated)
+  sellingPrice        Float?    // Selling price for other medicine types (calculated)
+  expiryDate          DateTime
+  batchNumber         String
+  manufacturer        String
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
 }
 
 enum MedicineType {
-  TABLET
-  SYRUP
-  COSMETICS
-  OTHERS
+  tablet
+  syrup
+  cosmetics
+  others
 }
+
 
 
 
