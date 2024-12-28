@@ -1,24 +1,97 @@
+// Import required modules
 import { useState } from "react";
 import AdminNavBar from "./AdminNavBar";
 import axios from "axios";
-
-function AddMedicine() {
-  const [formData, setFormData] = useState({
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+const AddMedicine = () => {
+  const [medicineDetails, setMedicineDetails] = useState({
     name: "",
-    type: "",
-    quantity: "",
-    manufacturer: "",
+    type: "tablet",
+    costPerStrip: "",
+    costPerPack: "",
     expiryDate: "",
     batchNumber: "",
-    pricePerStrip: "",
-    pricePerPack: "",
-    pricePerUnit: "",
-    description: "",
+    manufacturer: "",
+    percentageStrip: "",
+    percentagePack: "",
+    percentageBottle: "",
+    percentageCosmetics: "",
+    percetageUnit: "",
+    sellingPriceBottle: "",
+    sellingPriceCosmetics: "",
+    sellingPriceStrip: "",
+    sellingPricePack: "",
+    packQuantity: "",
+    stripQuantity: "",
+    stripPerPack: "",
+    unitQuantity: "",
+    bottleQuantity: "",
+    bottleCost: "",
+    cosmeticsCost: "",
   });
+  console.log(medicineDetails);
 
-  const handleChange = (e) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setMedicineDetails((prevDetails) => {
+      const updatedDetails = {
+        ...prevDetails,
+        [name]: value,
+      };
+
+      // Calculate strip quantity if relevant inputs are updated
+      if (name === "packQuantity" || name === "stripPerPack") {
+        const packQuantity = parseInt(updatedDetails.packQuantity) || 0;
+        const stripPerPack = parseInt(updatedDetails.stripPerPack) || 0;
+        updatedDetails.stripQuantity = packQuantity * stripPerPack;
+      }
+
+      return updatedDetails;
+    });
+  };
+
+  const calculateSellingPrices = () => {
+    const costPerStrip = parseFloat(medicineDetails.costPerStrip);
+    const costPerPack = parseFloat(medicineDetails.costPerPack);
+    const percentageStrip = parseFloat(medicineDetails.percentageStrip);
+    const percentagePack = parseFloat(medicineDetails.percentagePack);
+    const bottleCost = parseFloat(medicineDetails.bottleCost);
+    const percentageBottle = parseFloat(medicineDetails.percentageBottle);
+    const cosmeticsCost = parseFloat(medicineDetails.cosmeticsCost);
+    const percentageCosmetics = parseFloat(medicineDetails.percentageCosmetics);
+
+    let sellingPriceStrip = "";
+    let sellingPricePack = "";
+    let sellingPriceBottle = "";
+    let sellingPriceCosmetics = "";
+
+    if (!isNaN(costPerStrip) && !isNaN(percentageStrip)) {
+      sellingPriceStrip = costPerStrip + (costPerStrip * percentageStrip) / 100;
+    }
+
+    if (!isNaN(costPerPack) && !isNaN(percentagePack)) {
+      sellingPricePack = costPerPack + (costPerPack * percentagePack) / 100;
+    }
+    if (!isNaN(bottleCost) && !isNaN(percentageBottle)) {
+      sellingPriceBottle = bottleCost + (bottleCost * percentageBottle) / 100;
+    }
+    if (!isNaN(cosmeticsCost) && !isNaN(percentageCosmetics)) {
+      sellingPriceCosmetics =
+        cosmeticsCost + (cosmeticsCost * percentageCosmetics) / 100;
+    }
+
+    setMedicineDetails((prevDetails) => ({
+      ...prevDetails,
+      sellingPriceStrip: sellingPriceStrip ? sellingPriceStrip.toFixed(2) : "",
+      sellingPricePack: sellingPricePack ? sellingPricePack.toFixed(2) : "",
+      sellingPriceBottle: sellingPriceBottle
+        ? sellingPriceBottle.toFixed(2)
+        : "",
+      sellingPriceCosmetics: sellingPriceCosmetics
+        ? sellingPriceCosmetics.toFixed(2)
+        : "",
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -26,48 +99,69 @@ function AddMedicine() {
     try {
       const response = await axios.post(
         "http://localhost:3000/api/inventory/add-medicine",
-        formData
+        medicineDetails
       );
-      console.log("Medicine added successfully:", response.data);
-      alert("Medicine added successfully!");
-      setFormData({
-        name: "",
-        type: "",
-        quantity: "",
-        manufacturer: "",
-        expiryDate: "",
-        batchNumber: "",
-        pricePerStrip: "",
-        pricePerPack: "",
-        priceUnit: "",
-        description: "",
-      });
+      console.log("Medicine registered successfully:", response.data);
+      if (response.status === 201) {
+        toast.success("Medicine added successfully!");
+        setMedicineDetails({
+          name: "",
+          type: "tablet",
+          costPerStrip: "",
+          costPerPack: "",
+          expiryDate: "",
+          batchNumber: "",
+          manufacturer: "",
+          percentageStrip: "",
+          percentagePack: "",
+          percentageBottle: "",
+          percentageCosmetics: "",
+          percentageUnit: "",
+          sellingPriceBottle: "",
+          sellingPriceCosmetics: "",
+          sellingPriceStrip: "",
+          sellingPricePack: "",
+          packQuantity: "",
+          stripQuantity: "",
+          stripPerPack: "",
+          unitQuantity: "",
+          bottleQuantity: "",
+          bottleCost: "",
+          cosmeticsCost: "",
+        });
+        console.log("Medicine registered successfully:", response.data);
+      } else {
+        // If status is not what you expect
+        toast.warning(
+          "Unexpected response from the server. Please check again."
+        );
+        console.warn("Unexpected status:", response.status);
+      }
     } catch (error) {
+      toast.error(
+        `Error adding medicine: ${
+          error.response?.data?.message || error.message
+        }`
+      );
       console.error(
-        "Error adding medicine:",
+        "Error registering medicine:",
         error.response?.data || error.message
       );
-      alert("Failed to add medicine. Please try again.");
     }
   };
-  return (
-    <div className="pt-[20px] pb-[50px] px-[20px] w-[85%] h-[100%] z-[10] text-[rgb(249 250 251)] font-Poppins bg-[#F3F2F7] min-h-screen">
-      <AdminNavBar />
 
-      <div className="relative max-w-4xl mx-auto mt-10 bg-white shadow-md rounded-lg p-8">
-        <h2 className="font-Poppins text-xl font-semibold text-gray-800 mb-8">
-          Add New Medicine
-        </h2>
-        <div className="absolute left-0 top-[10%] w-full h-[2px] bg-gray-300"></div>
-        <form
-          onSubmit={handleSubmit}
-          className="grid grid-cols-1 sm:grid-cols-2 gap-6"
-        >
-          {/* Medicine Name */}
-          <div className="col-span-2 sm:col-span-1">
+  return (
+    <div className="p-6 w-[80%] mx-auto bg-gray-100  space-y-4">
+      <AdminNavBar />
+      <div className="p-6 w-[50%] mt-32 mx-auto bg-white rounded-md shadow-md">
+        <h1 className="text-xl font-bold mb-4 text-blue-500 font-Poppins">
+          Add Medicine
+        </h1>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
             <label
               htmlFor="name"
-              className="block text-gray-600 font-medium mb-2"
+              className="block text-sm font-medium text-gray-700"
             >
               Medicine Name
             </label>
@@ -75,10 +169,9 @@ function AddMedicine() {
               type="text"
               id="name"
               name="name"
-              placeholder="Enter medicine name"
-              value={formData.name}
-              onChange={handleChange}
-              className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-[#2D9CDB]"
+              value={medicineDetails.name}
+              onChange={handleInputChange}
+              className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
@@ -86,148 +179,340 @@ function AddMedicine() {
           <div>
             <label
               htmlFor="type"
-              className="block text-gray-600 font-medium mb-2"
+              className="block text-sm font-medium text-gray-700"
             >
               Medicine Type
             </label>
             <select
               id="type"
               name="type"
-              value={formData.type}
-              onChange={(e) => {
-                const selectedType = e.target.value;
-                setFormData({
-                  ...formData,
-                  type: selectedType,
-                  priceUnit: selectedType === "Tablet" ? "" : "Per Item", // Reset or set default unit
-                  pricePerUnit: "", // Clear the price when type changes
-                });
-              }}
-              className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-[#2D9CDB]"
-              required
+              value={medicineDetails.type}
+              onChange={handleInputChange}
+              className="mt-1 p-2 border border-gray-300 rounded-md w-full"
             >
-              <option value="">Select Type</option>
-              <option value="Tablet">Tablet</option>
-              <option value="Syrup">Syrup</option>
-              <option value="Cosmetics">Cosmetics</option>
-              <option value="Other">Other</option>
+              <option value="tablet">Tablet</option>
+              <option value="syrup">Syrup</option>
+              <option value="cosmetics">Cosmetics</option>
+              <option value="others">Others</option>
             </select>
           </div>
 
-          {/* Price and Unit Fields */}
-          {/* Price and Unit Fields */}
-          {formData.type && (
-            <div>
-              <label
-                htmlFor="pricePerUnit"
-                className="block text-gray-600 font-medium mb-2"
-              >
-                {formData.type === "Tablet"
-                  ? "Price Per Strip and Per Pack"
-                  : `Price (${
-                      formData.type === "Syrup" ? "Per Bottle" : "Per Item"
-                    })`}
-              </label>
-
-              {formData.type === "Tablet" ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {/* Price Per Strip */}
-                  <input
-                    type="number"
-                    id="pricePerStrip"
-                    name="pricePerStrip"
-                    placeholder="Enter price per strip"
-                    value={formData.pricePerStrip || ""}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        pricePerStrip: e.target.value,
-                      })
-                    }
-                    className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-[#2D9CDB]"
-                    required
-                  />
-
-                  {/* Price Per Pack */}
-                  <input
-                    type="number"
-                    id="pricePerPack"
-                    name="pricePerPack"
-                    placeholder="Enter price per pack"
-                    value={formData.pricePerPack || ""}
-                    onChange={(e) =>
-                      setFormData({ ...formData, pricePerPack: e.target.value })
-                    }
-                    className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-[#2D9CDB]"
-                    required
-                  />
-                </div>
-              ) : (
-                // Price for other types
+          {medicineDetails.type === "tablet" && (
+            <>
+              <div>
+                <label
+                  htmlFor="packQuantity"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  pack quantity
+                </label>
                 <input
-                  type="number"
-                  id="pricePerUnit"
-                  name="pricePerUnit"
-                  placeholder={`Enter price ${
-                    formData.type === "Syrup"
-                      ? "(e.g., per bottle)"
-                      : "(e.g., per item)"
-                  }`}
-                  value={formData.pricePerUnit || ""}
-                  onChange={(e) =>
-                    setFormData({ ...formData, pricePerUnit: e.target.value })
-                  }
-                  className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-[#2D9CDB]"
+                  type="packQuantity"
+                  id="packQuantity"
+                  name="packQuantity"
+                  value={medicineDetails.packQuantity}
+                  onChange={handleInputChange}
+                  className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
-              )}
-            </div>
+              </div>
+              <div>
+                <label
+                  htmlFor="stripPerPack"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  strip per pack
+                </label>
+                <input
+                  type="stripPerPack"
+                  id="stripPerPack"
+                  name="stripPerPack"
+                  value={medicineDetails.stripPerPack}
+                  onChange={handleInputChange}
+                  className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="stripQuantity"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  strip quantity
+                </label>
+                <input
+                  type="stripQuantity"
+                  id="stripQuantity"
+                  name="stripQuantity"
+                  value={medicineDetails.stripQuantity}
+                  onChange={handleInputChange}
+                  className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="costPerStrip"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Cost per Strip
+                </label>
+                <input
+                  type="number"
+                  id="costPerStrip"
+                  name="costPerStrip"
+                  value={medicineDetails.costPerStrip}
+                  onChange={handleInputChange}
+                  className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="costPerPack"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Cost per Pack
+                </label>
+                <input
+                  type="number"
+                  id="costPerPack"
+                  name="costPerPack"
+                  value={medicineDetails.costPerPack}
+                  onChange={handleInputChange}
+                  className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="percentageStrip"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Markup Percentage for Strip Selling Price
+                </label>
+                <input
+                  type="number"
+                  id="percentageStrip"
+                  name="percentageStrip"
+                  value={medicineDetails.percentageStrip}
+                  onChange={handleInputChange}
+                  onBlur={calculateSellingPrices}
+                  className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="percentagePack"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Markup Percentage for Pack Selling Price
+                </label>
+                <input
+                  type="number"
+                  id="percentagePack"
+                  name="percentagePack"
+                  value={medicineDetails.percentagePack}
+                  onChange={handleInputChange}
+                  onBlur={calculateSellingPrices}
+                  className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="sellingPriceStrip"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Selling Price per Strip
+                </label>
+                <input
+                  type="text"
+                  id="sellingPriceStrip"
+                  name="sellingPriceStrip"
+                  value={medicineDetails.sellingPriceStrip}
+                  readOnly
+                  className="mt-1 p-2 border border-gray-300 rounded-md w-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="sellingPricePack"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Selling Price per Pack
+                </label>
+                <input
+                  type="text"
+                  id="sellingPricePack"
+                  name="sellingPricePack"
+                  value={medicineDetails.sellingPricePack}
+                  readOnly
+                  className="mt-1 p-2 border border-gray-300 rounded-md w-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </>
           )}
 
-          {/* Quantity */}
-          <div>
-            <label
-              htmlFor="quantity"
-              className="block text-gray-600 font-medium mb-2"
-            >
-              Quantity
-            </label>
-            <input
-              type="number"
-              id="quantity"
-              name="quantity"
-              placeholder="Enter quantity"
-              value={formData.quantity}
-              onChange={handleChange}
-              className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-[#2D9CDB]"
-              required
-            />
-          </div>
+          {medicineDetails.type === "syrup" && (
+            <>
+              <div>
+                <label
+                  htmlFor="bottleQuantity"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  bottle quantity
+                </label>
+                <input
+                  type="number"
+                  id="bottleQuantity"
+                  name="bottleQuantity"
+                  value={medicineDetails.bottleQuantity}
+                  onChange={handleInputChange}
+                  className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="bottleCost"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Cost (per bottle)
+                </label>
+                <input
+                  type="number"
+                  id="bottleCost"
+                  name="bottleCost"
+                  value={medicineDetails.bottleCost}
+                  onChange={handleInputChange}
+                  className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
 
-          {/* Manufacturer */}
-          <div>
-            <label
-              htmlFor="manufacturer"
-              className="block text-gray-600 font-medium mb-2"
-            >
-              Manufacturer
-            </label>
-            <input
-              type="text"
-              id="manufacturer"
-              name="manufacturer"
-              placeholder="Enter manufacturer"
-              value={formData.manufacturer}
-              onChange={handleChange}
-              className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-[#2D9CDB]"
-            />
-          </div>
+              <div>
+                <label
+                  htmlFor="percentageBottle"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Markup Percentage for Selling Price
+                </label>
+                <input
+                  type="number"
+                  id="percentageBottle"
+                  name="percentageBottle"
+                  value={medicineDetails.percentageBottle}
+                  onChange={handleInputChange}
+                  onBlur={calculateSellingPrices}
+                  className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
 
-          {/* Expiry Date */}
+              <div>
+                <label
+                  htmlFor="sellingPrice"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Selling Price
+                </label>
+                <input
+                  type="text"
+                  id="sellingPrice"
+                  name="sellingPrice"
+                  value={medicineDetails.sellingPriceBottle}
+                  readOnly
+                  className="mt-1 p-2 border border-gray-300 rounded-md w-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </>
+          )}
+          {medicineDetails.type === "cosmetics" && (
+            <>
+              <div>
+                <label
+                  htmlFor="quantity"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  quantity
+                </label>
+                <input
+                  type="number"
+                  id="quantity"
+                  name="quantity"
+                  value={medicineDetails.quantity}
+                  onChange={handleInputChange}
+                  className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="cosmeticsCost"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Cost
+                </label>
+                <input
+                  type="number"
+                  id="cosmeticsCost"
+                  name="cosmeticsCost"
+                  value={medicineDetails.cosmeticsCost}
+                  onChange={handleInputChange}
+                  className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="percentageCosmetics"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Markup Percentage for Selling Price
+                </label>
+                <input
+                  type="number"
+                  id="percentageCosmetics"
+                  name="percentageCosmetics"
+                  value={medicineDetails.percentageCosmetics}
+                  onChange={handleInputChange}
+                  onBlur={calculateSellingPrices}
+                  className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="sellingPrice"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Selling Price
+                </label>
+                <input
+                  type="text"
+                  id="sellingPrice"
+                  name="sellingPrice"
+                  value={medicineDetails.sellingPriceCosmetics}
+                  readOnly
+                  className="mt-1 p-2 border border-gray-300 rounded-md w-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </>
+          )}
+
           <div>
             <label
               htmlFor="expiryDate"
-              className="block text-gray-600 font-medium mb-2"
+              className="block text-sm font-medium text-gray-700"
             >
               Expiry Date
             </label>
@@ -235,18 +520,17 @@ function AddMedicine() {
               type="date"
               id="expiryDate"
               name="expiryDate"
-              value={formData.expiryDate}
-              onChange={handleChange}
-              className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-[#2D9CDB]"
+              value={medicineDetails.expiryDate}
+              onChange={handleInputChange}
+              className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
 
-          {/* Batch Number */}
           <div>
             <label
               htmlFor="batchNumber"
-              className="block text-gray-600 font-medium mb-2"
+              className="block text-sm font-medium text-gray-700"
             >
               Batch Number
             </label>
@@ -254,44 +538,41 @@ function AddMedicine() {
               type="text"
               id="batchNumber"
               name="batchNumber"
-              placeholder="Enter batch number"
-              value={formData.batchNumber}
-              onChange={handleChange}
-              className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-[#2D9CDB]"
+              value={medicineDetails.batchNumber}
+              onChange={handleInputChange}
+              className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
             />
           </div>
 
-          {/* Description */}
-          <div className="col-span-2">
+          <div>
             <label
-              htmlFor="description"
-              className="block text-gray-600 font-medium mb-2"
+              htmlFor="manufacturer"
+              className="block text-sm font-medium text-gray-700"
             >
-              Description (optional)
+              Manufacturer
             </label>
-            <textarea
-              id="description"
-              name="description"
-              placeholder="Enter description"
-              value={formData.description}
-              onChange={handleChange}
-              className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-[#2D9CDB]"
-            ></textarea>
+            <input
+              type="text"
+              id="manufacturer"
+              name="manufacturer"
+              value={medicineDetails.manufacturer}
+              onChange={handleInputChange}
+              className="mt-1 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
           </div>
 
-          {/* Submit Button */}
-          <div className="col-span-2">
-            <button
-              type="submit"
-              className="w-full bg-[#2D9CDB] text-white py-3 rounded hover:bg-[#217AB3] focus:outline-none focus:ring-2 focus:ring-blue-400"
-            >
-              Add Medicine
-            </button>
-          </div>
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
+          >
+            Add Medicine
+          </button>
         </form>
       </div>
     </div>
   );
-}
+};
 
 export default AddMedicine;

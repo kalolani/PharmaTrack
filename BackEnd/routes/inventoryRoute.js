@@ -5,6 +5,8 @@ import {
   expiredMedicines,
   getAllMedicines,
   lowStock,
+  searchMedicineByName,
+  searchMedicines,
 } from "../controllers/inventoryController.js";
 const inventoryRouter = express.Router();
 
@@ -14,5 +16,6 @@ inventoryRouter.get("/list-medicine", getAllMedicines);
 inventoryRouter.delete("/delete-medicine/:id", deleteMedicine);
 inventoryRouter.get("/low-stock", lowStock);
 inventoryRouter.get("/expired-medicines", expiredMedicines);
-
+inventoryRouter.get("/search", searchMedicines);
+inventoryRouter.get("/search-medicine/:name", searchMedicineByName);
 export default inventoryRouter;

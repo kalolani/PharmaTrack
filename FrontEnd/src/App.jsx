@@ -20,6 +20,9 @@ import UserGuide from "./components/UserGuide";
 import ContactSupport from "./components/ContactSupport";
 import Faqs from "./components/Faqs";
 import Logout from "./components/Logout";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 function App() {
   const [showLogin, setShowLogin] = useState(false);
   console.log(showLogin);
@@ -28,6 +31,7 @@ function App() {
     <>
       {showLogin && <LoginPopup setShowLogin={setShowLogin} />}
       <div>
+        <ToastContainer />
         <Routes>
           <Route path="/" element={<HomePage setShowLogin={setShowLogin} />} />
           <Route path="dashboard" element={<AdminDashboard />}>

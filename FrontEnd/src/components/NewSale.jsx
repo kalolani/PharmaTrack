@@ -8,16 +8,17 @@ function RecordSale() {
   const [selectedItem, setSelectedItem] = useState(null);
   const [unitType, setUnitType] = useState("");
   const [quantity, setQuantity] = useState("");
-  const [totalPrice, setTotalPrice] = useState("");
-  console.log(selectedItem);
-  // Fetch medicines based on the search term
+  const [sellingPrice, setsellingPrice] = useState("");
+  const [notFound, setNotFound] = useState(false);
+
   const fetchMedicines = async (term) => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/inventory/list-medicine?q=${term}`
+        `http://localhost:3000/api/inventory/search?q=${term}`
       );
-      console.log(response);
-      setFilteredItems(response.data || []); // Fallback to empty array if no data
+      const data = response.data || [];
+      setFilteredItems(data);
+      setNotFound(data.length === 0);
     } catch (error) {
       console.error("Error fetching medicines:", error);
       alert("Failed to fetch medicines. Please try again.");
@@ -27,6 +28,7 @@ function RecordSale() {
   useEffect(() => {
     if (searchTerm.trim() === "") {
       setFilteredItems([]);
+      setNotFound(false);
     } else {
       fetchMedicines(searchTerm);
     }
@@ -38,15 +40,15 @@ function RecordSale() {
     setSelectedItem(item);
     setSearchTerm(item.name);
     setFilteredItems([]);
+    setNotFound(false);
     setUnitType("");
     setQuantity("");
-    setTotalPrice("");
+    setsellingPrice("");
   };
 
   const handleUnitTypeChange = (e) => {
     setUnitType(e.target.value);
     setQuantity("");
-    setTotalPrice("");
   };
 
   const handleQuantityChange = (e) => {
@@ -56,41 +58,35 @@ function RecordSale() {
       return;
     }
     setQuantity(value);
-
-    if (selectedItem && unitType) {
-      let price = 0;
-      const unitPrices = {
-        strip: selectedItem.pricePerStrip,
-        pack: selectedItem.pricePerPack,
-        bottle: selectedItem.pricePerBottle,
-        ml: selectedItem.pricePerMl,
-        item: selectedItem.pricePerItem,
-      };
-      price = unitPrices[unitType] * value || 0;
-      setTotalPrice(price.toFixed(2)); // Display price to 2 decimal places
-    }
   };
 
+  const handlePriceChange = (e) => setsellingPrice(e.target.value);
+
   const handleSaleSubmit = async () => {
-    if (!selectedItem || !unitType || !quantity || !totalPrice) {
+    if (!selectedItem || !unitType || !quantity || !sellingPrice) {
       alert("Please fill in all required fields.");
       return;
     }
 
     try {
-      await axios.post("http://localhost:3000/api/sales/record-sale", {
+      const saleData = {
         medicineId: selectedItem.id,
         medicineName: selectedItem.name,
-        quantity,
+        quantity:
+          unitType === "strip"
+            ? { stripQuantity: quantity }
+            : { packQuantity: quantity },
         unitType,
-        totalPrice: parseFloat(totalPrice),
-      });
+        sellingPrice: parseFloat(sellingPrice),
+      };
+
+      await axios.post("http://localhost:3000/api/sales/record-sale", saleData);
       alert("Sale recorded successfully!");
+      setSearchTerm("");
       setSelectedItem(null);
       setUnitType("");
       setQuantity("");
-      setTotalPrice("");
-      setSearchTerm("");
+      setsellingPrice("");
     } catch (error) {
       console.error("Error recording sale:", error);
       alert("Failed to record sale. Please try again.");
@@ -112,7 +108,7 @@ function RecordSale() {
               type="text"
               value={searchTerm}
               onChange={handleSearchChange}
-              placeholder="Search medicine or cosmetic..."
+              placeholder="Search medicine..."
               className="w-full border p-2 rounded focus:outline-2 outline-[#2D9CDB]"
             />
             {filteredItems.length > 0 && (
@@ -127,6 +123,9 @@ function RecordSale() {
                   </div>
                 ))}
               </div>
+            )}
+            {notFound && (
+              <p className="text-red-500 mt-2">Medicine not found.</p>
             )}
           </div>
 
@@ -144,13 +143,6 @@ function RecordSale() {
               {selectedItem.pricePerPack && (
                 <option value="pack">Per Pack</option>
               )}
-              {selectedItem.pricePerBottle && (
-                <option value="bottle">Per Bottle</option>
-              )}
-              {selectedItem.pricePerMl && <option value="ml">Per mL</option>}
-              {selectedItem.pricePerItem && (
-                <option value="item">Per Item</option>
-              )}
             </select>
           )}
 
@@ -164,13 +156,13 @@ function RecordSale() {
             disabled={!unitType}
           />
 
-          {/* Total Price Display */}
+          {/* Total Price Input */}
           <input
             type="text"
             placeholder="Total Price"
-            value={totalPrice ? `$${totalPrice}` : ""}
-            readOnly
-            className="w-full border p-2 rounded bg-gray-100 focus:outline-2 outline-[#2D9CDB]"
+            value={sellingPrice}
+            onChange={handlePriceChange}
+            className="w-full border p-2 rounded focus:outline-2 outline-[#2D9CDB]"
           />
 
           {/* Submit Button */}
