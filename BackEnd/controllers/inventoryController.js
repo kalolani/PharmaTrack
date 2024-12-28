@@ -4,77 +4,77 @@ const prisma = new PrismaClient();
 
 // POST route to add a new medicine
 const addMedicine = async (req, res) => {
+  const {
+    name,
+    type,
+    packQuantity,
+    manufacturer,
+    expiryDate,
+    batchNumber,
+    pricePerStrip,
+    stripsPerPack,
+    pricePerUnit,
+    cost,
+    description,
+  } = req.body;
+
   try {
-    const {
-      name,
-      type,
-      packQuantity,
-      manufacturer,
-      expiryDate,
-      batchNumber,
-      pricePerStrip,
-      stripsPerPack,
-      pricePerPack,
-      pricePerUnit,
-      description,
-      cost,
-    } = req.body;
+    // Check if the medicine already exists in the database by name
+    const existingMedicine = await prisma.medicine.findUnique({
+      where: { name },
+    });
 
-    // Validate input data
-    if (
-      !name ||
-      !type ||
-      !packQuantity ||
-      !manufacturer ||
-      !expiryDate ||
-      !batchNumber ||
-      !cost
-    ) {
-      return res
-        .status(400)
-        .json({ message: "All fields except description are required" });
+    // If medicine exists, update the stock
+    if (existingMedicine) {
+      const updatedMedicine = await prisma.medicine.update({
+        where: { id: existingMedicine.id },
+        data: {
+          packQuantity: existingMedicine.packQuantity + packQuantity, // Update stock quantity
+          updatedAt: new Date(), // Update the timestamp for the last modification
+        },
+      });
+
+      return res.status(200).json({
+        message: "Medicine stock updated successfully",
+        data: updatedMedicine,
+      });
     }
 
-    // Conditional validation based on the type
-    if (type.toLowerCase() === "tablet") {
-      if (!pricePerStrip || !packQuantity) {
-        return res.status(400).json({
-          message: "For tablets, pricePerStrip and pricePerPack are required.",
-        });
-      }
-    } else if (type.toLowerCase() === "cosmetics") {
-      if (!pricePerUnit) {
-        return res.status(400).json({
-          message: "For cosmetics, pricePerUnit is required.",
-        });
-      }
-    } else {
-      return res.status(400).json({ message: "Invalid medicine type." });
+    // If medicine doesn't exist, create a new medicine entry
+    let pricePerPackCalculated = pricePerStrip * stripsPerPack; // Calculate price per pack
+    let costCalculated = pricePerStrip * stripsPerPack * packQuantity;
+
+    if (pricePerUnit) {
+      costCalculated = pricePerUnit * packQuantity; // Recalculate cost if price per unit is provided
     }
 
-    // Save to database
     const newMedicine = await prisma.medicine.create({
       data: {
         name,
         type,
-        packQuantity: parseInt(packQuantity),
+        packQuantity,
         manufacturer,
-        expiryDate: new Date(expiryDate),
+        expiryDate: new Date(expiryDate), // Ensure expiry date is a Date object
         batchNumber,
-        pricePerStrip: pricePerStrip ? parseFloat(pricePerStrip) : null,
-        pricePerPack: pricePerPack ? parseFloat(pricePerPack) : null,
+        pricePerStrip: parseFloat(pricePerStrip),
+        stripsPerPack: parseInt(stripsPerPack),
+        pricePerPack: pricePerPackCalculated,
         pricePerUnit: pricePerUnit ? parseFloat(pricePerUnit) : null,
+        cost: costCalculated,
         description,
-        cost: parseFloat(cost),
       },
     });
 
-    res
-      .status(201)
-      .json({ message: "Medicine added successfully", medicine: newMedicine });
+    return res.status(201).json({
+      message: "Medicine added successfully",
+      data: newMedicine,
+    });
   } catch (error) {
-    console.error("Error adding medicine:", error);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Error adding or updating medicine:", error);
+    return res.status(500).json({
+      message: "Error processing the medicine",
+      error: error.message,
+    });
   }
 };
 
@@ -86,6 +86,49 @@ const getAllMedicines = async (req, res) => {
   } catch (error) {
     console.error("Error fetching medicines:", error);
     res.status(500).json({ message: "Failed to fetch medicines" });
+  }
+};
+
+//search for medicine by name
+// Search for medicine by name
+const searchMedicineByName = async (req, res) => {
+  const { name } = req.params;
+
+  try {
+    const medicine = await prisma.medicine.findFirst({
+      where: { name },
+    });
+
+    if (medicine) {
+      return res.status(200).json(medicine);
+    } else {
+      return res.status(404).json({ message: "Medicine not found" });
+    }
+  } catch (error) {
+    console.error("Error searching for medicine:", error);
+    return res.status(500).json({ message: "Error searching for medicine" });
+  }
+};
+
+//sarch for medicines
+const searchMedicines = async (req, res) => {
+  const { q } = req.query;
+  if (!q)
+    return res.status(400).json({ error: "Query parameter 'q' is required." });
+
+  try {
+    const medicines = await prisma.medicine.findMany({
+      where: {
+        name: {
+          contains: q,
+          mode: "insensitive",
+        },
+      },
+    });
+    res.json(medicines);
+  } catch (error) {
+    console.error("Error fetching medicines:", error);
+    res.status(500).json({ error: "Internal server error." });
   }
 };
 
@@ -145,4 +188,6 @@ export {
   deleteMedicine,
   lowStock,
   expiredMedicines,
+  searchMedicines,
+  searchMedicineByName,
 };

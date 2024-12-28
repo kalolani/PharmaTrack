@@ -9,7 +9,7 @@ import salesRouter from "./routes/salesRoute.js";
 // Load environment variables from .env
 dotenv.config();
 // Allow requests from your front-end origin
-const allowedOrigins = ["http://localhost:5175"]; // Your front-end URL
+const allowedOrigins = ["http://localhost:5173"]; // Your front-end URL
 const corsOptions = {
   origin: function (origin, callback) {
     if (allowedOrigins.indexOf(origin) !== -1) {

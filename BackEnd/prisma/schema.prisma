@@ -22,23 +22,26 @@ model User {
 }
 
 model Medicine {
-  id           Int      @id @default(autoincrement())
-  name         String
-  type         String
-  packQuantity     Int  @default(0)
-  manufacturer String
-  expiryDate   DateTime
-  batchNumber  String
-  pricePerStrip Float
-  pricePerPack Float?
-  stripsPerPack Int    @default(0)
-  pricePerUnit   Float?  // Add this field if necessary
-  cost         Float  @default(0)   // New field to store the cost of the medicine
-  description  String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  sales        Sale[]   // Define the opposite relation field
+  id             Int      @id @default(autoincrement())
+  name           String
+  type           MedicineType
+  cost           Float
+  expiryDate     DateTime
+  batchNumber    String
+  manufacturer   String
+  percentage     Float
+  sellingPrice   Float
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
+
+enum MedicineType {
+  TABLET
+  SYRUP
+  COSMETICS
+  OTHERS
+}
+
 
 
 model Sale {
@@ -47,7 +50,7 @@ model Sale {
   medicineId  Int
   quantity    Int
   unitType    String
-  totalPrice  Float
+  sellingPrice  Float   @default(0)
   createdAt   DateTime @default(now())
 
   medicine    Medicine @relation(fields: [medicineId], references: [id])
