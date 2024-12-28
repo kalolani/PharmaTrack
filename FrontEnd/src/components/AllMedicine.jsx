@@ -1,11 +1,13 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
 import AdminNavBar from "./AdminNavBar";
 import DashboardWelcome from "./DashboardWelcome";
-import axios from "axios";
-import { useEffect, useState } from "react";
 
 function AllMedicine() {
   const [medicines, setMedicines] = useState([]);
-  console.log(medicines);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
   useEffect(() => {
     const fetchMedicines = async () => {
       try {
@@ -13,8 +15,12 @@ function AllMedicine() {
           "http://localhost:3000/api/inventory/list-medicine"
         );
         setMedicines(response.data);
-      } catch (error) {
-        console.error("Error fetching medicines:", error);
+        setError("");
+      } catch (err) {
+        setError("Failed to fetch medicines. Please try again later.");
+        console.error("Error fetching medicines:", err);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -23,16 +29,12 @@ function AllMedicine() {
 
   const deleteMedicine = async (id) => {
     try {
-      // Send DELETE request to the backend
       await axios.delete(
         `http://localhost:3000/api/inventory/delete-medicine/${id}`
       );
-
-      // Remove the deleted medicine from the state
       setMedicines((prevMedicines) =>
         prevMedicines.filter((medicine) => medicine.id !== id)
       );
-
       alert("Medicine deleted successfully");
     } catch (error) {
       console.error("Error deleting medicine:", error);
@@ -48,6 +50,18 @@ function AllMedicine() {
     });
   };
 
+  const getQuantity = (medicine) => {
+    switch (medicine.type.toLowerCase()) {
+      case "tablet":
+        return medicine.packQuantity;
+      case "syrup":
+        return medicine.bottleQuantity;
+      case "cosmetics":
+      default:
+        return medicine.unitQuantity;
+    }
+  };
+
   return (
     <div className="p-6 w-[85%] min-h-screen bg-gray-100 text-gray-900">
       {/* Navbar */}
@@ -61,71 +75,69 @@ function AllMedicine() {
         <h2 className="text-2xl font-semibold text-center mb-4">
           Medicine Inventory
         </h2>
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white rounded-lg shadow-md">
-            <thead>
-              <tr className="bg-blue-500 text-white uppercase text-sm">
-                <th className="py-3 px-4 text-left">Name</th>
-                <th className="py-3 px-4 text-left">Type</th>
-                <th className="py-3 px-4 text-left">Quantity</th>
-                <th className="py-3 px-4 text-left">Manufacturer</th>
-                <th className="py-3 px-4 text-left">Expiry Date</th>
-                <th className="py-3 px-4 text-left">Batch Number</th>
-                {medicines.some((medicine) => medicine.type === "Tablet") && (
-                  <>
-                    <th className="py-3 px-4 text-left">PricePerStrip</th>
-                    <th className="py-3 px-4 text-left">PricePerPack</th>
-                  </>
-                )}
-                {medicines.some(
-                  (medicine) =>
-                    medicine.type === "syrup" || medicine.type === "cosmetics"
-                ) && <th className="py-3 px-4 text-left">PricePerUnit</th>}
-                <th className="py-3 px-4 text-left">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {medicines.length > 0 ? (
-                medicines.map((medicine) => (
-                  <tr key={medicine.id} className="border-b hover:bg-gray-100">
-                    <td className="py-3 px-4">{medicine.name}</td>
-                    <td className="py-3 px-4">{medicine.type}</td>
-                    <td className="py-3 px-4">{medicine.quantity}</td>
-                    <td className="py-3 px-4">{medicine.manufacturer}</td>
-                    <td className="py-3 px-4">
-                      {formatDate(medicine.expiryDate)}
-                    </td>
-                    <td className="py-3 px-4">{medicine.batchNumber}</td>
-                    {medicine.type === "Tablet" && (
-                      <>
-                        <td className="py-3 px-4">${medicine.pricePerStrip}</td>
-                        <td className="py-3 px-4">${medicine.pricePerPack}</td>
-                      </>
-                    )}
-                    {(medicine.type === "syrup" ||
-                      medicine.type === "cosmetics") && (
-                      <td className="py-3 px-4">${medicine.pricePerUnit}</td>
-                    )}
-                    <td className="py-3 px-4">
-                      <button
-                        onClick={() => deleteMedicine(medicine.id)}
-                        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
-                      >
-                        Delete
-                      </button>
+
+        {/* Loading State */}
+        {isLoading && (
+          <div className="text-center text-gray-500">Loading medicines...</div>
+        )}
+
+        {/* Error State */}
+        {error && <div className="text-center text-red-500 my-4">{error}</div>}
+
+        {!isLoading && !error && (
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white rounded-lg shadow-md">
+              <thead>
+                <tr className="bg-blue-500 text-white uppercase text-sm">
+                  <th className="py-3 px-4 text-left">Name</th>
+                  <th className="py-3 px-4 text-left">Type</th>
+                  <th className="py-3 px-4 text-left">
+                    Quantity(pack/bottle/unit)
+                  </th>
+                  <th className="py-3 px-4 text-left">Manufacturer</th>
+                  <th className="py-3 px-4 text-left">Expiry Date</th>
+                  <th className="py-3 px-4 text-left">Batch Number</th>
+                  <th className="py-3 px-4 text-left">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {medicines.length > 0 ? (
+                  medicines.map((medicine) => (
+                    <tr
+                      key={medicine.id}
+                      className="border-b hover:bg-gray-100"
+                    >
+                      <td className="py-3 px-4">{medicine.name}</td>
+                      <td className="py-3 px-4">{medicine.type}</td>
+                      <td className="py-3 px-4 text-center">
+                        {getQuantity(medicine)}
+                      </td>
+                      <td className="py-3 px-4">{medicine.manufacturer}</td>
+                      <td className="py-3 px-4">
+                        {formatDate(medicine.expiryDate)}
+                      </td>
+                      <td className="py-3 px-4">{medicine.batchNumber}</td>
+                      <td className="py-3 px-4">
+                        <button
+                          onClick={() => deleteMedicine(medicine.id)}
+                          className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="7" className="text-center py-6 text-gray-500">
+                      No medicines available.
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="8" className="text-center py-6 text-gray-500">
-                    No medicines added yet.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );

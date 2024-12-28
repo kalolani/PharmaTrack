@@ -1,12 +1,9 @@
 import axios from "axios";
 import AdminNavBar from "./AdminNavBar";
-// import DashboardWelcome from "./DashboardWelcome";
-
 import { useEffect, useState } from "react";
 
 function LowStockPage() {
   const [lowStockMedicines, setLowStockMedicines] = useState([]);
-  console.log(lowStockMedicines);
 
   useEffect(() => {
     // Fetch low stock medicines from the backend when the component mounts
@@ -33,8 +30,22 @@ function LowStockPage() {
     });
   };
 
+  const getQuantity = (medicine) => {
+    switch (medicine.type) {
+      case "tablet":
+        return medicine.packQuantity || "N/A";
+      case "syrup":
+        return medicine.bottleQuantity || "N/A";
+      case "cosmetics":
+      case "other":
+        return medicine.unitQuantity || "N/A";
+      default:
+        return "N/A";
+    }
+  };
+
   return (
-    <div className="pt-[20px] pb-[50px] px-[20px] w-[85%] h-[100%] z-[10] text-[rgb(249 250 251)] font-Poppins bg-[#F3F2F7] min-h-screen">
+    <div className="pt-[20px] pb-[50px] px-[20px] w-[85%] h-[100%] z-[10] text-[rgb(249_250_251)] font-Poppins bg-[#F3F2F7] min-h-screen">
       <AdminNavBar />
 
       <div className="p-8">
@@ -48,7 +59,9 @@ function LowStockPage() {
                 <tr className="bg-[#2D9CDB] text-[rgb(249_250_251)] uppercase text-sm">
                   <th className="py-3 px-4 text-left font-Poppins">Name</th>
                   <th className="py-3 px-4 text-left font-Poppins">Type</th>
-                  <th className="py-3 px-4 text-left font-Poppins">Quantity</th>
+                  <th className="py-3 px-4 text-left font-Poppins">
+                    Quantity(pack/bottle/unit)
+                  </th>
                   <th className="py-3 px-4 text-left font-Poppins">
                     Manufacturer
                   </th>
@@ -66,8 +79,8 @@ function LowStockPage() {
                   >
                     <td className="py-3 px-4 font-Poppins">{medicine.name}</td>
                     <td className="py-3 px-4 font-Poppins">{medicine.type}</td>
-                    <td className="py-3 px-4 font-Poppins">
-                      {medicine.quantity}
+                    <td className="py-3 px-4 text-center font-Poppins">
+                      {getQuantity(medicine)}
                     </td>
                     <td className="py-3 px-4 font-Poppins">
                       {medicine.manufacturer}
