@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { IoIosArrowRoundUp } from "react-icons/io";
 
 const MedicineSalesTable = () => {
   const [salesReport, setSalesReport] = useState([]);
@@ -26,6 +27,7 @@ const MedicineSalesTable = () => {
           <tr>
             <th className="px-4 py-2 border border-gray-300">Medicine Name</th>
             <th className="px-4 py-2 border border-gray-300">Type</th>
+            <th className="px-4 py-2 border border-gray-300">Unit Type</th>
             <th className="px-4 py-2 border border-gray-300">Items Sold</th>
 
             <th className="px-4 py-2 border border-gray-300">
@@ -52,24 +54,31 @@ const MedicineSalesTable = () => {
                 {medicine.type}
               </td>
               <td className="px-4 py-2 border border-gray-300">
+                {medicine.unitTypes}
+              </td>
+              <td className="px-4 py-2 border border-gray-300">
                 {medicine.unitsSold}
               </td>
 
               <td className="px-4 py-2 border border-gray-300">
-                {medicine.cost}
+                {medicine.totalCost}
               </td>
               <td className="px-4 py-2 border border-gray-300">
                 {medicine.totalRevenue}
               </td>
 
-              <td
-                className={`px-4 py-2 border border-gray-300 font-bold ${
-                  medicine.profitMargin >= 20
-                    ? "text-green-600"
-                    : "text-red-600"
-                }`}
-              >
-                {medicine.profitMargin}
+              <td className={` px-4 py-2 border border-gray-300 font-bold `}>
+                <span
+                  className={`w-[70%] flex gap-2 items-center justify-center py-[4px] text-white rounded-md ${
+                    medicine.profitMargin >= 0
+                      ? "bg-green-600 bg-opacity-[0.85]"
+                      : "bg-red-600"
+                  }`}
+                >
+                  {" "}
+                  {medicine.profitMargin}
+                  <IoIosArrowRoundUp color="" size={20} />
+                </span>
               </td>
             </tr>
           ))}

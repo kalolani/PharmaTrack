@@ -4,6 +4,7 @@ import {
   deleteMedicine,
   expiredMedicines,
   getAllMedicines,
+  getTotalMedicinesCount,
   lowStock,
   searchMedicineByName,
   searchMedicines,
@@ -13,6 +14,7 @@ const inventoryRouter = express.Router();
 // Registration and Login routes
 inventoryRouter.post("/add-medicine", addMedicine);
 inventoryRouter.get("/list-medicine", getAllMedicines);
+inventoryRouter.get("/total-medicines", getTotalMedicinesCount);
 inventoryRouter.delete("/delete-medicine/:id", deleteMedicine);
 inventoryRouter.get("/low-stock", lowStock);
 inventoryRouter.get("/expired-medicines", expiredMedicines);

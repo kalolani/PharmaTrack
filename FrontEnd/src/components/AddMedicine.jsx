@@ -101,7 +101,8 @@ const AddMedicine = () => {
         "http://localhost:3000/api/inventory/add-medicine",
         medicineDetails
       );
-      console.log("Medicine registered successfully:", response.data);
+      console.log("Response data:", response.data);
+
       if (response.status === 201) {
         toast.success("Medicine added successfully!");
         setMedicineDetails({
@@ -129,9 +130,10 @@ const AddMedicine = () => {
           bottleCost: "",
           cosmeticsCost: "",
         });
-        console.log("Medicine registered successfully:", response.data);
+      } else if (response.data.message === "Medicine already found in stock") {
+        // Handle the case where the medicine already exists in the stock
+        toast.info("The medicine is already found in the stock.");
       } else {
-        // If status is not what you expect
         toast.warning(
           "Unexpected response from the server. Please check again."
         );
@@ -151,7 +153,7 @@ const AddMedicine = () => {
   };
 
   return (
-    <div className="p-6 w-[80%] mx-auto bg-gray-100  space-y-4">
+    <div className="p-6 w-[85%] mx-auto bg-gray-100  space-y-4">
       <AdminNavBar />
       <div className="p-6 w-[50%] mt-32 mx-auto bg-white rounded-md shadow-md">
         <h1 className="text-xl font-bold mb-4 text-blue-500 font-Poppins">
