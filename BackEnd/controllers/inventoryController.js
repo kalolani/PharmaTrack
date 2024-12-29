@@ -38,7 +38,21 @@ const addMedicine = async (req, res) => {
         .json({ message: "Some required fields are missing" });
     }
 
-    // Create a new medicine detail record
+    // Check if the medicine already exists in the stock by name and batch number (or other identifiers)
+    const existingMedicine = await prisma.medicine.findFirst({
+      where: {
+        name,
+        batchNumber, // Or add other unique fields for identification
+      },
+    });
+
+    if (existingMedicine) {
+      return res.status(400).json({
+        message: "This medicine is already found in the stock.",
+      });
+    }
+
+    // If not found, create a new medicine record
     const newMedicine = await prisma.medicine.create({
       data: {
         name,
@@ -67,7 +81,10 @@ const addMedicine = async (req, res) => {
       },
     });
 
-    return res.status(201).json(newMedicine);
+    return res.status(201).json({
+      message: "Medicine added successfully",
+      medicine: newMedicine,
+    });
   } catch (error) {
     console.error("Error registering medicine detail:", error);
     return res
@@ -204,6 +221,17 @@ const expiredMedicines = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+const getTotalMedicinesCount = async (req, res) => {
+  try {
+    // Fetch the count of all medicines
+    const totalMedicines = await prisma.medicine.count();
+
+    res.json({ totalMedicines });
+  } catch (error) {
+    console.error("Error fetching total medicines count:", error);
+    res.status(500).json({ error: "Failed to fetch total medicines count" });
+  }
+};
 
 export {
   addMedicine,
@@ -213,4 +241,5 @@ export {
   expiredMedicines,
   searchMedicines,
   searchMedicineByName,
+  getTotalMedicinesCount,
 };

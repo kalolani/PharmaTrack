@@ -258,6 +258,97 @@ const getSystemTotalRevenue = async (req, res) => {
   }
 };
 
+const getTotalUnitsSold = async (req, res) => {
+  try {
+    // Fetch all sales along with their associated medicine details
+    const sales = await prisma.sale.findMany({
+      include: {
+        medicine: true, // Include related medicine to access stripsPerPack and other details
+      },
+    });
+
+    // Calculate total units sold
+    const totalUnitsSold = sales.reduce((total, sale) => {
+      const { unitType, quantity, medicine } = sale;
+
+      if (unitType === "strip") {
+        // Multiply quantity by strips per pack for strip type
+        return Math.floor(total + quantity / (medicine.stripPerPack || 1));
+      } else if (
+        unitType === "pack" ||
+        unitType === "bottle" ||
+        unitType === "unit"
+      ) {
+        // Add quantity directly for pack, bottle, or unit
+        return total + quantity;
+      }
+
+      // Default case: add quantity directly if no matching unitType
+      return total + quantity;
+    }, 0);
+
+    res.json({
+      totalUnitsSold,
+    });
+  } catch (error) {
+    console.error("Error calculating total units sold:", error);
+    res.status(500).json({ error: "Failed to calculate total units sold" });
+  }
+};
+
+const salesGrowth = async (req, res) => {
+  try {
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    // Format dates to YYYY-MM-DD
+    const formatDate = (date) => date.toISOString().split("T")[0];
+    const todayDate = formatDate(today);
+    const yesterdayDate = formatDate(yesterday);
+
+    // Fetch sales for today and yesterday
+    const sales = await prisma.sale.findMany({
+      where: {
+        createdAt: {
+          gte: new Date(`${yesterdayDate}T00:00:00Z`),
+          lt: new Date(`${todayDate}T23:59:59Z`),
+        },
+      },
+    });
+
+    // Separate today's and yesterday's sales
+    let yesterdaySales = 0;
+    let todaySales = 0;
+
+    sales.forEach((sale) => {
+      const saleDate = formatDate(new Date(sale.createdAt));
+      if (saleDate === yesterdayDate) {
+        yesterdaySales += sale.totalPrice || 0;
+      }
+      if (saleDate === todayDate) {
+        todaySales += sale.totalPrice || 0;
+      }
+    });
+
+    // Calculate growth rate
+    const growthRate =
+      yesterdaySales > 0
+        ? ((todaySales - yesterdaySales) / yesterdaySales) * 100
+        : todaySales > 0
+        ? 100
+        : 0;
+
+    res.json({
+      date: todayDate,
+      growthRate: growthRate.toFixed(2), // Keep 2 decimal places
+    });
+  } catch (error) {
+    console.error("Error calculating sales growth:", error);
+    res.status(500).json({ error: "Failed to calculate sales growth" });
+  }
+};
+
 export {
   recordSale,
   salesHistory,
@@ -265,4 +356,6 @@ export {
   deleteSale,
   getHighLowSeller,
   getSystemTotalRevenue,
+  getTotalUnitsSold,
+  salesGrowth,
 };

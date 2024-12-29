@@ -3,7 +3,9 @@ import {
   deleteSale,
   getHighLowSeller,
   getSystemTotalRevenue,
+  getTotalUnitsSold,
   recordSale,
+  salesGrowth,
   salesHistory,
   salesReport,
 } from "../controllers/salesControler.js";
@@ -17,4 +19,7 @@ salesRouter.get("/sales-history", salesHistory);
 salesRouter.get("/sales-report", salesReport);
 salesRouter.get("/high-low-sellers", getHighLowSeller);
 salesRouter.get("/system-total-revenue", getSystemTotalRevenue);
+salesRouter.get("/total-units-sold", getTotalUnitsSold);
+salesRouter.get("/sales-growth", salesGrowth);
+
 export default salesRouter;

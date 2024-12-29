@@ -70,7 +70,9 @@ const MedicineSalesTable = () => {
               <td className={` px-4 py-2 border border-gray-300 font-bold `}>
                 <span
                   className={`w-[70%] flex gap-2 items-center justify-center py-[4px] text-white rounded-md ${
-                    medicine.profitMargin >= 0 ? "bg-green-600" : "bg-red-600"
+                    medicine.profitMargin >= 0
+                      ? "bg-green-600 bg-opacity-[0.85]"
+                      : "bg-red-600"
                   }`}
                 >
                   {" "}

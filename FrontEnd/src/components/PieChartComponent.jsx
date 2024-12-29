@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
 import { PieChart, Pie, Tooltip, Cell, Legend } from "recharts";
 
-const colors = ["#82ca9d", "#ff8042", "#8dd1e1"];
+// const colors = ["#82ca9d", "#ff8042", "#8dd1e1"];
 
-const PieChartComponent = ({ data, title }) => {
+const PieChartComponent = ({ data, title, colors }) => {
   return (
     <div className="bg-white py-2 px-[2px] rounded-md text-center">
       <h3 className="text-xs text-center mr-20">{title}</h3>

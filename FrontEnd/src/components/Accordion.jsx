@@ -73,7 +73,7 @@ function Accordion({
                   to={item.to}
                   className={`${
                     item.sub.length > 0
-                      ? "relative font-Poppins font-medium text-[#5E5A6C] text-sm bg-[#66CBB1] bg-opacity-[0.4] hover:text-[#00B074] cursor-pointer px-4 py-2 ml-10 rounded-md"
+                      ? "relative font-Poppins font-medium text-[#5E5A6C] text-[13px] bg-[#66CBB1] bg-opacity-[0.4] hover:text-white hover:bg-green-500 cursor-pointer px-4 py-2 ml-10 rounded-md"
                       : ""
                   }`}
                   key={item}
@@ -92,7 +92,7 @@ function Accordion({
             item.sub.length > 0 ? (
               <div
                 key={item}
-                className="absolute top-2 left-5 w-[2px] h-[85%] bg-[#00B074]"
+                className="absolute top-2 left-5 w-[2px] h-[90%] bg-[#00B074]"
               ></div>
             ) : (
               ""

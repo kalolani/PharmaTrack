@@ -5,6 +5,7 @@ import axios from "axios";
 const HighLowSeller = () => {
   const [highSellerData, setHighSellerData] = useState([]);
   const [lowSellerData, setLowSellerData] = useState([]);
+  const colors = ["#84CC16", "#FACC15", "#22D3EE"];
 
   useEffect(() => {
     const fetchHighLowSellers = async () => {
@@ -41,8 +42,16 @@ const HighLowSeller = () => {
 
   return (
     <div className="relative flex rounded-md shadow-md">
-      <PieChartComponent data={highSellerData} title="Low Sellers" />
-      <PieChartComponent data={lowSellerData} title="Low Sellers" />
+      <PieChartComponent
+        data={highSellerData}
+        colors={colors}
+        title="Low Sellers"
+      />
+      <PieChartComponent
+        data={lowSellerData}
+        colors={colors}
+        title="Low Sellers"
+      />
     </div>
   );
 };

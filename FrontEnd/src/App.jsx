@@ -22,6 +22,7 @@ import Faqs from "./components/Faqs";
 import Logout from "./components/Logout";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import PurchaseMedicine from "./components/PurchaseMedicine";
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
@@ -43,6 +44,7 @@ function App() {
             <Route path="saleHistory" element={<SaleHistory />} />
             <Route path="saleHistory" element={<SaleHistory />} />
             <Route path="medicines" element={<AllMedicine />} />
+            <Route path="purchase" element={<PurchaseMedicine />} />
             <Route path="addStock" element={<AddMedicine />} />
             <Route path="lowStock" element={<LowStock />} />
             <Route path="expiryManagement" element={<ExpiryManagement />} />
