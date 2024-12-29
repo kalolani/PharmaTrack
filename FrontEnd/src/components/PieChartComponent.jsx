@@ -6,7 +6,7 @@ const colors = ["#82ca9d", "#ff8042", "#8dd1e1"];
 const PieChartComponent = ({ data, title }) => {
   return (
     <div className="bg-white py-2 px-[2px] rounded-md text-center">
-      <h3>{title}</h3>
+      <h3 className="text-xs text-center mr-20">{title}</h3>
       <PieChart width={300} height={200}>
         <Pie
           data={data}
@@ -17,7 +17,6 @@ const PieChartComponent = ({ data, title }) => {
           innerRadius="40%"
           outerRadius="80%"
           fill="#8884d8"
-          label
         >
           {data.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
