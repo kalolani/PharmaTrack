@@ -4,8 +4,9 @@ import dotenv from "dotenv";
 import userRouter from "./routes/userRoutes.js";
 import cors from "cors";
 import inventoryRouter from "./routes/inventoryRoute.js";
-
 import salesRouter from "./routes/salesRoute.js";
+import purchaseRouter from "./routes/purchaseRoute.js";
+
 // Load environment variables from .env
 dotenv.config();
 // Allow requests from your front-end origin
@@ -34,6 +35,7 @@ app.use(express.json());
 app.use("/api/user", userRouter);
 app.use("/api/inventory", inventoryRouter);
 app.use("/api/sales", salesRouter);
+app.use("/api/purchases", purchaseRouter);
 
 const PORT = 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

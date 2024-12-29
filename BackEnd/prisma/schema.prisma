@@ -52,6 +52,7 @@ model Medicine {
 
   // Define the relation here, making sure the name matches the relation name in Sale model
   sales       Sale[]   @relation("MedicineSales") 
+  purchases  Purchase[] @relation("MedicinePurchases") // Opposite relation field for Purchase
 }
 
 enum MedicineType {
@@ -74,5 +75,37 @@ model Sale {
   // Define the relation here, make sure the relation name matches the one in Medicine model
   medicine      Medicine @relation("MedicineSales", fields: [medicineId], references: [id])
 }
+
+model Purchase {
+  id                   Int         @id @default(autoincrement())
+  medicineId          Int         // Matches the type of Medicine.id
+  medicine            Medicine?  @relation("MedicinePurchases", fields: [medicineId], references: [id])
+  name                String
+  type                String   // e.g., "tablet", "capsule", etc.
+  costPerStrip        Float?
+  costPerPack         Float?
+  expiryDate          DateTime
+  batchNumber         String
+  manufacturer        String
+  percentageStrip     Float?
+  percentagePack      Float?
+  percentageBottle    Float?
+  percentageCosmetics Float?
+  percentageUnit      Float?
+  sellingPriceBottle  Float?
+  sellingPriceCosmetics Float?
+  sellingPriceStrip   Float?
+  sellingPricePack    Float?
+  packQuantity        Int?
+  stripQuantity       Int?
+  stripPerPack        Int?
+  unitQuantity        Int?
+  bottleQuantity      Int?
+  bottleCost          Float?
+  cosmeticsCost       Float?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
 
 
