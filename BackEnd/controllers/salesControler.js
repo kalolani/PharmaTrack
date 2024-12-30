@@ -349,6 +349,45 @@ const salesGrowth = async (req, res) => {
   }
 };
 
+const salesGrowthPerDate = async (req, res) => {
+  try {
+    // Aggregate daily sales data
+    const sales = await prisma.sale.groupBy({
+      by: ["createdAt"],
+      _sum: {
+        totalPrice: true, // Sum total sales for the day
+      },
+      orderBy: {
+        createdAt: "asc",
+      },
+    });
+
+    // Transform and calculate growth rate
+    const salesGrowth = sales.map((day, index) => {
+      const currentSales = day._sum.totalPrice || 0;
+      const prevSales = index > 0 ? sales[index - 1]._sum.totalPrice || 0 : 0;
+
+      const growthRate = prevSales
+        ? ((currentSales - prevSales) / prevSales) * 100
+        : 0;
+
+      return {
+        date: day.createdAt.toISOString().split("T")[0], // Format date as YYYY-MM-DD
+        sales: currentSales,
+        growthRate: parseFloat(growthRate.toFixed(2)),
+      };
+    });
+
+    res.status(200).json(salesGrowth);
+  } catch (error) {
+    console.error("Error calculating sales growth:", error.message);
+    res.status(500).json({
+      message: "Error calculating sales growth",
+      error: error.message,
+    });
+  }
+};
+
 export {
   recordSale,
   salesHistory,
@@ -358,4 +397,5 @@ export {
   getSystemTotalRevenue,
   getTotalUnitsSold,
   salesGrowth,
+  salesGrowthPerDate,
 };

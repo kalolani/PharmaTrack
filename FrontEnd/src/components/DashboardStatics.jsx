@@ -69,7 +69,7 @@ function DashboardStatics() {
       });
   }, []);
   return (
-    <div className="grid grid-cols-4 gap-4 pt-[20px]">
+    <div className="relative z-10 grid grid-cols-4 gap-4 pt-[20px]">
       <div className="flex justify-center items-center gap-4 px-6 py-4 bg-white rounded-lg shadow-md">
         <div className="relative w-[70px] h-[70px] rounded-full bg-[#00B074] bg-opacity-[0.15]">
           <GiMoneyStack

@@ -61,9 +61,9 @@ function ChartContainer() {
                 The amount of sale per each sale
               </p>
             </div>
-            <div className="flex gap-2 items-center border-2 py-2 px-4 rounded-xl border-[#2D9CDB] cursor-pointer">
+            <div className="flex gap-2 items-center border py-2 px-4 rounded-xl border-[#2D9CDB] cursor-pointer">
               <IoArrowDown color="2D9CDB" />
-              <button className="text-[#464255] text-[#2D9CDB] cursor-pointer">
+              <button className="text-[#464255] text-xs text-[#2D9CDB] cursor-pointer">
                 Save Report
               </button>
             </div>

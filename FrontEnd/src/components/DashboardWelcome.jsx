@@ -3,7 +3,7 @@ import { IoIosArrowDown } from "react-icons/io";
 
 function DashboardWelcome() {
   return (
-    <div className="px-[10px] pt-[20px] flex justify-between items-center">
+    <div className="relative z-10 px-[10px] pt-[20px] flex justify-between items-center">
       <div className="flex flex-col">
         <h1 className="text-[20px] font-semibold ">Dashboard</h1>
         <p className="text-[14px] text-[#A3A3A3] font-medium font-Poppins">
