@@ -387,7 +387,20 @@ const salesGrowthPerDate = async (req, res) => {
     });
   }
 };
+const totalQuantitySold = async (req, res) => {
+  try {
+    // Fetch all sales from the system
+    const sales = await prisma.sale.findMany();
 
+    // Calculate total stock sold
+    const totalStockSold = sales.reduce((acc, sale) => acc + sale.quantity, 0);
+
+    res.json({ totalStockSold });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error fetching total sales (stock sold)." });
+  }
+};
 export {
   recordSale,
   salesHistory,
@@ -398,4 +411,5 @@ export {
   getTotalUnitsSold,
   salesGrowth,
   salesGrowthPerDate,
+  totalQuantitySold,
 };

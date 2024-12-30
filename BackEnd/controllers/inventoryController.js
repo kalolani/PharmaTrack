@@ -104,6 +104,168 @@ const getAllMedicines = async (req, res) => {
   }
 };
 
+const inventoryList = async (req, res) => {
+  try {
+    const medicines = await prisma.medicine.findMany();
+
+    const result = medicines.map((medicine) => {
+      let stockLevel = 0;
+      let totalValue = 0;
+
+      // Determine stock level and total value based on medicine type
+      if (medicine.type === "tablet") {
+        stockLevel = medicine.stripQuantity || 0;
+        totalValue =
+          (medicine.stripQuantity || 0) * (medicine.costPerStrip || 0);
+      } else if (medicine.type === "syrup") {
+        stockLevel = medicine.bottleQuantity || 0;
+        totalValue =
+          (medicine.bottleQuantity || 0) * (medicine.bottleCost || 0);
+      } else if (medicine.type === "cosmetics") {
+        stockLevel = medicine.unitQuantity || 0;
+        totalValue =
+          (medicine.unitQuantity || 0) * (medicine.cosmeticsCost || 0);
+      } else if (medicine.type === "pack") {
+        stockLevel = medicine.packQuantity || 0;
+        totalValue = (medicine.packQuantity || 0) * (medicine.costPerPack || 0);
+      }
+
+      // Determine status
+      let status = "In Stock";
+      const LOW_STOCK_THRESHOLD = 10; // Customize this value per type if needed
+      if (stockLevel <= LOW_STOCK_THRESHOLD && stockLevel > 0) {
+        status = "Low Stock";
+      } else if (stockLevel === 0) {
+        status = "Out of Stock";
+      }
+
+      return {
+        id: medicine.id,
+        name: medicine.name,
+        type: medicine.type,
+        stockLevel,
+        costPerUnit:
+          medicine.type === "tablet"
+            ? medicine.costPerStrip
+            : medicine.type === "syrup"
+            ? medicine.bottleCost
+            : medicine.type === "cosmetics"
+            ? medicine.cosmeticsCost
+            : medicine.costPerPack,
+        totalValue,
+        expiryDate: medicine.expiryDate,
+        status,
+        manufacturer: medicine.manufacturer,
+        batchNumber: medicine.batchNumber,
+      };
+    });
+
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error fetching medicines");
+  }
+};
+
+const inventoryCount = async (req, res) => {
+  try {
+    const uniqueItemCount = await prisma.medicine.count();
+    res.json({ totalUniqueItems: uniqueItemCount });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error fetching unique item count");
+  }
+};
+
+//total stock value
+const totalStockValue = async (req, res) => {
+  try {
+    const medicines = await prisma.medicine.findMany();
+
+    const totalStockValue = medicines.reduce((total, medicine) => {
+      let itemValue = 0;
+
+      switch (medicine.type) {
+        case "tablet":
+          itemValue =
+            (medicine.stripQuantity || 0) * (medicine.costPerStrip || 0);
+          break;
+        case "syrup":
+          itemValue =
+            (medicine.bottleQuantity || 0) * (medicine.bottleCost || 0);
+          break;
+        case "cosmetics":
+          itemValue =
+            (medicine.unitQuantity || 0) * (medicine.cosmeticsCost || 0);
+          break;
+        case "other":
+          itemValue =
+            (medicine.unitQuantity || 0) * (medicine.cosmeticsCost || 0); // Default for other types
+          break;
+      }
+
+      return total + itemValue;
+    }, 0);
+
+    res.json({ totalStockValue });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error calculating total stock value");
+  }
+};
+
+const expiredItems = async (req, res) => {
+  try {
+    const currentDate = new Date();
+
+    // Fetch all expired medicines
+    const expiredMedicines = await prisma.medicine.findMany({
+      where: {
+        expiryDate: {
+          lt: currentDate, // Expiry date is less than current date
+        },
+      },
+    });
+
+    // Calculate the total value and count of expired items
+    const { totalValue, count } = expiredMedicines.reduce(
+      (acc, medicine) => {
+        let itemValue = 0;
+
+        switch (medicine.type) {
+          case "tablet":
+            itemValue =
+              (medicine.stripQuantity || 0) * (medicine.costPerStrip || 0);
+            break;
+          case "syrup":
+            itemValue =
+              (medicine.bottleQuantity || 0) * (medicine.bottleCost || 0);
+            break;
+          case "cosmetics":
+            itemValue =
+              (medicine.unitQuantity || 0) * (medicine.cosmeticsCost || 0);
+            break;
+          case "other":
+            itemValue =
+              (medicine.unitQuantity || 0) * (medicine.cosmeticsCost || 0); // Default for "other" types
+            break;
+        }
+
+        return {
+          totalValue: acc.totalValue + itemValue,
+          count: acc.count + 1,
+        };
+      },
+      { totalValue: 0, count: 0 }
+    );
+
+    res.json({ expiredItemCount: count, expiredTotalValue: totalValue });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error fetching expired items");
+  }
+};
+
 //search for medicine by name
 // Search for medicine by name
 const searchMedicineByName = async (req, res) => {
@@ -242,4 +404,8 @@ export {
   searchMedicines,
   searchMedicineByName,
   getTotalMedicinesCount,
+  inventoryList,
+  inventoryCount,
+  totalStockValue,
+  expiredItems,
 };
