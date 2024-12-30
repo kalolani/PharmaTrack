@@ -30,6 +30,7 @@ function ExpiryManagement() {
 
   return (
     <div className="pt-[20px] pb-[50px] px-[20px] w-[85%] h-[100%] z-[10] text-[rgb(249 250 251)] font-Poppins bg-[#F3F2F7] min-h-screen">
+      <div className="absolute inset-0 bg-grid-pattern-dashboard opacity-40 pointer-events-none"></div>
       {/* Navbar */}
       <AdminNavBar />
 
@@ -42,7 +43,7 @@ function ExpiryManagement() {
       </h1>
 
       {/* Expired Medicines */}
-      <section className="mb-8">
+      <section className="relative z-100 mb-8">
         <h2 className="text-xl font-semibold text-red-500 mb-4">
           Expired Medicines
         </h2>

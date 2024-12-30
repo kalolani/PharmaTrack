@@ -64,6 +64,7 @@ function AllMedicine() {
 
   return (
     <div className="p-6 w-[85%] min-h-screen bg-gray-100 text-gray-900">
+      <div className="absolute inset-0 bg-grid-pattern-dashboard opacity-40 pointer-events-none"></div>
       {/* Navbar */}
       <AdminNavBar />
 
@@ -71,7 +72,7 @@ function AllMedicine() {
       <DashboardWelcome />
 
       {/* Medicines Table */}
-      <div className="mt-8">
+      <div className="relative z-100 mt-8">
         <h2 className="text-2xl font-semibold text-center mb-4">
           Medicine Inventory
         </h2>

@@ -154,13 +154,14 @@ const AddMedicine = () => {
 
   return (
     <div className="p-6 w-[85%] mx-auto bg-gray-100  space-y-4">
+      <div className="absolute inset-0 bg-grid-pattern-dashboard opacity-40 pointer-events-none"></div>
       <AdminNavBar />
-      <div className="p-6 w-[50%] mt-32 mx-auto bg-white rounded-md shadow-md">
+      <div className="relative z-100 space-y-4 p-6 w-[65%] mt-32 mx-auto bg-white rounded-md shadow-md">
         <h1 className="text-xl font-bold mb-4 text-blue-500 font-Poppins">
           Add Medicine
         </h1>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
+          <div className="">
             <label
               htmlFor="name"
               className="block text-sm font-medium text-gray-700"

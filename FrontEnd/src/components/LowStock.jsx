@@ -46,9 +46,10 @@ function LowStockPage() {
 
   return (
     <div className="pt-[20px] pb-[50px] px-[20px] w-[85%] h-[100%] z-[10] text-[rgb(249_250_251)] font-Poppins bg-[#F3F2F7] min-h-screen">
+      <div className="absolute inset-0 bg-grid-pattern-dashboard opacity-40 pointer-events-none"></div>
       <AdminNavBar />
 
-      <div className="p-8">
+      <div className="relative z-100 p-8">
         <h2 className="text-3xl font-bold text-center text-[#464255] mb-6">
           Low Stock Medicines
         </h2>
