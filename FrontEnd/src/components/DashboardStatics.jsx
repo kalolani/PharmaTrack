@@ -148,7 +148,7 @@ function DashboardStatics() {
         <div className="flex flex-col gap-[2px]">
           <div className="flex items-center gap-2">
             <p className="text-[#464255] text-[12px] font-semibold">
-              {salesGrowth}
+              {salesGrowth}%
             </p>
             <div className="flex justify-center items-center gap-2">
               {salesGrowth > 0 ? (

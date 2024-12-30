@@ -17,7 +17,7 @@ const InventoryReport = () => {
       <DashboardWelcome />
       <InventoryReportStastics />
       <div className="group my-12 text-center hover:cursor-pointer">
-        <h1 className="inline-block text-base font-semibold font-Poppins text-gray-800 px-8 py-2 bg-gradient-to-r from-indigo-500 tracking-wider bg-green-300 rounded-md shadow-md group-hover:shadow-none">
+        <h1 className="inline-block text-base font-semibold font-Poppins text-gray-800 px-8 py-2 bg-gradient-to-r from-indigo-500 tracking-wider text-gray-600 bg-green-300 rounded-md shadow-md group-hover:shadow-none">
           Inventory Report
         </h1>
       </div>

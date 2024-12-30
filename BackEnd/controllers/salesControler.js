@@ -401,6 +401,78 @@ const totalQuantitySold = async (req, res) => {
     res.status(500).json({ error: "Error fetching total sales (stock sold)." });
   }
 };
+const financialReport = async (req, res) => {
+  try {
+    // Fetch sales data grouped by date with related medicines to calculate expense
+    const sales = await prisma.sale.findMany({
+      include: {
+        medicine: true, // Include the medicine details for cost calculation
+      },
+      orderBy: {
+        createdAt: "asc", // Order by date in ascending order
+      },
+    });
+
+    // Calculate revenue, expense, and profit for each day
+    const dailyFinancials = sales.reduce((acc, sale) => {
+      // Format the date (YYYY-MM-DD)
+      const date = sale.createdAt.toISOString().split("T")[0];
+
+      // Check if the date already exists in the accumulator
+      if (!acc[date]) {
+        acc[date] = {
+          revenue: 0,
+          expense: 0,
+          profit: 0,
+        };
+      }
+
+      // Revenue: Add sale price to the day's revenue
+      const revenue = sale.totalPrice || 0;
+
+      // Expense: Calculate based on the medicine sold and its cost
+      let expense = 0;
+      if (sale.medicine) {
+        const quantitySold = sale.quantity || 0;
+        const medicine = sale.medicine;
+        console.log(medicine);
+        // Use cost based on the medicine type (tablet, syrup, etc.)
+        if (medicine.type === "tablet") {
+          expense = medicine.costPerStrip * quantitySold;
+        } else if (medicine.type === "Syrup") {
+          expense = medicine.costPerPack * quantitySold;
+        } else if (medicine.type === "cosmetics") {
+          expense = medicine.cosmeticsCost * quantitySold;
+        } else {
+          expense = medicine.bottleCost * quantitySold; // default cost for other types
+        }
+      }
+
+      // Update daily totals
+      acc[date].revenue += revenue;
+      acc[date].expense += expense;
+      acc[date].profit += revenue - expense; // Profit = Revenue - Expense
+
+      return acc;
+    }, {});
+
+    // Transform data into an array for easier display
+    const financialsArray = Object.keys(dailyFinancials).map((date) => ({
+      date,
+      revenue: dailyFinancials[date].revenue,
+      expense: dailyFinancials[date].expense,
+      profit: dailyFinancials[date].profit,
+    }));
+
+    res.status(200).json(financialsArray);
+  } catch (error) {
+    console.error("Error calculating daily financials:", error.message);
+    res.status(500).json({
+      message: "Error calculating daily financials",
+      error: error.message,
+    });
+  }
+};
 export {
   recordSale,
   salesHistory,
@@ -412,4 +484,5 @@ export {
   salesGrowth,
   salesGrowthPerDate,
   totalQuantitySold,
+  financialReport,
 };
