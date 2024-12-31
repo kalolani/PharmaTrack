@@ -11,6 +11,7 @@ import {
   salesGrowthPerDate,
   totalQuantitySold,
   financialReport,
+  getDailySales,
 } from "../controllers/salesControler.js";
 
 const salesRouter = express.Router();
@@ -27,5 +28,6 @@ salesRouter.get("/sales-growth", salesGrowth);
 salesRouter.get("/daily-sales-growth", salesGrowthPerDate);
 salesRouter.get("/sold-quantity", totalQuantitySold);
 salesRouter.get("/financial-report", financialReport);
+salesRouter.get("/daily-sales", getDailySales);
 
 export default salesRouter;

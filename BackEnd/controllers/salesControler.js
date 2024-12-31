@@ -473,6 +473,34 @@ const financialReport = async (req, res) => {
     });
   }
 };
+
+const getDailySales = async (req, res) => {
+  try {
+    const dailySales = await prisma.sale.groupBy({
+      by: ["createdAt"], // Group sales by date
+      _sum: {
+        totalPrice: true, // Calculate the sum of sales for each day
+      },
+      orderBy: {
+        createdAt: "asc", // Order by date in ascending order
+      },
+    });
+
+    // Format the data into a simple array for the chart
+    const formattedSales = dailySales.map((day) => ({
+      date: day.createdAt.toISOString().split("T")[0], // Convert to YYYY-MM-DD format
+      sales: day._sum.totalPrice || 0,
+    }));
+
+    res.status(200).json(formattedSales);
+  } catch (error) {
+    console.error("Error fetching daily sales data:", error.message);
+    res.status(500).json({
+      message: "Error fetching daily sales data",
+      error: error.message,
+    });
+  }
+};
 export {
   recordSale,
   salesHistory,
@@ -485,4 +513,5 @@ export {
   salesGrowthPerDate,
   totalQuantitySold,
   financialReport,
+  getDailySales,
 };
