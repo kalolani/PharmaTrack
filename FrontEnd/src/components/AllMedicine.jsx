@@ -89,12 +89,10 @@ function AllMedicine() {
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white rounded-lg shadow-md">
               <thead>
-                <tr className="bg-blue-500 text-white uppercase text-sm">
+                <tr className="bg-green-300 font-semibold font-Poppins text-left text-gray-700 text-sm">
                   <th className="py-3 px-4 text-left">Name</th>
                   <th className="py-3 px-4 text-left">Type</th>
-                  <th className="py-3 px-4 text-left">
-                    Quantity(pack/bottle/unit)
-                  </th>
+                  <th className="py-3 px-4 text-left">Quantity</th>
                   <th className="py-3 px-4 text-left">Manufacturer</th>
                   <th className="py-3 px-4 text-left">Expiry Date</th>
                   <th className="py-3 px-4 text-left">Batch Number</th>
@@ -103,16 +101,16 @@ function AllMedicine() {
               </thead>
               <tbody>
                 {medicines.length > 0 ? (
-                  medicines.map((medicine) => (
+                  medicines.map((medicine, index) => (
                     <tr
                       key={medicine.id}
-                      className="border-b hover:bg-gray-100"
+                      className={`text-sm ${
+                        index % 2 === 0 ? "bg-gray-100" : "bg-white"
+                      }`}
                     >
                       <td className="py-3 px-4">{medicine.name}</td>
                       <td className="py-3 px-4">{medicine.type}</td>
-                      <td className="py-3 px-4 text-center">
-                        {getQuantity(medicine)}
-                      </td>
+                      <td className="py-3 px-4">{getQuantity(medicine)}</td>
                       <td className="py-3 px-4">{medicine.manufacturer}</td>
                       <td className="py-3 px-4">
                         {formatDate(medicine.expiryDate)}

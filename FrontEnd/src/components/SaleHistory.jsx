@@ -81,6 +81,7 @@ function SoldMedicines() {
 
   return (
     <div className="pt-[20px] pb-[50px] px-[20px] w-[85%] h-[100%] z-[10] bg-[#F3F2F7] min-h-screen">
+      <div className="absolute inset-0 bg-grid-pattern-dashboard opacity-40 pointer-events-none"></div>
       <AdminNavBar />
       <DashboardWelcome />
 
@@ -88,7 +89,7 @@ function SoldMedicines() {
         Sold Medicines
       </h1>
 
-      <div className="mb-6">
+      <div className="relative z-10 mb-6">
         <input
           type="text"
           placeholder="Search by medicine name..."
@@ -98,10 +99,10 @@ function SoldMedicines() {
         />
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="relative z-10 overflow-x-auto">
         <table className="w-full bg-white rounded-md shadow-md">
           <thead>
-            <tr className="bg-blue-500 bg-opacity-[0.75] text-left text-white">
+            <tr className="bg-green-300 font-semibold font-Poppins text-left text-gray-700 text-sm">
               <th className="p-4 font-Poppins">Medicine Name</th>
               <th className="p-4 font-Poppins">Unit Type</th>
               <th className="p-4 font-Poppins">Quantity</th>
@@ -113,8 +114,13 @@ function SoldMedicines() {
           </thead>
           <tbody>
             {filteredMedicines.length > 0 ? (
-              filteredMedicines.map((medicine) => (
-                <tr key={medicine.id} className="border-b hover:bg-gray-100">
+              filteredMedicines.map((medicine, index) => (
+                <tr
+                  key={medicine.id}
+                  className={`text-xs ${
+                    index % 2 === 0 ? "bg-gray-100" : "bg-white"
+                  }`}
+                >
                   <td className="p-4 font-Poppins">{medicine.medicineName}</td>
                   <td className="p-4 font-Poppins">{medicine.unitType}</td>
                   <td className="p-4 font-Poppins">{medicine.quantity}</td>

@@ -57,7 +57,7 @@ function LowStockPage() {
           {lowStockMedicines.length > 0 ? (
             <table className="min-w-full bg-[rgb(249_250_251)] rounded-lg shadow-md">
               <thead>
-                <tr className="bg-[#2D9CDB] text-[rgb(249_250_251)] uppercase text-sm">
+                <tr className="bg-green-300 font-semibold font-Poppins text-left text-gray-700 text-sm">
                   <th className="py-3 px-4 text-left font-Poppins">Name</th>
                   <th className="py-3 px-4 text-left font-Poppins">Type</th>
                   <th className="py-3 px-4 text-left font-Poppins">
@@ -73,10 +73,12 @@ function LowStockPage() {
                 </tr>
               </thead>
               <tbody>
-                {lowStockMedicines.map((medicine) => (
+                {lowStockMedicines.map((medicine, index) => (
                   <tr
                     key={medicine.id}
-                    className="border-b hover:bg-gray-100 text-[#464255]"
+                    className={`text-sm text-gray-700 ${
+                      index % 2 === 0 ? "bg-gray-100" : "bg-white"
+                    }`}
                   >
                     <td className="py-3 px-4 font-Poppins">{medicine.name}</td>
                     <td className="py-3 px-4 font-Poppins">{medicine.type}</td>

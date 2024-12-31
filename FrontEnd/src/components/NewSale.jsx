@@ -117,11 +117,12 @@ function RecordSale() {
 
   return (
     <div className="pt-6 pb-8 px-4 w-[85%] h-full bg-[#F3F2F7] min-h-screen">
+      <div className="absolute inset-0 bg-grid-pattern-dashboard opacity-40 pointer-events-none"></div>
       <AdminNavBar />
       <h1 className="text-3xl font-bold text-[#464255] mb-6 pt-10 text-center font-Poppins">
         Record New Sale
       </h1>
-      <div className="bg-white p-6 shadow-md rounded-lg max-w-xl mx-auto">
+      <div className="relative z-10 bg-white p-6 shadow-md rounded-lg max-w-xl mx-auto">
         <h2 className="text-xl font-semibold mb-4 font-Poppins">Add Sale</h2>
         <div className="space-y-4">
           {/* Search Input */}
