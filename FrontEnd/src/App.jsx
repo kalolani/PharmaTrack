@@ -40,6 +40,7 @@ function App() {
             <Route index element={<Navigate replace to="home" />} />
             <Route path="home" element={<Dashboard />} />
             <Route path="notification" element={<Notifications />} />
+
             <Route path="newSale" element={<NewSale />} />
             <Route path="saleHistory" element={<SaleHistory />} />
             <Route path="saleHistory" element={<SaleHistory />} />
