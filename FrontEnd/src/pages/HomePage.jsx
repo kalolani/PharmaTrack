@@ -212,6 +212,10 @@ const Home = () => {
             <div>
               <div className="relative h-full bg-green-600">
                 <div className="absolute w-full inset-0 bg-grid-pattern opacity-40 pointer-events-none"></div>
+                <div className="absolute right-16 top-10 bg-yellow-300 w-2 h-2 rounded-full blur-sm opacity-100"></div>
+                <div className="absolute top-40 right-32 bg-yellow-300 w-2 h-2 rounded-full blur-sm opacity-100"></div>
+                <div className="absolute right-36 top-16 bg-yellow-300 w-2 h-2 rounded-full blur-sm opacity-100"></div>
+                <div className="absolute top-50 right-20 bg-yellow-300 w-2 h-2 rounded-full blur-sm opacity-100"></div>
                 <div className="self-center flex flex-col gap-4 px-12 py-4 border-b-2 border-gray-300">
                   <h1 className="self-start text-white text-2xl font-bold font-sans ">
                     Features
