@@ -3,6 +3,10 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      gradientColorStops: {
+        "custom-light": "#ffffff", // Custom light color
+        "custom-dark": "#00ff00", // Custom green shade
+      },
       colors: {
         // Define your custom colors here
         primary: "#072032",

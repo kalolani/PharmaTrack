@@ -3,6 +3,8 @@
 // import PageNav from "../components/PageNav";
 // import GridDots from "../components/GridDots";
 
+import Footer from "../components/Footer";
+
 // import CircleOutline from "../components/CircleOutline";
 // // import CircleOutline from "../components/CircleOutline";
 // function HomePage({ setShowLogin }) {
@@ -60,8 +62,41 @@ const Home = () => {
     <div>
       <div className="relative bg-[#005030] min-h-screen text-white font-sans">
         <div className="absolute inset-0 bg-grid-pattern opacity-40 pointer-events-none"></div>
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="light-effect"></div>
+        </div>
+        <div className="absolute inset-y-0 right-0 w-1/3 pointer-events-none">
+          <div className="absolute bg-white rounded-full h-1 w-1 top-5 right-10 opacity-80 animate-pulse"></div>
+          <div className="absolute bg-yellow-400 rounded-full h-1 w-1 top-10 right-30 opacity-60 animate-pulse"></div>
+          <div className="absolute bg-white rounded-full h-1 w-1 top-15 right-50 opacity-70 animate-pulse"></div>
+          <div className="absolute bg-white rounded-full h-1 w-1 top-20 right-75 opacity-50 animate-pulse"></div>
+          <div className="absolute bg-yellow-300 rounded-full h-1 w-1 top-25 right-20 opacity-90 animate-pulse"></div>
+          <div className="absolute bg-white rounded-full h-1 w-1 top-30 right-40 opacity-80 animate-pulse"></div>
+          <div className="absolute bg-yellow-200 rounded-full h-1 w-1 top-35 right-45 opacity-60 animate-pulse"></div>
+          <div className="absolute bg-white rounded-full h-1 w-1 top-40 right-70 opacity-75 animate-pulse"></div>
+          <div className="absolute bg-white rounded-full h-1 w-1 top-50 right-25 opacity-90 animate-pulse"></div>
+          <div className="absolute bg-yellow-400 rounded-full h-1 w-1 top-55 right-35 opacity-70 animate-pulse"></div>
+          <div className="absolute bg-white rounded-full h-1 w-1 top-60 right-15 opacity-80 animate-pulse"></div>
+          <div className="absolute bg-yellow-300 rounded-full h-1 w-1 top-65 right-50 opacity-90 animate-pulse"></div>
+          <div className="absolute bg-white rounded-full h-1 w-1 top-70 right-80 opacity-70 animate-pulse"></div>
+          <div className="absolute bg-white rounded-full h-1 w-1 top-75 right-40 opacity-50 animate-pulse"></div>
+          <div className="absolute bg-yellow-200 rounded-full h-1 w-1 top-80 right-20 opacity-90 animate-pulse"></div>
+          <div className="absolute bg-white rounded-full h-1 w-1 top-85 right-60 opacity-70 animate-pulse"></div>
+          <div className="absolute bg-yellow-300 rounded-full h-1 w-1 top-90 right-75 opacity-80 animate-pulse"></div>
+          <div className="absolute bg-white rounded-full h-1 w-1 top-95 right-10 opacity-75 animate-pulse"></div>
+          <div className="absolute bg-yellow-400 rounded-full h-1 w-1 top-10 right-95 opacity-90 animate-pulse"></div>
+          <div className="absolute bg-white rounded-full h-1 w-1 top-20 right-15 opacity-70 animate-pulse"></div>
+          <div className="absolute bg-yellow-300 rounded-full h-1 w-1 top-30 right-35 opacity-80 animate-pulse"></div>
+          <div className="absolute bg-white rounded-full h-1 w-1 top-40 right-60 opacity-75 animate-pulse"></div>
+          <div className="absolute bg-yellow-400 rounded-full h-1 w-1 top-50 right-25 opacity-90 animate-pulse"></div>
+          <div className="absolute bg-white rounded-full h-1 w-1 top-60 right-10 opacity-70 animate-pulse"></div>
+          <div className="absolute bg-yellow-300 rounded-full h-1 w-1 top-70 right-30 opacity-60 animate-pulse"></div>
+          <div className="absolute bg-white rounded-full h-1 w-1 top-80 right-50 opacity-80 animate-pulse"></div>
+          <div className="absolute bg-yellow-400 rounded-full h-1 w-1 top-90 right-75 opacity-75 animate-pulse"></div>
+          <div className="absolute bg-white rounded-full h-1 w-1 top-95 right-40 opacity-90 animate-pulse"></div>
+        </div>
         {/* Navigation Bar */}
-        <nav className="z-50 fixed backdrop-blur-md top-4 left-1/2 transform -translate-x-1/2 w-[90%] p-6 py-4 flex justify-between items-center bg-green-400 bg-opacity-[0.2] rounded-lg shadow-lg">
+        <nav className="z-50 fixed backdrop-blur-md top-4 left-1/2 transform -translate-x-1/2 w-[90%] p-6 py-4 flex justify-between items-center bg-green-400 bg-opacity-[0.8] rounded-lg shadow-lg">
           <div className="text-xl font-bold">My Pharmacy</div>
           <div className="flex items-center space-x-6">
             <a href="#" className="hover:underline">
@@ -108,28 +143,28 @@ const Home = () => {
         </section>
 
         {/* Mock Dashboard (Simplified) */}
-        <div className="z-10 absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-[70%] mx-auto overflow-hidden border-[20px] border-green-200 border-opacity-[0.4] rounded-xl shadow-lg">
+        <div className="z-10 absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-[55%] w-[70%] mx-auto overflow-hidden border-[20px] border-green-200 border-opacity-[0.4] rounded-xl shadow-2xl">
           <img
             src="/dashboard.PNG"
             className="w-full h-full object-cover overflow-hidden"
           />
         </div>
       </div>
-      <div className="mt-[400px] min-h-screen">
+      <div className="relative pt-[400px] pb-[100px] min-h-screen bg-[#B3DDE8]">
+        <div className="absolute w-full inset-0 bg-grid-pattern-dashboard opacity-40 pointer-events-none"></div>
         <h1 className="text-xl text-center leading-normal md:text-4xl font-bold text-gray-800 mb-6">
           This stock management system
           <br /> has all you need in one place
         </h1>
-        <div className="w-[80%] mx-auto mt-[70px] flex justify-between">
+        <div className=" w-[85%] mx-auto mt-[70px] flex justify-between">
           <div className="flex self-center w-full flex-col gap-6">
-            <h1 className="text-4xl font-bold text-gray-800 font-sans">
-              Merge your quantitative
-              <br /> and qualitative data
+            <h1 className="text-4xl font-bold text-gray-800 font-sans w-[100%]">
+              Smart Solutions for Your Pharmacy Inventory
             </h1>
             <p className="text-xl font-semibold font-sans text-gray-800 w-[80%]">
-              Integrate your reliable business data with product data using
-              session replay to analyze impact on marketing, support, NPS,
-              billing and more
+              This Pharmacy Stock Management System is your all-in-one solution
+              for tracking stock levels, monitoring expiration dates, and
+              ensuring your shelves are always stocked with the right products.
             </p>
             <div className="flex gap-6">
               <button className="text-white text-lg tracking-wide px-8 py-2 bg-[#005030] hover:bg-green-700 rounded-md">
@@ -151,11 +186,11 @@ const Home = () => {
           </div>
         </div>
       </div>
-      <div className="relative w-full bg-[#005030] min-h-screen font-sans">
+      <div className="relative py-20 w-full bg-[#005030] min-h-screen font-sans">
         <div className="absolute w-full inset-0 bg-grid-pattern opacity-40 pointer-events-none"></div>
         <div>
-          <div className="absolute w-[85%] h-[550px] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 bg-white grid grid-cols-3 rounded-3xl overflow-hidden">
-            <div className="h-full bg-gray-50 bg-opacity-[0.6]">
+          <div className="absolute w-[85%] h-[550px] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 bg-white grid grid-cols-3 border-none rounded-3xl overflow-hidden">
+            <div className="h-full bg-[#EBE9DD]">
               <div className="self-center flex flex-col gap-4 px-12 py-4 border-b-2 border-gray-300">
                 <h1 className="self-start text-gray-700 text-2xl font-bold font-sans ">
                   Benefits
@@ -210,12 +245,16 @@ const Home = () => {
               </ul>
             </div>
             <div>
-              <div className="relative h-full bg-green-600">
-                <div className="absolute w-full inset-0 bg-grid-pattern opacity-40 pointer-events-none"></div>
+              <div className="relative h-full bg-[#005030]">
+                <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                  <div className="light-effects"></div>
+                </div>
                 <div className="absolute right-16 top-10 bg-yellow-300 w-2 h-2 rounded-full blur-sm opacity-100"></div>
                 <div className="absolute top-40 right-32 bg-yellow-300 w-2 h-2 rounded-full blur-sm opacity-100"></div>
                 <div className="absolute right-36 top-16 bg-yellow-300 w-2 h-2 rounded-full blur-sm opacity-100"></div>
-                <div className="absolute top-50 right-20 bg-yellow-300 w-2 h-2 rounded-full blur-sm opacity-100"></div>
+                <div className="absolute top-[100px] right-[60px] bg-yellow-300 w-2 h-2 rounded-full blur-sm opacity-100"></div>
+                <div className="absolute right-[30px] top-[30px] bg-yellow-300 w-2 h-2 rounded-full blur-sm opacity-100"></div>
+                <div className="absolute top-[60px] right-[25px] bg-yellow-300 w-2 h-2 rounded-full blur-sm opacity-100"></div>
                 <div className="self-center flex flex-col gap-4 px-12 py-4 border-b-2 border-gray-300">
                   <h1 className="self-start text-white text-2xl font-bold font-sans ">
                     Features
@@ -285,17 +324,17 @@ const Home = () => {
               </div>
             </div>
             <div>
-              <div className="h-full bg-gray-50 bg-opacity-[0.6]">
+              <div className="h-full bg-[#EBE9DD]">
                 <div className="self-center flex flex-col gap-4 px-12 py-4 border-b-2 border-gray-300">
                   <h1 className="self-start text-gray-700 text-2xl font-bold font-sans ">
-                    Benefits
+                    Additional Impact Metrics
                   </h1>
                   <button className="self-start bg-yellow-400 text-[#005030] rounded-md px-8 py-3 font-medium hover:bg-[#e6b44b]">
                     Get Started
                   </button>
                 </div>
                 <h1 className="mt-8 text-center text-gray-700 font-bold text-lg px-4 py-2 font-sans">
-                  The benefit of using our software
+                  The benefit from metric analysis
                 </h1>
                 <ul className=" flex flex-col gap-2 px-12">
                   <li className="flex items-center gap-2">
@@ -308,33 +347,33 @@ const Home = () => {
                     {" "}
                     <img src="/star.png" className="h-10" />
                     <p className="font-sans font-semibold text-lg text-gray-800 ">
-                      Improved Stock Control
+                      Improved Inventory Accuracy
                     </p>
                   </li>
                   <li className="flex items-center gap-2">
                     <img src="/star.png" className="h-10" />
                     <p className="font-sans font-semibold text-lg text-gray-800 ">
-                      Time Efficiency
+                      Enhanced Reporting Efficiency
                     </p>
                   </li>
                   <li className="flex items-center gap-2">
                     <img src="/star.png" className="h-10" />
                     <p className="font-sans font-semibold text-lg text-gray-800 ">
                       {" "}
-                      Cost Savings
+                      Faster Decision Making
                     </p>
                   </li>
                   <li className="flex items-center gap-2">
                     <img src="/star.png" className="h-10" />
                     <p className="font-sans font-semibold text-lg text-gray-800 ">
-                      Enhanced Reporting and Analysis
+                      Reduction in Stockouts
                     </p>
                   </li>
                   <li className="flex items-center gap-2">
                     {" "}
                     <img src="/star.png" className="h-10" />
                     <p className="font-sans font-semibold text-lg text-gray-800 ">
-                      Minimizes Human Errors
+                      Increased Sales Efficiency
                     </p>
                   </li>
                 </ul>
@@ -343,6 +382,7 @@ const Home = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
