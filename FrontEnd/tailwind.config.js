@@ -37,6 +37,8 @@ export default {
     backgroundImage: {
       "home-image":
         "linear-gradient(to right,rgba(4, 60, 170, 1) 0% ,rgba(4, 60, 170, 0.96) 12%,rgba(4, 60, 170, 0.86) 31%,  rgba(4, 60, 170, 0.59) 54%,rgba(4, 60, 170, 0.34) 74%,rgba(4, 60, 170, 0.16) 88%,rgba(4, 60, 170, 0.11) 93%, rgba(4, 60, 170, 0) 100%), url('./assets/images/drag.jpg')",
+      "hexagon-pattern":
+        "url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2230%22 height=%2234%22 viewBox=%220 0 30 34%22%3E%3Cpolygon points=%2250,0 100,25 100,75 50,100 0,75 0,25%22 fill=%22%233A4F62%22 fill-opacity=%220.3%22/%3E%3C/svg%3E')",
     },
 
     transform: {
