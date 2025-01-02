@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import AdminNavBar from "./AdminNavBar";
 import DashboardWelcome from "./DashboardWelcome";
+import { useNavigate } from "react-router-dom";
 
 function AllMedicine() {
   const [medicines, setMedicines] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchMedicines = async () => {
       try {
@@ -62,6 +63,10 @@ function AllMedicine() {
     }
   };
 
+  const handleEdit = (medicineId) => {
+    navigate(`/dashboard/editStock/${medicineId}`);
+  };
+
   return (
     <div className="p-6 w-[85%] min-h-screen bg-gray-100 text-gray-900">
       <div className="absolute inset-0 bg-grid-pattern-dashboard opacity-40 pointer-events-none"></div>
@@ -96,6 +101,7 @@ function AllMedicine() {
                   <th className="py-3 px-4 text-left">Manufacturer</th>
                   <th className="py-3 px-4 text-left">Expiry Date</th>
                   <th className="py-3 px-4 text-left">Batch Number</th>
+                  <th className="py-3 px-4 text-left">Update</th>
                   <th className="py-3 px-4 text-left">Actions</th>
                 </tr>
               </thead>
@@ -116,6 +122,14 @@ function AllMedicine() {
                         {formatDate(medicine.expiryDate)}
                       </td>
                       <td className="py-3 px-4">{medicine.batchNumber}</td>
+                      <td className="py-3 px-4">
+                        <button
+                          onClick={() => handleEdit(medicine.id)}
+                          className="bg-green-700 bg-opacity-[0.7] hover:bg-green-600 hover:bg-opacity-[0.7] text-white px-4 py-1 rounded transition"
+                        >
+                          Edit
+                        </button>
+                      </td>
                       <td className="py-3 px-4">
                         <button
                           onClick={() => deleteMedicine(medicine.id)}

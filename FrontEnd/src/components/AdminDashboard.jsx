@@ -52,6 +52,7 @@ const data = [
     sub: [
       { sub: "All Medicine", to: "medicines" },
       { sub: "Add New Stock", to: "addStock" },
+
       { sub: "Purchase Medicine", to: "purchase" },
       { sub: "Low Stock", to: "lowStock" },
       { sub: "Expiry Management", to: "expiryManagement" },

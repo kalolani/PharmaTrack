@@ -24,6 +24,8 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PurchaseMedicine from "./components/PurchaseMedicine";
 
+import EditMedicine from "./components/EditMedicine";
+
 function App() {
   const [showLogin, setShowLogin] = useState(false);
   console.log(showLogin);
@@ -35,7 +37,7 @@ function App() {
         <ToastContainer />
         <Routes>
           <Route path="/" element={<HomePage setShowLogin={setShowLogin} />} />
-          <Route path="dashboard" element={<AdminDashboard />}>
+          <Route path="/dashboard" element={<AdminDashboard />}>
             {/* <Dashboard /> */}
             <Route index element={<Navigate replace to="home" />} />
             <Route path="home" element={<Dashboard />} />
@@ -47,6 +49,7 @@ function App() {
             <Route path="medicines" element={<AllMedicine />} />
             <Route path="purchase" element={<PurchaseMedicine />} />
             <Route path="addStock" element={<AddMedicine />} />
+            <Route path="editStock/:id" element={<EditMedicine />} />
             <Route path="lowStock" element={<LowStock />} />
             <Route path="expiryManagement" element={<ExpiryManagement />} />
             <Route path="salesReport" element={<SalesReport />} />

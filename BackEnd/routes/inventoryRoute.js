@@ -5,6 +5,7 @@ import {
   expiredItems,
   expiredMedicines,
   getAllMedicines,
+  getSpecificMedicine,
   getTotalMedicinesCount,
   inventoryCount,
   inventoryList,
@@ -12,11 +13,14 @@ import {
   searchMedicineByName,
   searchMedicines,
   totalStockValue,
+  updateMedicine,
 } from "../controllers/inventoryController.js";
 const inventoryRouter = express.Router();
 
 // Registration and Login routes
 inventoryRouter.post("/add-medicine", addMedicine);
+inventoryRouter.post("/medicines/:id", getSpecificMedicine);
+inventoryRouter.post("/medicines/:id", updateMedicine);
 inventoryRouter.get("/list-medicine", getAllMedicines);
 inventoryRouter.get("/list", inventoryList);
 inventoryRouter.get("/count", inventoryCount);

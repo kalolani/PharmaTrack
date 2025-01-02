@@ -1,10 +1,13 @@
 // Import required modules
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AdminNavBar from "./AdminNavBar";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-const AddMedicine = () => {
+import { useNavigate, useParams } from "react-router-dom";
+const EditMedicine = () => {
+  const { id } = useParams(); // Get the medicine ID from the URL
+  const navigate = useNavigate();
   const [medicineDetails, setMedicineDetails] = useState({
     name: "",
     type: "tablet",
@@ -31,6 +34,21 @@ const AddMedicine = () => {
     cosmeticsCost: "",
   });
   console.log(medicineDetails);
+
+  useEffect(() => {
+    const fetchMedicineDetails = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3000/api/inventory/medicines${id}`
+        );
+        setMedicineDetails(response.data);
+      } catch (err) {
+        close.log(err);
+      }
+    };
+
+    fetchMedicineDetails();
+  }, [id]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -67,17 +85,18 @@ const AddMedicine = () => {
     let sellingPriceCosmetics = "";
 
     if (!isNaN(costPerStrip) && !isNaN(percentageStrip)) {
-      sellingPriceStrip = costPerStrip * percentageStrip;
+      sellingPriceStrip = costPerStrip + (costPerStrip * percentageStrip) / 100;
     }
 
     if (!isNaN(costPerPack) && !isNaN(percentagePack)) {
-      sellingPricePack = costPerPack * percentagePack;
+      sellingPricePack = costPerPack + (costPerPack * percentagePack) / 100;
     }
     if (!isNaN(bottleCost) && !isNaN(percentageBottle)) {
-      sellingPriceBottle = bottleCost * percentageBottle;
+      sellingPriceBottle = bottleCost + (bottleCost * percentageBottle) / 100;
     }
     if (!isNaN(cosmeticsCost) && !isNaN(percentageCosmetics)) {
-      sellingPriceCosmetics = cosmeticsCost * percentageCosmetics;
+      sellingPriceCosmetics =
+        cosmeticsCost + (cosmeticsCost * percentageCosmetics) / 100;
     }
 
     setMedicineDetails((prevDetails) => ({
@@ -95,59 +114,16 @@ const AddMedicine = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post(
-        "http://localhost:3000/api/inventory/add-medicine",
-        medicineDetails
-      );
-      console.log("Response data:", response.data);
 
-      if (response.status === 201) {
-        toast.success("Medicine added successfully!");
-        setMedicineDetails({
-          name: "",
-          type: "tablet",
-          costPerStrip: "",
-          costPerPack: "",
-          expiryDate: "",
-          batchNumber: "",
-          manufacturer: "",
-          percentageStrip: "",
-          percentagePack: "",
-          percentageBottle: "",
-          percentageCosmetics: "",
-          percentageUnit: "",
-          sellingPriceBottle: "",
-          sellingPriceCosmetics: "",
-          sellingPriceStrip: "",
-          sellingPricePack: "",
-          packQuantity: "",
-          stripQuantity: "",
-          stripPerPack: "",
-          unitQuantity: "",
-          bottleQuantity: "",
-          bottleCost: "",
-          cosmeticsCost: "",
-        });
-      } else if (response.data.message === "Medicine already found in stock") {
-        // Handle the case where the medicine already exists in the stock
-        toast.info("The medicine is already found in the stock.");
-      } else {
-        toast.warning(
-          "Unexpected response from the server. Please check again."
-        );
-        console.warn("Unexpected status:", response.status);
-      }
-    } catch (error) {
-      toast.error(
-        `Error adding medicine: ${
-          error.response?.data?.message || error.message
-        }`
-      );
-      console.error(
-        "Error registering medicine:",
-        error.response?.data || error.message
-      );
+    try {
+      await axios.put(
+        `http://localhost:3000/api/inventory/medicines${id}`,
+        medicineDetails
+      ); // Update medicine details
+      toast.success("Medicine updated successfully!");
+      navigate("/all-medicines"); // Redirect back to the medicines list
+    } catch (err) {
+      alert("Error updating medicine: " + err.message);
     }
   };
 
@@ -569,7 +545,7 @@ const AddMedicine = () => {
             type="submit"
             className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
           >
-            Add Medicine
+            Edit
           </button>
         </form>
       </div>
@@ -577,4 +553,4 @@ const AddMedicine = () => {
   );
 };
 
-export default AddMedicine;
+export default EditMedicine;

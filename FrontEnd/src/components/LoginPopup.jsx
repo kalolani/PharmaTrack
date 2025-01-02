@@ -5,6 +5,7 @@ import axios from "axios"; // Make sure axios is imported
 import { IoMdClose } from "react-icons/io";
 import { FaRegEyeSlash } from "react-icons/fa6";
 import { HiOutlineEye } from "react-icons/hi";
+import { useNavigate } from "react-router-dom";
 
 function LoginPopup({ setShowLogin }) {
   const [currState, setCurrState] = useState("Login");
@@ -19,6 +20,7 @@ function LoginPopup({ setShowLogin }) {
     password: "",
     confirmPassword: "",
   });
+  const navigate = useNavigate();
 
   const createAccountHandler = () => {
     setCurrState("Sign up");
@@ -47,9 +49,10 @@ function LoginPopup({ setShowLogin }) {
         });
 
         if (response.data.success) {
-          // Handle success response
-          localStorage.setItem("token", response.data.token); // Store token in localStorage
+          localStorage.setItem("token", response.data.token);
           setShowLogin(false); // Close the login popup
+          console.log("Navigating to /dashboard");
+          navigate("/dashboard"); // Navigate to dashboard
         } else {
           setErrMessage(response.data.message); // Set login error message
         }

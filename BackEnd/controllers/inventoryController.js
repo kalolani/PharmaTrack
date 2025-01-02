@@ -395,6 +395,50 @@ const getTotalMedicinesCount = async (req, res) => {
   }
 };
 
+const getSpecificMedicine = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const medicine = await prisma.medicine.findUnique({
+      where: { id: parseInt(id) },
+    });
+
+    if (!medicine) {
+      return res.status(404).json({ message: "Medicine not found" });
+    }
+
+    res.status(200).json(medicine);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching medicine", error: error.message });
+  }
+};
+
+const updateMedicine = async (req, res) => {
+  const { id } = req.params;
+  const { name, type, stock, cost, expiryDate } = req.body;
+
+  try {
+    const updatedMedicine = await prisma.medicine.update({
+      where: { id: parseInt(id) },
+      data: {
+        name,
+        type,
+        stock: parseInt(stock),
+        cost: parseFloat(cost),
+        expiryDate: new Date(expiryDate),
+      },
+    });
+
+    res.status(200).json(updatedMedicine);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error updating medicine", error: error.message });
+  }
+};
+
 export {
   addMedicine,
   getAllMedicines,
@@ -408,4 +452,6 @@ export {
   inventoryCount,
   totalStockValue,
   expiredItems,
+  getSpecificMedicine,
+  updateMedicine,
 };
