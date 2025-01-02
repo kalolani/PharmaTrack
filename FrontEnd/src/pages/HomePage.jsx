@@ -1,9 +1,11 @@
+/* eslint-disable react/prop-types */
 // /* eslint-disable react/prop-types */
 // import Button from "../components/Button";
 // import PageNav from "../components/PageNav";
 // import GridDots from "../components/GridDots";
 
 import Footer from "../components/Footer";
+import VideoSection from "../components/VideoSection";
 
 // import CircleOutline from "../components/CircleOutline";
 // // import CircleOutline from "../components/CircleOutline";
@@ -57,7 +59,7 @@ import Footer from "../components/Footer";
 // }
 
 // export default HomePage;
-const Home = () => {
+const Home = ({ setShowLogin }) => {
   return (
     <div>
       <div className="relative bg-[#005030] min-h-screen text-white font-sans">
@@ -113,7 +115,10 @@ const Home = () => {
             </a>
           </div>
           <div className="flex items-center space-x-6">
-            <button className="bg-transparent border border-white rounded-md px-6 py-2 hover:bg-white hover:text-[#005030]">
+            <button
+              onClick={() => setShowLogin(true)}
+              className="bg-transparent border border-white rounded-md px-6 py-2 hover:bg-white hover:text-[#005030]"
+            >
               Log in
             </button>
             <button className="bg-white text-[#005030] rounded-md px-6 py-2 hover:bg-gray-200">
@@ -382,6 +387,7 @@ const Home = () => {
           </div>
         </div>
       </div>
+      <VideoSection />
       <Footer />
     </div>
   );

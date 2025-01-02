@@ -5,7 +5,7 @@ import { FaYoutube } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <footer className="py-16 relative bg-[#005030] min-h-screen px-6">
+    <footer className="relative z-20 py-16 relative bg-[#005030] min-h-screen px-6">
       <div className="mt-16 max-w-6xl py-20 mx-auto flex justify-between items-center bg-yellow-500 px-10 rounded-3xl mb-8">
         <h1 className="text-4xl text-gray-800 font-bold w-[65%]">
           Begin using this software to streamline your stock management
