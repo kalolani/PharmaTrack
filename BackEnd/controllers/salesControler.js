@@ -2,8 +2,6 @@ import { PrismaClient } from "@prisma/client";
 const JWT_SECRET = process.env.JWT_SECRET;
 const prisma = new PrismaClient();
 
-//add new sale
-
 const recordSale = async (req, res) => {
   const { medicineId, medicineName, quantity, unitType, totalPrice } = req.body;
 
@@ -23,29 +21,42 @@ const recordSale = async (req, res) => {
       return res.status(404).json({ message: "Medicine not found" });
     }
 
-    // Determine the available quantity for the specified unitType
-    let availableQuantity;
+    // Initialize variables for handling quantity adjustment
+    let adjustedQuantity = quantity; // Default to provided quantity
+    let decrementField;
+
+    // Adjust the quantity and decrement field based on the unit type
     switch (unitType) {
       case "strip":
-        availableQuantity = medicine.stripQuantity || 0;
+        if (!medicine.stripPerPack) {
+          return res
+            .status(400)
+            .json({ message: "Strips per pack not defined for this medicine" });
+        }
+        adjustedQuantity = quantity / medicine.stripPerPack;
+        decrementField = "packQuantity"; // Deduct from pack stock
         break;
       case "pack":
-        availableQuantity = medicine.packQuantity || 0;
+        decrementField = "packQuantity";
         break;
       case "unit":
-        availableQuantity = medicine.unitQuantity || 0;
+        decrementField = "unitQuantity";
         break;
       case "bottle":
-        availableQuantity = medicine.bottleQuantity || 0;
+        decrementField = "bottleQuantity";
         break;
       default:
         return res.status(400).json({ message: "Invalid unit type" });
     }
 
     // Check if the available quantity is sufficient
-    if (quantity > availableQuantity) {
+    const availableQuantity = medicine[decrementField] || 0;
+    if (adjustedQuantity > availableQuantity) {
       return res.status(400).json({
-        message: `Not enough quantity available. Only ${availableQuantity} ${unitType}(s) left in stock.`,
+        message: `Not enough quantity available. Only ${availableQuantity} ${decrementField.replace(
+          "Quantity",
+          ""
+        )}(s) left in stock.`,
       });
     }
 
@@ -54,20 +65,19 @@ const recordSale = async (req, res) => {
       data: {
         medicineName,
         medicine: { connect: { id: medicineId } },
-        quantity,
-        unitType,
-        sellingPrice: totalPrice / quantity, // Calculate unit price
+        quantity: adjustedQuantity,
+        unitType: unitType === "strip" ? "pack" : unitType, // Convert strip to pack for record
+        sellingPrice: totalPrice / adjustedQuantity, // Calculate unit price
         totalPrice,
       },
     });
 
     // Update the available quantity in the medicine database
-    const decrementField = `${unitType}Quantity`;
     await prisma.medicine.update({
       where: { id: medicineId },
       data: {
         [decrementField]: {
-          decrement: quantity,
+          decrement: adjustedQuantity,
         },
       },
     });
@@ -501,6 +511,53 @@ const getDailySales = async (req, res) => {
     });
   }
 };
+const displayDailySales = async (req, res) => {
+  try {
+    const dailySales = await prisma.sale.groupBy({
+      by: ["createdAt"],
+      _sum: {
+        quantity: true,
+        totalPrice: true,
+      },
+    });
+
+    // Format the response to group by date
+    const formattedData = dailySales.map((sale) => ({
+      date: sale.createdAt.toISOString().split("T")[0], // Format date to YYYY-MM-DD
+      totalQuantity: sale._sum.quantity,
+      totalPrice: sale._sum.totalPrice,
+    }));
+
+    res.status(200).json(formattedData);
+  } catch (error) {
+    console.error("Error fetching daily sales:", error);
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+const salesDetails = async (req, res) => {
+  const { date } = req.params;
+
+  try {
+    const sales = await prisma.sale.findMany({
+      where: {
+        createdAt: {
+          gte: new Date(`${date}T00:00:00.000Z`),
+          lt: new Date(`${date}T23:59:59.999Z`),
+        },
+      },
+      include: {
+        medicine: true, // Include related medicine details
+      },
+    });
+
+    res.status(200).json(sales);
+  } catch (error) {
+    console.error("Error fetching sales details:", error);
+    res.status(500).json({ message: "Error fetching sales details", error });
+  }
+};
+
 export {
   recordSale,
   salesHistory,
@@ -514,4 +571,6 @@ export {
   totalQuantitySold,
   financialReport,
   getDailySales,
+  displayDailySales,
+  salesDetails,
 };

@@ -6,7 +6,7 @@ import AdminDashboard from "./components/AdminDashboard";
 import Dashboard from "./pages/Dashboard";
 import Notifications from "./components/Notifications";
 import NewSale from "./components/NewSale";
-import SaleHistory from "./components/SaleHistory";
+// import SaleHistory from "./components/SaleHistory";
 import AddMedicine from "./components/AddMedicine";
 import AllMedicine from "./components/AllMedicine";
 import LowStock from "./components/LowStock";
@@ -25,6 +25,8 @@ import "react-toastify/dist/ReactToastify.css";
 import PurchaseMedicine from "./components/PurchaseMedicine";
 
 import EditMedicine from "./components/EditMedicine";
+import DailySales from "./components/DailySales";
+import SalesDetails from "./components/SalesDetails";
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
@@ -42,10 +44,12 @@ function App() {
             <Route index element={<Navigate replace to="home" />} />
             <Route path="home" element={<Dashboard />} />
             <Route path="notification" element={<Notifications />} />
-
             <Route path="newSale" element={<NewSale />} />
-            <Route path="saleHistory" element={<SaleHistory />} />
-            <Route path="saleHistory" element={<SaleHistory />} />
+            <Route path="saleHistory" element={<DailySales />} />
+            <Route
+              path="/dashboard/saleHistory/sales-detail/:date"
+              element={<SalesDetails />}
+            />
             <Route path="medicines" element={<AllMedicine />} />
             <Route path="purchase" element={<PurchaseMedicine />} />
             <Route path="addStock" element={<AddMedicine />} />
