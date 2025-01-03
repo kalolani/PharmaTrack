@@ -513,19 +513,54 @@ const getDailySales = async (req, res) => {
 };
 const displayDailySales = async (req, res) => {
   try {
-    const dailySales = await prisma.sale.groupBy({
-      by: ["createdAt"],
-      _sum: {
-        quantity: true,
-        totalPrice: true,
+    // Fetch all sales and include associated medicine details
+    const sales = await prisma.sale.findMany({
+      include: {
+        medicine: {
+          select: {
+            type: true, // e.g., 'tablet', 'syrup', etc.
+            stripPerPack: true,
+          },
+        },
       },
     });
 
-    // Format the response to group by date
-    const formattedData = dailySales.map((sale) => ({
-      date: sale.createdAt.toISOString().split("T")[0], // Format date to YYYY-MM-DD
-      totalQuantity: sale._sum.quantity,
-      totalPrice: sale._sum.totalPrice,
+    // Group sales by date
+    const groupedByDate = sales.reduce((acc, sale) => {
+      const date = sale.createdAt.toISOString().split("T")[0];
+
+      // Determine the quantity in packs
+      let quantityInPacks = sale.quantity;
+      if (
+        sale.medicine.type === "tablet" &&
+        sale.unitType === "strip" &&
+        sale.medicine.stripPerPack
+      ) {
+        quantityInPacks = sale.quantity / sale.medicine.stripPerPack;
+      }
+
+      // Initialize the date group if it doesn't exist
+      if (!acc[date]) {
+        acc[date] = {
+          date,
+          totalQuantity: 0,
+          totalPrice: 0,
+        };
+      }
+
+      // Update total quantity and price for the date
+      acc[date].totalQuantity += quantityInPacks;
+      acc[date].totalPrice += sale.totalPrice || 0;
+
+      return acc;
+    }, {});
+
+    // Convert grouped object into an array
+    // Apply floor function to the total quantity for each day
+    const formattedData = Object.values(groupedByDate).map((day) => ({
+      date: day.date,
+      totalQuantity: Math.floor(day.totalQuantity),
+      totalPrice: day.totalPrice,
     }));
 
     res.status(200).json(formattedData);
