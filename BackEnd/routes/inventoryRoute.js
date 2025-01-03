@@ -19,8 +19,8 @@ const inventoryRouter = express.Router();
 
 // Registration and Login routes
 inventoryRouter.post("/add-medicine", addMedicine);
-inventoryRouter.post("/medicines/:id", getSpecificMedicine);
-inventoryRouter.post("/medicines/:id", updateMedicine);
+inventoryRouter.get("/medicines/:id", getSpecificMedicine);
+inventoryRouter.put("/medicines/:id", updateMedicine);
 inventoryRouter.get("/list-medicine", getAllMedicines);
 inventoryRouter.get("/list", inventoryList);
 inventoryRouter.get("/count", inventoryCount);

@@ -416,26 +416,83 @@ const getSpecificMedicine = async (req, res) => {
 };
 
 const updateMedicine = async (req, res) => {
-  const { id } = req.params;
-  const { name, type, stock, cost, expiryDate } = req.body;
+  const { id } = req.params; // Medicine ID from the request parameters
+  const {
+    name,
+    type,
+    costPerStrip,
+    costPerPack,
+    expiryDate,
+    batchNumber,
+    manufacturer,
+    percentageStrip,
+    percentagePack,
+    percentageBottle,
+    percentageCosmetics,
+    percentageUnit,
+    sellingPriceBottle,
+    sellingPriceCosmetics,
+    sellingPriceStrip,
+    sellingPricePack,
+    packQuantity,
+    stripQuantity,
+    stripPerPack,
+    unitQuantity,
+    bottleQuantity,
+    bottleCost,
+    cosmeticsCost,
+  } = req.body; // Destructure expected fields from the request body
 
   try {
+    // Check if the medicine exists
+    const existingMedicine = await prisma.medicine.findUnique({
+      where: { id: parseInt(id, 10) },
+    });
+
+    if (!existingMedicine) {
+      return res.status(404).json({ message: "Medicine not found" });
+    }
+
+    // Update the medicine
     const updatedMedicine = await prisma.medicine.update({
-      where: { id: parseInt(id) },
+      where: { id: parseInt(id, 10) },
       data: {
         name,
         type,
-        stock: parseInt(stock),
-        cost: parseFloat(cost),
+        costPerStrip: parseFloat(costPerStrip) || null,
+        costPerPack: parseFloat(costPerPack) || null,
         expiryDate: new Date(expiryDate),
+        batchNumber,
+        manufacturer,
+        percentageStrip: parseFloat(percentageStrip) || null,
+        percentagePack: parseFloat(percentagePack) || null,
+        percentageBottle: parseFloat(percentageBottle) || null,
+        percentageCosmetics: parseFloat(percentageCosmetics) || null,
+        percentageUnit: parseFloat(percentageUnit) || null,
+        sellingPriceBottle: parseFloat(sellingPriceBottle) || null,
+        sellingPriceCosmetics: parseFloat(sellingPriceCosmetics) || null,
+        sellingPriceStrip: parseFloat(sellingPriceStrip) || null,
+        sellingPricePack: parseFloat(sellingPricePack) || null,
+        packQuantity: parseInt(packQuantity, 10) || null,
+        stripQuantity: parseInt(stripQuantity, 10) || null,
+        stripPerPack: parseInt(stripPerPack, 10) || null,
+        unitQuantity: parseInt(unitQuantity, 10) || null,
+        bottleQuantity: parseInt(bottleQuantity, 10) || null,
+        bottleCost: parseFloat(bottleCost) || null,
+        cosmeticsCost: parseFloat(cosmeticsCost) || null,
       },
     });
 
-    res.status(200).json(updatedMedicine);
+    res.status(200).json({
+      message: "Medicine updated successfully",
+      medicine: updatedMedicine,
+    });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error updating medicine", error: error.message });
+    console.error("Error updating medicine:", error.message);
+    res.status(500).json({
+      message: "Error updating medicine",
+      error: error.message,
+    });
   }
 };
 

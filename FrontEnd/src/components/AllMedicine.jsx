@@ -15,6 +15,7 @@ function AllMedicine() {
         const response = await axios.get(
           "http://localhost:3000/api/inventory/list-medicine"
         );
+        console.log(response);
         setMedicines(response.data);
         setError("");
       } catch (err) {

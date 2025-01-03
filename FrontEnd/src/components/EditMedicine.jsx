@@ -33,17 +33,26 @@ const EditMedicine = () => {
     bottleCost: "",
     cosmeticsCost: "",
   });
-  console.log(medicineDetails);
 
   useEffect(() => {
     const fetchMedicineDetails = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/inventory/medicines${id}`
+          `http://localhost:3000/api/inventory/medicines/${id}`
         );
-        setMedicineDetails(response.data);
+        const data = response.data;
+
+        // Format expiryDate to yyyy-MM-dd
+        const formattedExpiryDate = new Date(data.expiryDate)
+          .toISOString()
+          .split("T")[0];
+
+        setMedicineDetails({
+          ...data,
+          expiryDate: formattedExpiryDate, // Update expiryDate to match input[type="date"] format
+        });
       } catch (err) {
-        close.log(err);
+        console.log(err);
       }
     };
 
@@ -63,6 +72,37 @@ const EditMedicine = () => {
         const packQuantity = parseInt(updatedDetails.packQuantity) || 0;
         const stripPerPack = parseInt(updatedDetails.stripPerPack) || 0;
         updatedDetails.stripQuantity = packQuantity * stripPerPack;
+      }
+
+      // Recalculate selling prices if relevant fields are updated
+      if (
+        name === "costPerStrip" ||
+        name === "percentageStrip" ||
+        name === "costPerPack" ||
+        name === "percentagePack"
+      ) {
+        const costPerStrip = parseFloat(
+          name === "costPerStrip" ? value : updatedDetails.costPerStrip
+        );
+        const percentageStrip = parseFloat(
+          name === "percentageStrip" ? value : updatedDetails.percentageStrip
+        );
+        const costPerPack = parseFloat(
+          name === "costPerPack" ? value : updatedDetails.costPerPack
+        );
+        const percentagePack = parseFloat(
+          name === "percentagePack" ? value : updatedDetails.percentagePack
+        );
+
+        updatedDetails.sellingPriceStrip =
+          !isNaN(costPerStrip) && !isNaN(percentageStrip)
+            ? (costPerStrip * percentageStrip).toFixed(2)
+            : "";
+
+        updatedDetails.sellingPricePack =
+          !isNaN(costPerPack) && !isNaN(percentagePack)
+            ? (costPerPack * percentagePack).toFixed(2)
+            : "";
       }
 
       return updatedDetails;
@@ -85,18 +125,17 @@ const EditMedicine = () => {
     let sellingPriceCosmetics = "";
 
     if (!isNaN(costPerStrip) && !isNaN(percentageStrip)) {
-      sellingPriceStrip = costPerStrip + (costPerStrip * percentageStrip) / 100;
+      sellingPriceStrip = costPerStrip * percentageStrip;
     }
 
     if (!isNaN(costPerPack) && !isNaN(percentagePack)) {
-      sellingPricePack = costPerPack + (costPerPack * percentagePack) / 100;
+      sellingPricePack = costPerPack * percentagePack;
     }
     if (!isNaN(bottleCost) && !isNaN(percentageBottle)) {
-      sellingPriceBottle = bottleCost + (bottleCost * percentageBottle) / 100;
+      sellingPriceBottle = bottleCost * percentageBottle;
     }
     if (!isNaN(cosmeticsCost) && !isNaN(percentageCosmetics)) {
-      sellingPriceCosmetics =
-        cosmeticsCost + (cosmeticsCost * percentageCosmetics) / 100;
+      sellingPriceCosmetics = cosmeticsCost * percentageCosmetics;
     }
 
     setMedicineDetails((prevDetails) => ({
@@ -117,11 +156,11 @@ const EditMedicine = () => {
 
     try {
       await axios.put(
-        `http://localhost:3000/api/inventory/medicines${id}`,
+        `http://localhost:3000/api/inventory/medicines/${id}`,
         medicineDetails
       ); // Update medicine details
       toast.success("Medicine updated successfully!");
-      navigate("/all-medicines"); // Redirect back to the medicines list
+      navigate("/dashboard/medicines"); // Redirect back to the medicines list
     } catch (err) {
       alert("Error updating medicine: " + err.message);
     }
