@@ -32,22 +32,30 @@ import { io } from "socket.io-client";
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
-  const [showModal, setShowModal] = useState(false); // Initially hidden
-  const [expiredMedicines, setExpiredMedicines] = useState(0); // Track the number of expired medicines
+  const [showModal, setShowModal] = useState(false);
+  const [expiredMedicinesCount, setExpiredMedicinesCount] = useState(0);
 
   useEffect(() => {
-    const socket = io("http://localhost:3000");
+    // Initialize socket connection
+    const socket = io("http://localhost:3000"); // Replace with your backend URL
 
-    socket.on("expiredMedicineAlert", (medicines) => {
-      console.log("Received expired medicines alert:", medicines.length);
-      if (medicines && medicines.length > 0) {
-        setExpiredMedicines(medicines);
-        setShowModal(true);
+    // Log socket connection to ensure it’s successful
+    socket.on("connect", () => {
+      console.log("Connected to socket server!");
+    });
+
+    // Listen for the expired medicines alert
+    socket.on("expiredMedicineAlert", (count) => {
+      console.log("Expired medicines alert received:", count.length); // Debugging log
+      if (count.length > 0) {
+        setExpiredMedicinesCount(count.length); // If expired medicines are an array, count its length
+        setShowModal(true); // Show the modal if expired medicines are detected
       }
     });
 
+    // Clean up socket connection
     return () => {
-      socket.off("expiredMedicineAlert");
+      socket.disconnect();
     };
   }, []);
 
@@ -56,7 +64,7 @@ function App() {
       {showLogin && <LoginPopup setShowLogin={setShowLogin} />}
       {showModal && (
         <ExpiredMedicineModal
-          expiredCount={expiredMedicines}
+          expiredCount={expiredMedicinesCount}
           setShowModal={setShowModal}
         />
       )}
