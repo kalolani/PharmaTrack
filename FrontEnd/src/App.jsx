@@ -50,6 +50,12 @@ function App() {
       if (count.length > 0) {
         setExpiredMedicinesCount(count.length); // If expired medicines are an array, count its length
         setShowModal(true); // Show the modal if expired medicines are detected
+
+        // Play sound effect
+        const alertSound = new Audio("/alert-1.mp3"); // Path to your sound file
+        alertSound
+          .play()
+          .catch((error) => console.error("Error playing sound:", error));
       }
     });
 

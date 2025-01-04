@@ -63,7 +63,7 @@ io.on("connection", (socket) => {
 });
 
 // Scheduler to Check for Expired Medicines
-cron.schedule("33 11 * * *", async () => {
+cron.schedule("39 16 * * *", async () => {
   console.log("Checking for expired medicines...");
 
   try {
