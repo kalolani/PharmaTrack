@@ -78,7 +78,7 @@ const data = [
 
   {
     id: 6,
-    title: "Settings",
+    title: "Expired Items",
     iconc: <IoSettingsOutline size={20} color="#00B074" />,
     icon: <IoSettingsOutline size={20} />,
     arrowUp: (

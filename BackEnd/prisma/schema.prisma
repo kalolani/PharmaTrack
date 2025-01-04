@@ -53,6 +53,7 @@ model Medicine {
   // Define the relation here, making sure the name matches the relation name in Sale model
   sales       Sale[]   @relation("MedicineSales") 
   purchases  Purchase[] @relation("MedicinePurchases") // Opposite relation field for Purchase
+  expiredMedicines ExpiredMedicine[] // Add this line to represent the reverse relation
 }
 
 enum MedicineType {
@@ -106,6 +107,21 @@ model Purchase {
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 }
+
+model ExpiredMedicine {
+  id           Int       @id @default(autoincrement())
+  medicineId   Int
+  name         String
+  type         String
+  manufacturer String
+  quantity     Int
+  expiryDate   DateTime
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  medicine     Medicine  @relation(fields: [medicineId], references: [id])
+}
+
 
 
 

@@ -1,7 +1,7 @@
 import HomePage from "./pages/HomePage";
 import { Routes, Route, Navigate } from "react-router-dom";
 import LoginPopup from "./components/LoginPopup";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AdminDashboard from "./components/AdminDashboard";
 import Dashboard from "./pages/Dashboard";
 import Notifications from "./components/Notifications";
@@ -27,14 +27,39 @@ import PurchaseMedicine from "./components/PurchaseMedicine";
 import EditMedicine from "./components/EditMedicine";
 import DailySales from "./components/DailySales";
 import SalesDetails from "./components/SalesDetails";
+import ExpiredMedicineModal from "./components/ExpiredMedicineModal";
+import { io } from "socket.io-client";
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
-  console.log(showLogin);
+  const [showModal, setShowModal] = useState(false); // Initially hidden
+  const [expiredMedicines, setExpiredMedicines] = useState(0); // Track the number of expired medicines
+
+  useEffect(() => {
+    const socket = io("http://localhost:3000");
+
+    socket.on("expiredMedicineAlert", (medicines) => {
+      console.log("Received expired medicines alert:", medicines.length);
+      if (medicines && medicines.length > 0) {
+        setExpiredMedicines(medicines);
+        setShowModal(true);
+      }
+    });
+
+    return () => {
+      socket.off("expiredMedicineAlert");
+    };
+  }, []);
 
   return (
     <>
       {showLogin && <LoginPopup setShowLogin={setShowLogin} />}
+      {showModal && (
+        <ExpiredMedicineModal
+          expiredCount={expiredMedicines}
+          setShowModal={setShowModal}
+        />
+      )}
       <div>
         <ToastContainer />
         <Routes>

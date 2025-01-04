@@ -367,22 +367,22 @@ const lowStock = async (req, res) => {
   }
 };
 
-const expiredMedicines = async (req, res) => {
-  try {
-    const today = new Date();
-    const expiredMedicines = await prisma.medicine.findMany({
-      where: {
-        expiryDate: {
-          lt: today,
-        },
-      },
-    });
-    res.json(expiredMedicines);
-  } catch (error) {
-    console.error("Error fetching expired medicines:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-};
+// const expiredMedicines = async (req, res) => {
+//   try {
+//     const today = new Date();
+//     const expiredMedicines = await prisma.medicine.findMany({
+//       where: {
+//         expiryDate: {
+//           lt: today,
+//         },
+//       },
+//     });
+//     res.json(expiredMedicines);
+//   } catch (error) {
+//     console.error("Error fetching expired medicines:", error);
+//     res.status(500).json({ error: "Internal server error" });
+//   }
+// };
 const getTotalMedicinesCount = async (req, res) => {
   try {
     // Fetch the count of all medicines
@@ -493,6 +493,16 @@ const updateMedicine = async (req, res) => {
       message: "Error updating medicine",
       error: error.message,
     });
+  }
+};
+
+const expiredMedicines = async (req, res) => {
+  try {
+    const expiredMedicines = await prisma.expiredMedicine.findMany();
+    res.json(expiredMedicines);
+  } catch (error) {
+    console.error("Error fetching expired medicines:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
