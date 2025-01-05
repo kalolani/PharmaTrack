@@ -109,17 +109,17 @@ model Purchase {
 }
 
 model ExpiredMedicine {
-  id           Int       @id @default(autoincrement())
-  medicineId   Int
-  name         String
-  type         String
+  id          Int       @id @default(autoincrement())
+  medicineId  Int
+  medicine    Medicine  @relation(fields: [medicineId], references: [id])
+  name        String
+  type        String
   manufacturer String
-  quantity     Int
-  expiryDate   DateTime
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-
-  medicine     Medicine  @relation(fields: [medicineId], references: [id])
+  quantity    Int
+  expiryDate  DateTime
+  alerted     Boolean   @default(false) // Add this field
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 

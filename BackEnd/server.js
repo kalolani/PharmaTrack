@@ -63,19 +63,32 @@ io.on("connection", (socket) => {
 });
 
 // Scheduler to Check for Expired Medicines
-cron.schedule("39 16 * * *", async () => {
-  console.log("Checking for expired medicines...");
+
+cron.schedule("36 17 * * *", async () => {
+  console.log("Checking for unique expired medicines at 5:17 PM...");
 
   try {
+    const today = new Date();
+
+    // Fetch medicines that are expired and not already alerted
     const expiredMedicines = await prisma.medicine.findMany({
       where: {
-        expiryDate: { lt: new Date() },
+        expiryDate: { lt: today },
+        expiredMedicines: {
+          none: { alerted: true }, // Use the correct relation name here
+        },
+      },
+      include: {
+        expiredMedicines: true, // Ensure the correct relation name is used
       },
     });
 
-    // Use a set to store medicine IDs that we have already processed
-    const processedMedicines = new Set();
+    if (expiredMedicines.length === 0) {
+      console.log("No new expired medicines to alert.");
+      return;
+    }
 
+    const newExpiredMedicines = [];
     for (const medicine of expiredMedicines) {
       let quantity;
 
@@ -88,59 +101,42 @@ cron.schedule("39 16 * * *", async () => {
         quantity = medicine.unitQuantity;
       }
 
-      // Skip if quantity is null or undefined
-      if (quantity == null) {
+      if (!quantity) {
         console.log(
-          `Medicine ${medicine.name} (ID: ${medicine.id}) has no valid quantity specified. Skipping.`
+          `Medicine ${medicine.name} (ID: ${medicine.id}) has no valid quantity. Skipping.`
         );
         continue;
       }
 
-      // Check if this medicine has already been processed
-      if (processedMedicines.has(medicine.id)) {
-        console.log(
-          `Medicine ${medicine.name} (ID: ${medicine.id}) has already been processed. Skipping.`
-        );
-        continue;
-      }
-
-      // Check if expired medicine already exists in the expiredMedicine model
-      const existingExpiredMedicine = await prisma.expiredMedicine.findFirst({
-        where: {
+      await prisma.expiredMedicine.create({
+        data: {
           medicineId: medicine.id,
+          name: medicine.name,
+          type: medicine.type,
+          manufacturer: medicine.manufacturer,
+          quantity: quantity,
+          expiryDate: medicine.expiryDate,
+          alerted: true,
         },
       });
 
-      // If it does not exist, insert the expired medicine
-      if (!existingExpiredMedicine) {
-        await prisma.expiredMedicine.create({
-          data: {
-            medicineId: medicine.id,
-            name: medicine.name,
-            type: medicine.type,
-            manufacturer: medicine.manufacturer,
-            quantity: quantity,
-            expiryDate: medicine.expiryDate,
-          },
-        });
-        console.log(
-          `Stored expired medicine: ${medicine.name} (ID: ${medicine.id}) with quantity ${quantity}.`
-        );
-      } else {
-        console.log(
-          `Medicine ${medicine.name} (ID: ${medicine.id}) already exists in expired medicines. Skipping.`
-        );
-      }
-
-      // Add the processed medicine to the set
-      processedMedicines.add(medicine.id);
+      newExpiredMedicines.push({
+        name: medicine.name,
+        id: medicine.id,
+        quantity,
+        type: medicine.type,
+      });
     }
 
-    // Emit a real-time alert for all expired medicines
-    io.emit("expiredMedicineAlert", expiredMedicines);
-    console.log("Real-time alert sent for expired medicines.");
+    if (newExpiredMedicines.length > 0) {
+      io.emit("expiredMedicineAlert", newExpiredMedicines);
+      console.log(
+        "Real-time alert sent for new expired medicines:",
+        newExpiredMedicines
+      );
+    }
   } catch (error) {
-    console.error("Error fetching expired medicines:", error);
+    console.error("Error checking for expired medicines:", error);
   }
 });
 

@@ -3,7 +3,7 @@ import Sidebar from "./Sidebar";
 import { MdOutlineInventory2 } from "react-icons/md";
 import { RiNotification2Line } from "react-icons/ri";
 import { TbFileReport } from "react-icons/tb";
-import { IoSettingsOutline } from "react-icons/io5";
+// import { IoSettingsOutline } from "react-icons/io5";
 import { CiBadgeDollar } from "react-icons/ci";
 import { IoMdHelpCircleOutline } from "react-icons/io";
 import { AiOutlineLogout } from "react-icons/ai";
@@ -79,18 +79,10 @@ const data = [
   {
     id: 6,
     title: "Expired Items",
-    iconc: <IoSettingsOutline size={20} color="#00B074" />,
-    icon: <IoSettingsOutline size={20} />,
-    arrowUp: (
-      <MdOutlineKeyboardArrowUp color="#00B074" className="absolute right-5" />
-    ),
-    arrowDown: (
-      <MdKeyboardArrowDown color="#464255" className="absolute right-5" />
-    ),
-    sub: [
-      { sub: "System Settings", to: "systemSetting" },
-      { sub: "Notifications", to: "notify" },
-    ],
+    icon: <img src="/expired-icon.png" className="w-[18px] h-[20px]" />,
+    iconc: <img src="/expired-icon.png" className="w-[18px] h-[20px]" />,
+    link: "expiryManagement",
+    sub: [{ sub: "", to: "expiryManagement" }],
   },
   {
     id: 7,
