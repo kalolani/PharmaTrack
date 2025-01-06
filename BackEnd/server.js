@@ -64,6 +64,8 @@ io.on("connection", (socket) => {
 
 // Scheduler to Check for Expired Medicines
 
+let unreadAlertsCount = 0; // In-memory store for unread alerts count
+
 cron.schedule("36 17 * * *", async () => {
   console.log("Checking for unique expired medicines at 5:17 PM...");
 
@@ -129,15 +131,31 @@ cron.schedule("36 17 * * *", async () => {
     }
 
     if (newExpiredMedicines.length > 0) {
-      io.emit("expiredMedicineAlert", newExpiredMedicines);
+      // Increment the unread alert count
+      unreadAlertsCount += 1;
+
+      // Emit real-time alert and unread alerts count
+      io.emit("expiredMedicineAlert", {
+        expiredMedicines: newExpiredMedicines,
+        unreadAlerts: unreadAlertsCount,
+      });
+
       console.log(
-        "Real-time alert sent for new expired medicines:",
+        `Real-time alert sent for new expired medicines: ${newExpiredMedicines.length}`,
         newExpiredMedicines
       );
+      console.log(`Unread alerts count: ${unreadAlertsCount}`);
     }
   } catch (error) {
     console.error("Error checking for expired medicines:", error);
   }
+});
+
+// Endpoint to reset unread alerts when user views the expiry management
+app.post("/reset-unread-alerts", (req, res) => {
+  unreadAlertsCount = 0; // Reset the count
+  io.emit("unreadAlertsUpdated", unreadAlertsCount); // Notify all clients
+  res.status(200).json({ message: "Unread alerts count reset." });
 });
 
 // Handle uncaught errors globally

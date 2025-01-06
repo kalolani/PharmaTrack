@@ -1,10 +1,46 @@
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { RiMessage2Line } from "react-icons/ri";
 import { GoGift } from "react-icons/go";
-import { MdOutlineSettings } from "react-icons/md";
+// import { MdOutlineSettings } from "react-icons/md";
 import { CiSearch } from "react-icons/ci";
 
+import { useStores } from "../contexts/storeContext";
+import { useEffect } from "react";
+import io from "socket.io-client";
+
 function AdminNavBar() {
+  const { unreadAlerts, setUnreadAlerts } = useStores();
+
+  useEffect(() => {
+    const socket = io("http://localhost:3000");
+
+    // Listen for real-time alerts
+    socket.on("expiredMedicineAlert", (data) => {
+      setUnreadAlerts(data.unreadAlerts);
+      console.log("New alert received. Unread count:", data.unreadAlerts);
+    });
+
+    // Update unread count when reset
+    socket.on("unreadAlertsUpdated", (count) => {
+      setUnreadAlerts(count);
+      console.log("Unread alerts count reset:", count);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  // Reset unread alerts when "Expiry Management" tab is clicked
+  const handleViewExpiryManagement = async () => {
+    try {
+      await fetch("http://localhost:3000/reset-unread-alerts", {
+        method: "POST",
+      });
+    } catch (error) {
+      console.error("Failed to reset unread alerts:", error);
+    }
+  };
   return (
     <div className="relative z-10 w-full flex gap-6 w-full items-center justify-around">
       <div className="relative z-10 w-1/2">
@@ -65,17 +101,16 @@ function AdminNavBar() {
             </div>
           </div>
         </div>
-        <div className="relative z-10 bg-[#FF5B5B] bg-opacity-[0.15] w-[48px] h-[48px] rounded-2xl cursor-pointer">
-          <MdOutlineSettings
-            size={25}
-            color="#FF5B5B"
-            className="absolute z-10 top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2"
-          />
+        <div
+          onClick={handleViewExpiryManagement}
+          className="relative z-10 bg-[#FF5B5B] bg-opacity-[0.15] w-[48px] h-[48px] rounded-2xl cursor-pointer"
+        >
+          <img src="/expiry-icon.png" className="h-15" />
           <div className="absolute z-10 -top-[7px] -right-[5px] bg-[#FF5B5B] bg-opacity-[0.85] w-[25px] h-[25px] text-white rounded-full border-4 border-[#F3F2F7]">
             <div className="relative z-10">
               {" "}
               <p className="absolute z-10 left-1/2 top-1/2 transform -translate-x-1/2  text-[12px] text-white">
-                15
+                {unreadAlerts}
               </p>
             </div>
           </div>

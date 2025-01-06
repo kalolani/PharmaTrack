@@ -29,6 +29,7 @@ import DailySales from "./components/DailySales";
 import SalesDetails from "./components/SalesDetails";
 import ExpiredMedicineModal from "./components/ExpiredMedicineModal";
 import { io } from "socket.io-client";
+import { StoreProvider } from "./contexts/storeContext";
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
@@ -75,38 +76,43 @@ function App() {
         />
       )}
       <div>
-        <ToastContainer />
-        <Routes>
-          <Route path="/" element={<HomePage setShowLogin={setShowLogin} />} />
-          <Route path="/dashboard" element={<AdminDashboard />}>
-            {/* <Dashboard /> */}
-            <Route index element={<Navigate replace to="home" />} />
-            <Route path="home" element={<Dashboard />} />
-            <Route path="notification" element={<Notifications />} />
-            <Route path="newSale" element={<NewSale />} />
-            <Route path="saleHistory" element={<DailySales />} />
+        <StoreProvider>
+          <ToastContainer />
+          <Routes>
             <Route
-              path="/dashboard/saleHistory/sales-detail/:date"
-              element={<SalesDetails />}
+              path="/"
+              element={<HomePage setShowLogin={setShowLogin} />}
             />
-            <Route path="medicines" element={<AllMedicine />} />
-            <Route path="purchase" element={<PurchaseMedicine />} />
-            <Route path="addStock" element={<AddMedicine />} />
-            <Route path="editStock/:id" element={<EditMedicine />} />
-            <Route path="lowStock" element={<LowStock />} />
-            <Route path="expiryManagement" element={<ExpiryManagement />} />
-            <Route path="salesReport" element={<SalesReport />} />
-            <Route path="inventoryReport" element={<InventoryReport />} />
-            <Route path="financialReport" element={<FinancialReport />} />
-            <Route path="customReport" element={<CustomReport />} />
-            <Route path="systemSetting" element={<SystemSetting />} />
-            <Route path="notify" element={<Notifications />} />
-            <Route path="userGuide" element={<UserGuide />} />
-            <Route path="contactSupport" element={<ContactSupport />} />
-            <Route path="faqs" element={<Faqs />} />
-            <Route path="logout" element={<Logout />} />
-          </Route>
-        </Routes>
+            <Route path="/dashboard" element={<AdminDashboard />}>
+              {/* <Dashboard /> */}
+              <Route index element={<Navigate replace to="home" />} />
+              <Route path="home" element={<Dashboard />} />
+              <Route path="notification" element={<Notifications />} />
+              <Route path="newSale" element={<NewSale />} />
+              <Route path="saleHistory" element={<DailySales />} />
+              <Route
+                path="/dashboard/saleHistory/sales-detail/:date"
+                element={<SalesDetails />}
+              />
+              <Route path="medicines" element={<AllMedicine />} />
+              <Route path="purchase" element={<PurchaseMedicine />} />
+              <Route path="addStock" element={<AddMedicine />} />
+              <Route path="editStock/:id" element={<EditMedicine />} />
+              <Route path="lowStock" element={<LowStock />} />
+              <Route path="expiryManagement" element={<ExpiryManagement />} />
+              <Route path="salesReport" element={<SalesReport />} />
+              <Route path="inventoryReport" element={<InventoryReport />} />
+              <Route path="financialReport" element={<FinancialReport />} />
+              <Route path="customReport" element={<CustomReport />} />
+              <Route path="systemSetting" element={<SystemSetting />} />
+              <Route path="notify" element={<Notifications />} />
+              <Route path="userGuide" element={<UserGuide />} />
+              <Route path="contactSupport" element={<ContactSupport />} />
+              <Route path="faqs" element={<Faqs />} />
+              <Route path="logout" element={<Logout />} />
+            </Route>
+          </Routes>
+        </StoreProvider>
       </div>
     </>
   );
