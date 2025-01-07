@@ -35,6 +35,7 @@ function App() {
   const [showLogin, setShowLogin] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [expiredMedicinesCount, setExpiredMedicinesCount] = useState(0);
+  const [unreadAlerts, setUnreadAlerts] = useState();
 
   useEffect(() => {
     // Initialize socket connection
@@ -47,8 +48,10 @@ function App() {
 
     // Listen for the expired medicines alert
     socket.on("expiredMedicineAlert", (count) => {
-      console.log("Expired medicines alert received:", count.length); // Debugging log
-      if (count.length > 0) {
+      console.log("Expired medicines alert received:", count.expiredMedicines); // Debugging log
+      setUnreadAlerts(count.unreadAlerts);
+      console.log("New alert received. Unread count:", count.unreadAlerts);
+      if (count.expiredMedicines.length > 0) {
         setExpiredMedicinesCount(count.length); // If expired medicines are an array, count its length
         setShowModal(true); // Show the modal if expired medicines are detected
 
@@ -58,6 +61,11 @@ function App() {
           .play()
           .catch((error) => console.error("Error playing sound:", error));
       }
+    });
+    // Update unread count when reset
+    socket.on("unreadAlertsUpdated", (count) => {
+      setUnreadAlerts(count);
+      console.log("Unread alerts count reset:", count);
     });
 
     // Clean up socket connection
@@ -86,7 +94,15 @@ function App() {
             <Route path="/dashboard" element={<AdminDashboard />}>
               {/* <Dashboard /> */}
               <Route index element={<Navigate replace to="home" />} />
-              <Route path="home" element={<Dashboard />} />
+              <Route
+                path="home"
+                element={
+                  <Dashboard
+                    unreadAlerts={unreadAlerts}
+                    setUnreadAlerts={setUnreadAlerts}
+                  />
+                }
+              />
               <Route path="notification" element={<Notifications />} />
               <Route path="newSale" element={<NewSale />} />
               <Route path="saleHistory" element={<DailySales />} />

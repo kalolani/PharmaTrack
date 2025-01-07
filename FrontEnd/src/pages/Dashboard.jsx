@@ -3,11 +3,14 @@ import DashboardWelcome from "../components/DashboardWelcome";
 import DashboardStatics from "../components/DashboardStatics";
 import ChartContainer from "../components/ChartContainer";
 
-function Dashboard() {
+function Dashboard({ unreadAlerts, setUnreadAlerts }) {
   return (
     <div className="pt-[20px] pb-[50px] px-[20px] w-[85%] h-[100%] z-[10] text-[rgb(249 250 251)] font-Poppins bg-[#F3F2F7] min-h-screen">
       <div className="absolute inset-0 bg-grid-pattern-dashboard opacity-40 pointer-events-none"></div>
-      <AdminNavBar />
+      <AdminNavBar
+        unreadAlerts={unreadAlerts}
+        setUnreadAlerts={setUnreadAlerts}
+      />
       <DashboardWelcome />
       <DashboardStatics />
       <ChartContainer />

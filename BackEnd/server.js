@@ -66,7 +66,7 @@ io.on("connection", (socket) => {
 
 let unreadAlertsCount = 0; // In-memory store for unread alerts count
 
-cron.schedule("36 17 * * *", async () => {
+cron.schedule("15 22 * * *", async () => {
   console.log("Checking for unique expired medicines at 5:17 PM...");
 
   try {

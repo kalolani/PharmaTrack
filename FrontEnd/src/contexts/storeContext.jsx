@@ -5,11 +5,14 @@ const StoreContext = createContext();
 
 function StoreProvider({ children }) {
   const [unreadAlerts, setUnreadAlerts] = useState(0);
+  const [showModal, setShowModal] = useState(false);
   return (
     <StoreContext.Provider
       value={{
         unreadAlerts,
         setUnreadAlerts,
+        showModal,
+        setShowModal,
       }}
     >
       {children}

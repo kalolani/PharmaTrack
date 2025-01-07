@@ -1,36 +1,13 @@
+/* eslint-disable react/prop-types */
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { RiMessage2Line } from "react-icons/ri";
 import { GoGift } from "react-icons/go";
 // import { MdOutlineSettings } from "react-icons/md";
 import { CiSearch } from "react-icons/ci";
+import { useNavigate } from "react-router-dom";
 
-import { useStores } from "../contexts/storeContext";
-import { useEffect } from "react";
-import io from "socket.io-client";
-
-function AdminNavBar() {
-  const { unreadAlerts, setUnreadAlerts } = useStores();
-
-  useEffect(() => {
-    const socket = io("http://localhost:3000");
-
-    // Listen for real-time alerts
-    socket.on("expiredMedicineAlert", (data) => {
-      setUnreadAlerts(data.unreadAlerts);
-      console.log("New alert received. Unread count:", data.unreadAlerts);
-    });
-
-    // Update unread count when reset
-    socket.on("unreadAlertsUpdated", (count) => {
-      setUnreadAlerts(count);
-      console.log("Unread alerts count reset:", count);
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
-
+function AdminNavBar({ unreadAlerts }) {
+  const navigate = useNavigate();
   // Reset unread alerts when "Expiry Management" tab is clicked
   const handleViewExpiryManagement = async () => {
     try {
@@ -40,6 +17,7 @@ function AdminNavBar() {
     } catch (error) {
       console.error("Failed to reset unread alerts:", error);
     }
+    navigate("/dashboard/expiryManagement");
   };
   return (
     <div className="relative z-10 w-full flex gap-6 w-full items-center justify-around">
@@ -110,7 +88,7 @@ function AdminNavBar() {
             <div className="relative z-10">
               {" "}
               <p className="absolute z-10 left-1/2 top-1/2 transform -translate-x-1/2  text-[12px] text-white">
-                {unreadAlerts}
+                {unreadAlerts || 0}
               </p>
             </div>
           </div>

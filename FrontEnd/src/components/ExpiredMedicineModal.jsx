@@ -3,8 +3,17 @@ import { useNavigate } from "react-router-dom";
 /* eslint-disable react/prop-types */
 function ExpiredMedicineModal({ expiredCount, setShowModal }) {
   const navigate = useNavigate();
-  const handleVisit = (e) => {
+
+  // Reset unread alerts when "Expiry Management" tab is clicked
+  const handleViewExpiryManagement = async (e) => {
     e.preventDefault();
+    try {
+      await fetch("http://localhost:3000/reset-unread-alerts", {
+        method: "POST",
+      });
+    } catch (error) {
+      console.error("Failed to reset unread alerts:", error);
+    }
     navigate("dashboard/expiryManagement");
     setShowModal(false);
   };
@@ -21,7 +30,7 @@ function ExpiredMedicineModal({ expiredCount, setShowModal }) {
             Close
           </button>
           <button
-            onClick={handleVisit}
+            onClick={handleViewExpiryManagement}
             className="mt-4 px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded border-none"
           >
             Visit the expiry management page
