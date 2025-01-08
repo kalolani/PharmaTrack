@@ -5,8 +5,10 @@ import { GoGift } from "react-icons/go";
 // import { MdOutlineSettings } from "react-icons/md";
 import { CiSearch } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
+import { useStores } from "../contexts/storeContext";
 
 function AdminNavBar({ unreadAlerts }) {
+  const { notificationCount, resetNotificationCount } = useStores();
   const navigate = useNavigate();
   // Reset unread alerts when "Expiry Management" tab is clicked
   const handleViewExpiryManagement = async () => {
@@ -34,7 +36,10 @@ function AdminNavBar({ unreadAlerts }) {
         />
       </div>
       <div className="relative z-10 flex gap-6 items-center justify-center">
-        <div className="relative z-10 bg-[#007AFF] bg-opacity-[0.15] w-[48px] h-[48px] rounded-2xl cursor-pointer">
+        <div
+          onClick={resetNotificationCount}
+          className="relative z-10 bg-[#007AFF] bg-opacity-[0.15] w-[48px] h-[48px] rounded-2xl cursor-pointer"
+        >
           <IoMdNotificationsOutline
             size={25}
             color="#007AFF"
@@ -44,7 +49,7 @@ function AdminNavBar({ unreadAlerts }) {
             <div className="relative z-10">
               {" "}
               <p className="absolute z-10 left-1/2 top-1/2 transform -translate-x-1/2  text-[12px] text-white">
-                21
+                {notificationCount}
               </p>
             </div>
           </div>

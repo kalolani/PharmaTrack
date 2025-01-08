@@ -4,6 +4,7 @@ import AdminNavBar from "./AdminNavBar"; // Ensure you have this component
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
+
   console.log(notifications);
   // Fetch notifications from the backend
   useEffect(() => {

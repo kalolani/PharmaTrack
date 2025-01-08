@@ -8,26 +8,22 @@ import { io } from "../server.js";
 const recordSale = async (req, res) => {
   const { medicineId, medicineName, quantity, unitType, totalPrice } = req.body;
 
-  // Validate input data
   if (!medicineId || !medicineName || !quantity || !unitType || !totalPrice) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
   try {
-    // Fetch the current medicine data from the database
     const medicine = await prisma.medicine.findUnique({
       where: { id: medicineId },
     });
 
-    // Check if the medicine exists
     if (!medicine) {
       return res.status(404).json({ message: "Medicine not found" });
     }
 
-    let adjustedQuantity = quantity; // Default to provided quantity
+    let adjustedQuantity = quantity;
     let decrementField;
 
-    // Adjust the quantity and decrement field based on the unit type
     switch (unitType) {
       case "strip":
         if (!medicine.stripPerPack || !medicine.stripQuantity) {
@@ -36,8 +32,7 @@ const recordSale = async (req, res) => {
               "Strips per pack or strip quantity is not defined for this medicine.",
           });
         }
-        adjustedQuantity = quantity; // No further adjustment needed for strip quantity
-        decrementField = "stripQuantity"; // Deduct from stripeQuantit stock
+        decrementField = "stripQuantity";
         break;
       case "pack":
         decrementField = "packQuantity";
@@ -52,7 +47,6 @@ const recordSale = async (req, res) => {
         return res.status(400).json({ message: "Invalid unit type" });
     }
 
-    // Check if the available quantity is sufficient
     const availableQuantity = medicine[decrementField] || 0;
     if (adjustedQuantity > availableQuantity) {
       return res.status(400).json({
@@ -63,29 +57,24 @@ const recordSale = async (req, res) => {
       });
     }
 
-    // Register the sale in the database
     const sale = await prisma.sale.create({
       data: {
         medicineName,
         medicine: { connect: { id: medicineId } },
         quantity: adjustedQuantity,
-        unitType, // Store the actual unit type (e.g., strip, pack, unit, etc.)
-        sellingPrice: totalPrice / adjustedQuantity, // Calculate unit price
+        unitType,
+        sellingPrice: totalPrice / adjustedQuantity,
         totalPrice,
       },
     });
 
-    // Update the available quantity in the medicine database
     await prisma.medicine.update({
       where: { id: medicineId },
       data: {
-        [decrementField]: {
-          decrement: adjustedQuantity,
-        },
+        [decrementField]: { decrement: adjustedQuantity },
       },
     });
 
-    // Check for low stock for the current unit and send notifications
     const updatedMedicine = await prisma.medicine.findUnique({
       where: { id: medicineId },
     });
@@ -108,14 +97,14 @@ const recordSale = async (req, res) => {
         currentQuantity = 0;
     }
 
+    let notificationCount = 0;
     if (currentQuantity < 10) {
-      // Send notification for low stock of the current unit type
       const existingNotification = await prisma.notification.findFirst({
         where: { medicineId: updatedMedicine.id, type: "low-stock" },
       });
 
       if (!existingNotification) {
-        const notification = await prisma.notification.create({
+        await prisma.notification.create({
           data: {
             medicineId: updatedMedicine.id,
             name: updatedMedicine.name,
@@ -125,18 +114,12 @@ const recordSale = async (req, res) => {
           },
         });
 
-        // Send real-time notification to the client
-        io.emit("lowStockAlert", notification);
-
-        console.log(
-          `Low stock alert sent for ${updatedMedicine.name} (ID: ${updatedMedicine.id})`
-        );
+        notificationCount++;
       }
     }
 
-    // Additional check: Always send a notification if packQuantity is low, regardless of unit sold
     if (updatedMedicine.packQuantity < 10) {
-      const packNotification = await prisma.notification.create({
+      await prisma.notification.create({
         data: {
           medicineId: updatedMedicine.id,
           name: updatedMedicine.name,
@@ -146,11 +129,11 @@ const recordSale = async (req, res) => {
         },
       });
 
-      io.emit("lowStockAlert", packNotification);
-      console.log(
-        `Low stock alert sent for packQuantity of ${updatedMedicine.name} (ID: ${updatedMedicine.id})`
-      );
+      notificationCount++;
     }
+
+    // Emit notification count to all connected clients
+    io.emit("notificationCount", { count: notificationCount });
 
     res.status(201).json({ message: "Sale recorded successfully", sale });
   } catch (error) {
@@ -674,6 +657,16 @@ const sendNotifications = async (req, res) => {
   }
 };
 
+// Map to track notification counts for each user
+const notificationCounts = {};
+
+// Function to reset notification count
+//Separate endpoint to reset notification count
+const resetNotifications = (req, res) => {
+  io.emit("notificationCount", { count: 0 });
+  res.status(200).json({ message: "Notification count reset successfully" });
+};
+
 export {
   recordSale,
   salesHistory,
@@ -690,4 +683,5 @@ export {
   displayDailySales,
   salesDetails,
   sendNotifications,
+  resetNotifications,
 };
