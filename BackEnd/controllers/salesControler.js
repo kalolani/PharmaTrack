@@ -1,6 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 const JWT_SECRET = process.env.JWT_SECRET;
 const prisma = new PrismaClient();
+import { io } from "../server.js";
+
+// Your existing recordSale logic here, using io.emit as needed
 
 const recordSale = async (req, res) => {
   const { medicineId, medicineName, quantity, unitType, totalPrice } = req.body;
@@ -21,20 +24,20 @@ const recordSale = async (req, res) => {
       return res.status(404).json({ message: "Medicine not found" });
     }
 
-    // Initialize variables for handling quantity adjustment
     let adjustedQuantity = quantity; // Default to provided quantity
     let decrementField;
 
     // Adjust the quantity and decrement field based on the unit type
     switch (unitType) {
       case "strip":
-        if (!medicine.stripPerPack) {
-          return res
-            .status(400)
-            .json({ message: "Strips per pack not defined for this medicine" });
+        if (!medicine.stripPerPack || !medicine.stripQuantity) {
+          return res.status(400).json({
+            message:
+              "Strips per pack or strip quantity is not defined for this medicine.",
+          });
         }
-        adjustedQuantity = quantity / medicine.stripPerPack;
-        decrementField = "packQuantity"; // Deduct from pack stock
+        adjustedQuantity = quantity; // No further adjustment needed for strip quantity
+        decrementField = "stripQuantity"; // Deduct from stripeQuantit stock
         break;
       case "pack":
         decrementField = "packQuantity";
@@ -66,7 +69,7 @@ const recordSale = async (req, res) => {
         medicineName,
         medicine: { connect: { id: medicineId } },
         quantity: adjustedQuantity,
-        unitType: unitType === "strip" ? "pack" : unitType, // Convert strip to pack for record
+        unitType, // Store the actual unit type (e.g., strip, pack, unit, etc.)
         sellingPrice: totalPrice / adjustedQuantity, // Calculate unit price
         totalPrice,
       },
@@ -81,6 +84,73 @@ const recordSale = async (req, res) => {
         },
       },
     });
+
+    // Check for low stock for the current unit and send notifications
+    const updatedMedicine = await prisma.medicine.findUnique({
+      where: { id: medicineId },
+    });
+
+    let currentQuantity;
+    switch (unitType) {
+      case "strip":
+        currentQuantity = updatedMedicine.stripQuantity;
+        break;
+      case "pack":
+        currentQuantity = updatedMedicine.packQuantity;
+        break;
+      case "unit":
+        currentQuantity = updatedMedicine.unitQuantity;
+        break;
+      case "bottle":
+        currentQuantity = updatedMedicine.bottleQuantity;
+        break;
+      default:
+        currentQuantity = 0;
+    }
+
+    if (currentQuantity < 10) {
+      // Send notification for low stock of the current unit type
+      const existingNotification = await prisma.notification.findFirst({
+        where: { medicineId: updatedMedicine.id, type: "low-stock" },
+      });
+
+      if (!existingNotification) {
+        const notification = await prisma.notification.create({
+          data: {
+            medicineId: updatedMedicine.id,
+            name: updatedMedicine.name,
+            type: "low-stock",
+            quantity: currentQuantity,
+            message: `${updatedMedicine.name} is running out of stock. Only ${currentQuantity} ${unitType}(s) left.`,
+          },
+        });
+
+        // Send real-time notification to the client
+        io.emit("lowStockAlert", notification);
+
+        console.log(
+          `Low stock alert sent for ${updatedMedicine.name} (ID: ${updatedMedicine.id})`
+        );
+      }
+    }
+
+    // Additional check: Always send a notification if packQuantity is low, regardless of unit sold
+    if (updatedMedicine.packQuantity < 10) {
+      const packNotification = await prisma.notification.create({
+        data: {
+          medicineId: updatedMedicine.id,
+          name: updatedMedicine.name,
+          type: "low-stock",
+          quantity: updatedMedicine.packQuantity,
+          message: `${updatedMedicine.name} is running out of stock. Only ${updatedMedicine.packQuantity} pack(s) left.`,
+        },
+      });
+
+      io.emit("lowStockAlert", packNotification);
+      console.log(
+        `Low stock alert sent for packQuantity of ${updatedMedicine.name} (ID: ${updatedMedicine.id})`
+      );
+    }
 
     res.status(201).json({ message: "Sale recorded successfully", sale });
   } catch (error) {
@@ -592,6 +662,17 @@ const salesDetails = async (req, res) => {
     res.status(500).json({ message: "Error fetching sales details", error });
   }
 };
+const sendNotifications = async (req, res) => {
+  try {
+    const notifications = await prisma.notification.findMany({
+      orderBy: { createdAt: "desc" },
+    });
+    res.status(200).json(notifications);
+  } catch (error) {
+    console.error("Error fetching notifications:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 
 export {
   recordSale,
@@ -608,4 +689,5 @@ export {
   getDailySales,
   displayDailySales,
   salesDetails,
+  sendNotifications,
 };

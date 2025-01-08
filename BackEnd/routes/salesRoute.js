@@ -14,6 +14,7 @@ import {
   getDailySales,
   displayDailySales,
   salesDetails,
+  sendNotifications,
 } from "../controllers/salesControler.js";
 
 const salesRouter = express.Router();
@@ -33,5 +34,5 @@ salesRouter.get("/financial-report", financialReport);
 salesRouter.get("/daily-sales", getDailySales);
 salesRouter.get("/display-daily-sales", displayDailySales);
 salesRouter.get("/sales-detail/:date", salesDetails);
-
+salesRouter.get("/notifications", sendNotifications);
 export default salesRouter;

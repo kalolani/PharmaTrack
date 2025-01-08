@@ -1,59 +1,47 @@
-import { useState } from "react";
-import AdminNavBar from "./AdminNavBar";
-
-const demoNotifications = [
-  {
-    id: 1,
-    type: "alert",
-    message: "Stock for Paracetamol is running low.",
-    createdAt: "2024-12-01 10:30 AM",
-    isRead: false,
-  },
-  {
-    id: 2,
-    type: "system",
-    message: "System update scheduled for December 10, 2024.",
-    createdAt: "2024-11-30 02:15 PM",
-    isRead: true,
-  },
-  {
-    id: 3,
-    type: "alert",
-    message: "5 items expired today. Check the stock.",
-    createdAt: "2024-11-29 09:00 AM",
-    isRead: false,
-  },
-  {
-    id: 2,
-    type: "system",
-    message: "System update scheduled for December 10, 2024.",
-    createdAt: "2024-11-30 02:15 PM",
-    isRead: true,
-  },
-  {
-    id: 3,
-    type: "alert",
-    message: "5 items expired today. Check the stock.",
-    createdAt: "2024-11-29 09:00 AM",
-    isRead: false,
-  },
-];
+import { useEffect, useState } from "react";
+import axios from "axios";
+import AdminNavBar from "./AdminNavBar"; // Ensure you have this component
 
 const Notifications = () => {
-  // Use demo data as initial state
-  const [notifications, setNotifications] = useState(demoNotifications);
+  const [notifications, setNotifications] = useState([]);
+  console.log(notifications);
+  // Fetch notifications from the backend
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/api/sales/notifications"
+        );
+        setNotifications(response.data);
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      }
+    };
 
-  // Mark notification as read
-  const markAsRead = (id) => {
-    setNotifications((prev) =>
-      prev.map((notif) =>
-        notif.id === id ? { ...notif, isRead: true } : notif
-      )
-    );
+    fetchNotifications();
+  }, []);
+
+  // Mark a notification as read
+  const markAsRead = async (id) => {
+    try {
+      await axios.patch(`http://localhost:3000/notifications/${id}`, {
+        isRead: true,
+      });
+
+      // Update the UI after marking as read
+      setNotifications((prev) =>
+        prev.map((notif) =>
+          notif.id === id ? { ...notif, isRead: true } : notif
+        )
+      );
+    } catch (error) {
+      console.error("Error marking notification as read:", error);
+    }
   };
 
   return (
-    <div className="pt-[20px] pb-[50px] px-[20px] w-[85%] h-[100%] z-[10] text-[rgb(249 250 251)] font-Poppins bg-[#F3F2F7] min-h-screen">
+    <div className="relative z-50 pt-[20px] pb-[50px] px-[20px] w-[85%] h-[100%] z-[10] text-[rgb(249 250 251)] font-Poppins bg-[#F3F2F7] min-h-screen">
+      <div className="absolute inset-0 bg-grid-pattern-dashboard opacity-40 pointer-events-none"></div>
       <AdminNavBar />
       <h1 className="text-3xl text-[#464255] font-bold mt-8 mb-4">
         Notifications
@@ -62,7 +50,7 @@ const Notifications = () => {
         {notifications.map((notif) => (
           <li
             key={notif.id}
-            className={`p-4 rounded-lg shadow-md border ${
+            className={`relative z-50 p-4 rounded-lg shadow-md border ${
               notif.isRead ? "bg-gray-200" : "bg-white"
             }`}
           >
@@ -77,7 +65,9 @@ const Notifications = () => {
                 </button>
               )}
             </div>
-            <small className="text-gray-600">{notif.createdAt}</small>
+            <small className="text-gray-600">
+              {new Date(notif.createdAt).toLocaleString()}
+            </small>
           </li>
         ))}
       </ul>

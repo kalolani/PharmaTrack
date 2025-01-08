@@ -36,6 +36,8 @@ const io = new Server(server, {
   },
 });
 
+export { io };
+
 app.use(cors(corsOptions));
 app.use(express.json());
 

@@ -12,6 +12,7 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 model User {
   id        Int      @id @default(autoincrement())
   name      String
@@ -22,9 +23,9 @@ model User {
 }
 
 model Medicine {
-  id                    Int      @id @default(autoincrement())
+  id                    Int            @id @default(autoincrement())
   name                  String
-  type                  String   // Can be "tablet", etc.
+  type                  String // Can be "tablet", etc.
   costPerStrip          Float?
   costPerPack           Float?
   expiryDate            DateTime
@@ -46,13 +47,14 @@ model Medicine {
   bottleQuantity        Int?
   bottleCost            Float?
   cosmeticsCost         Float?
-
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
+  // Add this relation field
+  notifications         Notification[]
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
 
   // Define the relation here, making sure the name matches the relation name in Sale model
-  sales       Sale[]   @relation("MedicineSales") 
-  purchases  Purchase[] @relation("MedicinePurchases") // Opposite relation field for Purchase
+  sales            Sale[]            @relation("MedicineSales")
+  purchases        Purchase[]        @relation("MedicinePurchases") // Opposite relation field for Purchase
   expiredMedicines ExpiredMedicine[] // Add this line to represent the reverse relation
 }
 
@@ -64,64 +66,73 @@ enum MedicineType {
 }
 
 model Sale {
-  id            Int      @id @default(autoincrement())
-  medicineName  String   @default("Unknown") // Set default value here
-  medicineId    Int
-  quantity      Int
-  unitType      String
-  sellingPrice  Float    @default(0)   // Price per unit (e.g., strip, pack, bottle, unit)
-  totalPrice    Float    @default(0)   // The total price for the sale, calculated based on quantity
-  createdAt     DateTime @default(now())
+  id           Int      @id @default(autoincrement())
+  medicineName String   @default("Unknown") // Set default value here
+  medicineId   Int
+  quantity     Int
+  unitType     String
+  sellingPrice Float    @default(0) // Price per unit (e.g., strip, pack, bottle, unit)
+  totalPrice   Float    @default(0) // The total price for the sale, calculated based on quantity
+  createdAt    DateTime @default(now())
 
   // Define the relation here, make sure the relation name matches the one in Medicine model
-  medicine      Medicine @relation("MedicineSales", fields: [medicineId], references: [id])
+  medicine Medicine @relation("MedicineSales", fields: [medicineId], references: [id])
 }
 
 model Purchase {
-  id                   Int         @id @default(autoincrement())
-  medicineId          Int         // Matches the type of Medicine.id
-  medicine            Medicine?  @relation("MedicinePurchases", fields: [medicineId], references: [id])
-  name                String
-  type                String   // e.g., "tablet", "capsule", etc.
-  costPerStrip        Float?
-  costPerPack         Float?
-  expiryDate          DateTime
-  batchNumber         String
-  manufacturer        String
-  percentageStrip     Float?
-  percentagePack      Float?
-  percentageBottle    Float?
-  percentageCosmetics Float?
-  percentageUnit      Float?
-  sellingPriceBottle  Float?
+  id                    Int       @id @default(autoincrement())
+  medicineId            Int // Matches the type of Medicine.id
+  medicine              Medicine? @relation("MedicinePurchases", fields: [medicineId], references: [id])
+  name                  String
+  type                  String // e.g., "tablet", "capsule", etc.
+  costPerStrip          Float?
+  costPerPack           Float?
+  expiryDate            DateTime
+  batchNumber           String
+  manufacturer          String
+  percentageStrip       Float?
+  percentagePack        Float?
+  percentageBottle      Float?
+  percentageCosmetics   Float?
+  percentageUnit        Float?
+  sellingPriceBottle    Float?
   sellingPriceCosmetics Float?
-  sellingPriceStrip   Float?
-  sellingPricePack    Float?
-  packQuantity        Int?
-  stripQuantity       Int?
-  stripPerPack        Int?
-  unitQuantity        Int?
-  bottleQuantity      Int?
-  bottleCost          Float?
-  cosmeticsCost       Float?
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  sellingPriceStrip     Float?
+  sellingPricePack      Float?
+  packQuantity          Int?
+  stripQuantity         Int?
+  stripPerPack          Int?
+  unitQuantity          Int?
+  bottleQuantity        Int?
+  bottleCost            Float?
+  cosmeticsCost         Float?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 }
 
 model ExpiredMedicine {
-  id          Int       @id @default(autoincrement())
-  medicineId  Int
-  medicine    Medicine  @relation(fields: [medicineId], references: [id])
-  name        String
-  type        String
+  id           Int      @id @default(autoincrement())
+  medicineId   Int
+  medicine     Medicine @relation(fields: [medicineId], references: [id])
+  name         String
+  type         String
   manufacturer String
-  quantity    Int
-  expiryDate  DateTime
-  alerted     Boolean   @default(false) // Add this field
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  quantity     Int
+  expiryDate   DateTime
+  alerted      Boolean  @default(false) // Add this field
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
+model Notification {
+  id         Int      @id @default(autoincrement())
+  medicineId Int
+  name       String
+  type       String // e.g., "low-stock"
+  quantity   Int
+  message    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-
-
+  medicine Medicine @relation(fields: [medicineId], references: [id])
+}
