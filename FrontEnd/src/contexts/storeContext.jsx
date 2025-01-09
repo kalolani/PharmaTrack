@@ -12,24 +12,11 @@ function StoreProvider({ children }) {
   const [showModal, setShowModal] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [notificationCount, setNotificationCount] = useState(0);
+  const [markAsRead, setMarkAsRead] = useState(false);
 
   console.log(notificationCount);
 
   const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   // Initialize socket connection
-  //   const socket = io("http://localhost:3000");
-
-  //   // Listen for low stock alerts
-  //   socket.on("lowStockAlert", (notification) => {
-  //     setNotifications((prev) => [notification, ...prev]);
-  //   });
-
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, []);
 
   useEffect(() => {
     // Listen for notification count updates from the server
@@ -94,6 +81,8 @@ function StoreProvider({ children }) {
         fetchNotifications,
         notificationCount,
         resetNotificationCount,
+        markAsRead,
+        setMarkAsRead,
       }}
     >
       {children}

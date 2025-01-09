@@ -670,18 +670,18 @@ const resetNotifications = (req, res) => {
 };
 
 const markAsRead = async (req, res) => {
-  const { userId } = req.body; // Ensure `req` matches the parameter name
+  const { id } = req.params;
+  const { isRead } = req.body;
 
   try {
-    await prisma.notification.updateMany({
-      where: { userId, isRead: false }, // Update only unread notifications for the user
-      data: { isRead: true }, // Mark them as read
+    const updatedNotification = await prisma.notification.update({
+      where: { id: parseInt(id) },
+      data: { isRead },
     });
-
-    res.status(200).json({ message: "Notifications marked as read" });
+    res.status(200).json(updatedNotification);
   } catch (error) {
-    console.error("Error marking notifications as read:", error);
-    res.status(500).json({ error: "Failed to mark notifications as read" });
+    console.error("Error updating notification:", error);
+    res.status(500).json({ error: "Failed to update notification" });
   }
 };
 

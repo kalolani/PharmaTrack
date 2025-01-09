@@ -38,5 +38,5 @@ salesRouter.get("/display-daily-sales", displayDailySales);
 salesRouter.get("/sales-detail/:date", salesDetails);
 salesRouter.get("/notifications", sendNotifications);
 salesRouter.post("/reset-notifications", resetNotifications);
-salesRouter.post("/mark-as-read", markAsRead);
+salesRouter.put("/mark-as-read/:id", markAsRead);
 export default salesRouter;
