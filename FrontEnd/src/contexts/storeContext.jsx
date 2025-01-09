@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
+import { toast } from "react-toastify";
 const StoreContext = createContext();
 const socket = io("http://localhost:3000"); // Replace with your backend server URL
 function StoreProvider({ children }) {
@@ -11,6 +12,7 @@ function StoreProvider({ children }) {
   const [showModal, setShowModal] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [notificationCount, setNotificationCount] = useState(0);
+
   console.log(notificationCount);
 
   const navigate = useNavigate();
@@ -33,6 +35,7 @@ function StoreProvider({ children }) {
     // Listen for notification count updates from the server
     socket.on("notificationCount", ({ count }) => {
       setNotificationCount(count);
+      toast.success("a new low-stock notification has arrived");
     });
 
     return () => {

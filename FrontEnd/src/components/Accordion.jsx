@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toggleItem } from "../Redux/accordionSlice";
 
 import { NavLink } from "react-router-dom";
+import { useStores } from "../contexts/storeContext";
 
 function Accordion({
   id,
@@ -18,6 +19,7 @@ function Accordion({
   const dispatch = useDispatch();
   const curOpen = useSelector((state) => state.accordion.openItem); // Get the current open item number
   const isOpen = id === curOpen; // Check if this item is open
+  const { resetNotificationCount } = useStores();
   console.log(isOpen);
   console.log(sub);
 
@@ -26,7 +28,10 @@ function Accordion({
   };
 
   return (
-    <div className="relative w-[100%]">
+    <div
+      className="relative w-[100%]"
+      onClick={link === "notify" ? resetNotificationCount : ""}
+    >
       <NavLink
         key={id}
         to={link}

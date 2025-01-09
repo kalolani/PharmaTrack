@@ -133,7 +133,9 @@ const recordSale = async (req, res) => {
     }
 
     // Emit notification count to all connected clients
-    io.emit("notificationCount", { count: notificationCount });
+    io.emit("notificationCount", {
+      count: notificationCount,
+    });
 
     res.status(201).json({ message: "Sale recorded successfully", sale });
   } catch (error) {
@@ -667,6 +669,22 @@ const resetNotifications = (req, res) => {
   res.status(200).json({ message: "Notification count reset successfully" });
 };
 
+const markAsRead = async (req, res) => {
+  const { userId } = req.body; // Ensure `req` matches the parameter name
+
+  try {
+    await prisma.notification.updateMany({
+      where: { userId, isRead: false }, // Update only unread notifications for the user
+      data: { isRead: true }, // Mark them as read
+    });
+
+    res.status(200).json({ message: "Notifications marked as read" });
+  } catch (error) {
+    console.error("Error marking notifications as read:", error);
+    res.status(500).json({ error: "Failed to mark notifications as read" });
+  }
+};
+
 export {
   recordSale,
   salesHistory,
@@ -684,4 +702,5 @@ export {
   salesDetails,
   sendNotifications,
   resetNotifications,
+  markAsRead,
 };

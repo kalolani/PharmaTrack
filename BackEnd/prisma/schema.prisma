@@ -133,6 +133,6 @@ model Notification {
   message    String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-
+  isRead      Boolean  @default(false) // New field for read status
   medicine Medicine @relation(fields: [medicineId], references: [id])
 }

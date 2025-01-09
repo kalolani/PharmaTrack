@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import AdminNavBar from "./AdminNavBar"; // Ensure you have this component
+import AdminNavBar from "./AdminNavbar"; // Ensure you have this component
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState([]);

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import AdminNavBar from "./AdminNavBar";
+import AdminNavBar from "./AdminNavbar";
 import axios from "axios";
 import { toast } from "react-toastify";
 

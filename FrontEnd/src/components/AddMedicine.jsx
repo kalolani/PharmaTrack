@@ -1,6 +1,6 @@
 // Import required modules
 import { useState } from "react";
-import AdminNavBar from "./AdminNavBar";
+import AdminNavBar from "./AdminNavbar";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
