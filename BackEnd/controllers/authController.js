@@ -52,32 +52,50 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   const { email, password } = req.body;
 
-  if (!email || !password) {
-    return res.status(400).json({ error: "Email and password are required" });
+  // Check if the user is the admin
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user || user.role !== "ADMIN") {
+    return res.status(401).json({ message: "Unauthorized" });
   }
 
-  try {
-    const user = await prisma.user.findUnique({
-      where: { email },
-    });
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
+  // Verify password
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+  if (!isPasswordValid) {
+    return res.status(401).json({ message: "Invalid credentials" });
+  }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ error: "Invalid credentials" });
-    }
-
-    const token = jwt.sign({ userId: user.id }, JWT_SECRET, {
+  // Generate JWT token
+  const token = jwt.sign(
+    { id: user.id, role: user.role },
+    process.env.JWT_SECRET,
+    {
       expiresIn: "1h",
-    });
+    }
+  );
 
-    res.json({ message: "Login successful", token, success: true });
-  } catch (error) {
-    console.error("Error during login:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
+  res.status(200).json({ token });
 };
 
-export { register, login };
+const changePassword = async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+
+  // Find the admin
+  const user = await prisma.user.findUnique({ where: { id: req.user.id } });
+
+  // Verify old password
+  const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
+  if (!isPasswordValid) {
+    return res.status(401).json({ message: "Old password is incorrect" });
+  }
+
+  // Update password
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { password: hashedPassword },
+  });
+
+  res.status(200).json({ message: "Password updated successfully" });
+};
+
+export { register, login, changePassword };
